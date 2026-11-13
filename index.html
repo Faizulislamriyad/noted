@@ -44,10 +44,8 @@
     ::selection{background:rgba(26,115,232,.22)}
     .hidden{display:none!important}
 
-    /* Kill focus outline on editor fields — this was the "blue separator" */
+    /* Kill focus outline on editor fields */
     #editor-title,#editor-body,#composer-title,#composer-body{outline:none!important;box-shadow:none!important;border:0!important}
-    #editor-title:focus,#editor-body:focus,#composer-title:focus,#composer-body:focus,
-    #editor-title:focus-visible,#editor-body:focus-visible,#composer-title:focus-visible,#composer-body:focus-visible{outline:none!important;box-shadow:none!important;border:0!important}
 
     .app-loader{position:fixed;inset:0;z-index:500;display:grid;place-items:center;background:var(--bg)}
     .loader-inner{display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--text-muted);font-size:14px;font-weight:600}
@@ -133,19 +131,14 @@
     .drawer-label-chip .label-count{margin-left:auto;font-size:10px;color:var(--text-muted);font-weight:700;background:var(--surface-2);padding:1px 7px;border-radius:999px}
     .drawer-empty{color:var(--text-muted);font-size:12px;padding:6px 12px;line-height:1.5}
     .drawer-divider{height:1px;background:var(--sep);margin:8px 12px}
-    .drawer-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border:0;border-radius:0;background:transparent;color:var(--text);font-size:13.5px;font-weight:700;text-align:left;cursor:pointer;transition:.12s;width:100%}
+    .drawer-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border:0;background:transparent;color:var(--text);font-size:13.5px;font-weight:700;text-align:left;cursor:pointer;transition:.12s;width:100%}
     .drawer-item:hover{background:var(--surface-2)}
     .drawer-item i{color:var(--text-muted);font-size:14px;width:18px;text-align:center}
-    .drawer-item.danger{color:var(--danger)}
-    .drawer-item.danger i{color:var(--danger)}
 
-    /* ===== FILTER CHIP ===== */
     .active-filter{display:inline-flex;align-items:center;gap:8px;max-width:100%;margin:0 auto 16px;padding:7px 8px 7px 14px;border-radius:999px;background:rgba(26,115,232,.1);color:var(--accent);font-size:13px;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.04)}
     .active-filter span{display:inline-flex;align-items:center;gap:6px;max-width:calc(100vw - 120px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .active-filter button{width:22px;height:22px;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(26,115,232,.18);color:inherit;cursor:pointer;font-size:10px}
-    .active-filter button:hover{background:rgba(26,115,232,.28)}
 
-    /* ===== MAIN ===== */
     .main{width:100%;max-width:1440px;margin:0 auto;padding:24px 22px 100px}
     .notes-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:48px 16px;color:var(--text-muted);font-size:14px;font-weight:600}
 
@@ -227,8 +220,7 @@
     .note-pin{margin-top:2px;color:#b08d00;font-size:12px;transform:rotate(35deg)}
     .note-lock-icon{color:var(--accent);font-size:13px;margin-top:3px;flex-shrink:0}
     .note-preview{margin:9px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;white-space:normal;overflow-wrap:anywhere;unicode-bidi:plaintext;display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden}
-    .note-preview-locked{display:flex;align-items:center;gap:6px;font-style:italic}
-    .note-preview-locked i{color:var(--accent);font-size:11px}
+    .note-preview-blur{filter:blur(5px);user-select:none;pointer-events:none;opacity:.85}
     .note-labels{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
     .label-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;background:rgba(26,115,232,.1);color:var(--accent);font-size:10.5px;font-weight:700;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .note-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
@@ -279,23 +271,22 @@
     .editor-footer-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
     .save-status{min-width:74px;color:var(--text-muted);font-size:11px;font-weight:700;text-align:right}
     .save-status.error{color:var(--danger)}
-    .remote-banner{display:flex;align-items:center;gap:9px;flex-shrink:0;padding:8px 16px;border-bottom:1px solid var(--sep);background:rgba(251,188,4,.12);color:#7a5900;font-size:12px;font-weight:600}
-    [data-theme="dark"] .remote-banner{background:rgba(251,188,4,.15);color:#fdd663}
-    .remote-banner span{flex:1}
-    .remote-banner button{padding:4px 10px;border:0;border-radius:999px;background:#7a5900;color:#fff;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
-    [data-theme="dark"] .remote-banner button{background:#fdd663;color:#3d3212}
 
-    /* ===== HIGHLIGHTS (readable in both themes) ===== */
+    /* ===== HIGHLIGHTS ===== */
     .editor-body mark,
     .composer-body mark,
     .editor-body span[style*="background-color"],
     .composer-body span[style*="background-color"]{color:#1f2328!important;padding:0 2px;border-radius:3px}
 
     /* ===== PASSWORD MASK ===== */
-    .pwd-mask{display:inline-flex;align-items:center;gap:4px;padding:1px 6px;border-radius:4px;background:rgba(26,115,232,.13);color:var(--accent);font-family:monospace;font-size:13px;font-weight:700;cursor:pointer;user-select:none;vertical-align:baseline;line-height:1.4}
-    .pwd-mask .pwd-eye{font-size:10px;color:var(--accent);font-family:inherit}
+    .pwd-mask{display:inline-flex;align-items:center;gap:5px;padding:1px 7px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;user-select:none;vertical-align:baseline;line-height:1.5;transition:.15s}
+    .pwd-mask:hover{background:rgba(26,115,232,.2)}
+    .pwd-mask .pwd-display{white-space:nowrap}
+    .pwd-mask .pwd-eye{font-size:10px}
+    .pwd-mask .pwd-copy{font-size:10px;display:none;margin-left:1px}
     .pwd-mask[data-visible="true"]{background:rgba(24,128,56,.13);color:var(--success)}
-    .pwd-mask[data-visible="true"] .pwd-eye{color:var(--success)}
+    .pwd-mask[data-visible="true"]:hover{background:rgba(24,128,56,.2)}
+    .pwd-mask[data-visible="true"] .pwd-copy{display:inline-block}
 
     /* ===== CONTEXT MENU ===== */
     .context-menu{position:fixed;z-index:210;width:230px;padding:6px;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-lg);animation:menuIn .12s ease both}
@@ -362,7 +353,6 @@
     .recycle-item-actions{display:flex;gap:4px;flex-shrink:0}
     .recycle-empty{text-align:center;color:var(--text-muted);font-size:13px;padding:32px 16px}
 
-    /* Shortcuts */
     .shortcuts-list{display:flex;flex-direction:column;gap:2px}
     .shortcut-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 6px;border-radius:8px}
     .shortcut-row:hover{background:var(--surface-2)}
@@ -370,21 +360,18 @@
     .shortcut-keys{display:flex;gap:4px;flex-shrink:0}
     .kbd{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;background:var(--surface);color:var(--text-muted);font-size:10.5px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 
-    /* ===== UNDO TOAST ===== */
     .undo-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:320;display:flex;align-items:center;gap:14px;padding:12px 16px 14px;border-radius:12px;background:var(--text);color:var(--bg);box-shadow:var(--shadow-lg);font-size:13.5px;font-weight:600;min-width:280px;max-width:min(92vw,420px);overflow:hidden;animation:toastIn .22s ease both}
     .undo-toast span{flex:1}
     .undo-toast button{padding:5px 12px;border:0;border-radius:999px;background:var(--accent);color:#fff;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
     [data-theme="dark"] .undo-toast button{color:#0b1220}
     .undo-progress{position:absolute;left:0;bottom:0;height:2px;background:var(--accent);width:100%}
 
-    /* ===== TOASTS ===== */
     .toast-container{position:fixed;bottom:80px;left:50%;z-index:300;display:flex;flex-direction:column;align-items:center;gap:8px;transform:translateX(-50%);pointer-events:none}
     .toast{max-width:min(90vw,420px);padding:10px 18px;border-radius:999px;background:var(--text);color:var(--bg);box-shadow:var(--shadow-lg);font-size:13px;font-weight:700;line-height:1.4;text-align:center;pointer-events:auto;animation:toastIn .2s ease both;transition:.25s}
     .toast.error{background:var(--danger);color:#fff}
     .toast.success{background:var(--success);color:#fff}
     @keyframes toastIn{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
 
-    /* ===== RESPONSIVE ===== */
     @media(max-width:900px){
       .header-inner{flex-wrap:wrap;gap:8px;padding:10px 14px}
       .brand{font-size:16px}
@@ -452,13 +439,13 @@
     <header class="app-header">
       <div class="header-inner">
         <div class="header-left">
+          <button class="icon-btn" id="drawer-btn" type="button" title="Menu" aria-label="Menu">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
           <div class="brand">
             <div class="brand-icon"><i class="fa-solid fa-note-sticky"></i></div>
             <span>Noted</span>
           </div>
-          <button class="icon-btn" id="drawer-btn" type="button" title="Menu" aria-label="Menu">
-            <i class="fa-solid fa-bars"></i>
-          </button>
         </div>
 
         <div class="search-box">
@@ -540,6 +527,9 @@
                 <i class="fa-solid fa-highlighter"></i>
                 <i class="fa-solid fa-caret-down hl-caret"></i>
               </button>
+              <button class="icon-btn format-btn" type="button" id="composer-hide-btn" title="Hide selected as password (Ctrl+Q)" aria-label="Hide selected">
+                <i class="fa-solid fa-eye-slash"></i>
+              </button>
             </div>
             <div class="composer-actions">
               <button class="icon-btn" id="composer-color-btn" type="button" title="Change note color" aria-label="Change note color"><i class="fa-solid fa-palette"></i></button>
@@ -576,11 +566,6 @@
 
   <div class="modal-overlay" id="editor-modal" aria-hidden="true">
     <div class="editor-panel modal-panel" id="editor-panel" data-color="default" role="dialog" aria-modal="true">
-      <div class="remote-banner hidden" id="remote-update-banner" role="status">
-        <i class="fa-solid fa-arrows-rotate"></i>
-        <span>Updated by another user</span>
-        <button id="reload-remote-btn" type="button">Reload</button>
-      </div>
       <div class="editor-toolbar">
         <div class="format-group">
           <button class="icon-btn format-btn" type="button" data-format="bold" title="Bold (Ctrl+B)" aria-label="Bold"><i class="fa-solid fa-bold"></i></button>
@@ -589,6 +574,9 @@
           <button class="icon-btn format-btn hl-trigger" type="button" data-format="highlight" title="Highlight (click to toggle, right-click / long-press for colors)" aria-label="Highlight">
             <i class="fa-solid fa-highlighter"></i>
             <i class="fa-solid fa-caret-down hl-caret"></i>
+          </button>
+          <button class="icon-btn format-btn" type="button" id="editor-hide-btn" title="Hide selected as password (Ctrl+Q)" aria-label="Hide selected">
+            <i class="fa-solid fa-eye-slash"></i>
           </button>
         </div>
         <div class="editor-toolbar-right">
@@ -771,10 +759,8 @@
 
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
     setPersistence(auth, browserLocalPersistence).catch(e => console.warn("Persistence:", e));
 
-    /* ===== DOM ===== */
     const $ = id => document.getElementById(id);
     const appLoader=$("app-loader"), authScreen=$("auth-screen"), appRoot=$("app");
     const googleSigninBtn=$("google-signin-btn"), authError=$("auth-error");
@@ -792,12 +778,13 @@
     const composerTitle=$("composer-title"), composerBody=$("composer-body");
     const composerColorBtn=$("composer-color-btn"), composerCloseBtn=$("composer-close-btn");
     const composerSaveBtn=$("composer-save-btn"), composerPalette=$("composer-palette");
+    const composerHideBtn=$("composer-hide-btn");
     const editorModal=$("editor-modal"), editorPanel=$("editor-panel");
     const editorTitle=$("editor-title"), editorBody=$("editor-body"), editorPalette=$("editor-palette");
     const editorPinBtn=$("editor-pin-btn"), editorCloseBtn=$("editor-close-btn");
     const editorDeleteBtn=$("editor-delete-btn"), editorDoneBtn=$("editor-done-btn");
+    const editorHideBtn=$("editor-hide-btn");
     const editorMeta=$("editor-meta"), saveStatus=$("save-status");
-    const remoteBanner=$("remote-update-banner"), reloadRemoteBtn=$("reload-remote-btn");
     const toastContainer=$("toast-container");
     const settingsModal=$("settings-modal"), settingsCloseBtn=$("settings-close-btn");
     const currentFontName=$("current-font-name"), fontFileInput=$("font-file-input");
@@ -841,8 +828,9 @@
     let userPasswordHash=null;
     let passwordResolve=null;
     let undoTimeout=null, pendingDeleteNoteId=null;
-    let passwordCheckTimer=null;
+    let passwordCheckTimer=null, composerPasswordTimer=null;
     let passwordPromptShownFor=new Set();
+    let composerPasswordPrompted=false;
     const pwdMaskHandlersAttached=new WeakSet();
 
     /* ===== CONSTANTS ===== */
@@ -858,11 +846,12 @@
     const DANGEROUS_TAGS=new Set(["SCRIPT","STYLE","IFRAME","OBJECT","EMBED","LINK","META","FORM","INPUT","TEXTAREA","SELECT","BUTTON","SVG","MATH"]);
     const ONLINE_WINDOW_MS=2*60*1000;
     const RECYCLE_DAYS=30;
-
+    const PASSWORD_PATTERN=/(?:password|passwd|pwd|pass|পাসওয়ার্ড|পাসওয়ার্ড|गुप्त\s*शब्द|密码|パスワード|пароль|contraseña)\s*[:：=\-–—]\s*([^\s<\n]{3,})/i;
     const SHORTCUTS=[
       {label:"Bold",keys:["Ctrl","B"]},
       {label:"Italic",keys:["Ctrl","I"]},
       {label:"Underline",keys:["Ctrl","U"]},
+      {label:"Hide selected as password",keys:["Ctrl","Q"]},
       {label:"Save note",keys:["Ctrl","Enter"]},
       {label:"Focus search",keys:["Ctrl","K"]},
       {label:"Close editor / dismiss",keys:["Esc"]},
@@ -876,6 +865,7 @@
     function safeImageURL(url){if(!url)return"";try{const u=new URL(url,location.href);if(u.protocol==="https:"||u.protocol==="http:")return u.href;}catch{}return"";}
     function avatarHTML(photo,name,size="sm"){const p=safeImageURL(photo);if(p)return`<img class="avatar avatar-${size}" src="${escapeHTML(p)}" alt="" loading="lazy" referrerpolicy="no-referrer"/>`;return`<span class="avatar avatar-${size} avatar-initials">${escapeHTML(initials(name))}</span>`;}
     function timeMs(ts){if(!ts)return 0;if(typeof ts==="number")return ts;if(typeof ts.toMillis==="function")return ts.toMillis();if(ts instanceof Date)return ts.getTime();return 0;}
+    function createdTime(n){return timeMs(n.createdAt)||Number(n.clientCreatedAt)||0;}
     function noteTime(n){return timeMs(n.updatedAt)||timeMs(n.createdAt)||Number(n.clientUpdatedAt)||Number(n.clientCreatedAt)||0;}
     function timeAgo(ts){const ms=timeMs(ts);if(!ms)return"Just now";const s=Math.max(0,Math.floor((Date.now()-ms)/1000));if(s<60)return"Just now";const m=Math.floor(s/60);if(m<60)return`${m}m ago`;const h=Math.floor(m/60);if(h<24)return`${h}h ago`;const d=Math.floor(h/24);if(d<7)return`${d}d ago`;return new Intl.DateTimeFormat(undefined,{month:"short",day:"numeric"}).format(new Date(ms));}
     function daysAgo(ts){const ms=timeMs(ts);if(!ms)return 0;return Math.floor((Date.now()-ms)/(1000*60*60*24));}
@@ -884,9 +874,88 @@
     function toast(msg,type="info"){const el=document.createElement("div");el.className=`toast ${type}`;el.textContent=msg;toastContainer.appendChild(el);setTimeout(()=>{el.style.opacity="0";el.style.transform="translateY(8px)";setTimeout(()=>el.remove(),260);},3200);}
     function setSaveStatus(text,isError=false){saveStatus.textContent=text;saveStatus.classList.toggle("error",isError);clearTimeout(saveStatusTimer);if(text==="Saved")saveStatusTimer=setTimeout(()=>{saveStatus.textContent="";},2000);}
     async function hashPassword(password){const buf=new TextEncoder().encode(password);const hash=await crypto.subtle.digest("SHA-256",buf);return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");}
+    function encodePwd(str){try{return btoa(unescape(encodeURIComponent(str)));}catch(e){try{return btoa(str);}catch(e2){return "";}}}
+    function decodePwd(b64){try{return decodeURIComponent(escape(atob(b64)));}catch(e){try{return atob(b64);}catch(e2){return "";}}}
+
+    /* ===== PWD MASK ===== */
+    function buildPwdMaskElement(doc,pwd){
+      const mask=doc.createElement("span");
+      mask.className="pwd-mask";
+      mask.setAttribute("contenteditable","false");
+      mask.setAttribute("data-visible","false");
+      mask.setAttribute("data-pwd",encodePwd(pwd));
+      const display=doc.createElement("span");
+      display.className="pwd-display";
+      display.textContent="•".repeat(Math.min(pwd.length||6,16));
+      const eye=doc.createElement("i");
+      eye.className="fa-solid fa-eye pwd-eye";
+      eye.setAttribute("contenteditable","false");
+      const copy=doc.createElement("i");
+      copy.className="fa-solid fa-copy pwd-copy";
+      copy.setAttribute("contenteditable","false");
+      mask.appendChild(display);mask.appendChild(eye);mask.appendChild(copy);
+      return mask;
+    }
+    function handlePwdMaskClick(e){
+      e.preventDefault();e.stopPropagation();
+      const mask=e.currentTarget;
+      const visible=mask.dataset.visible==="true";
+      const pwd=decodePwd(mask.dataset.pwd||"");
+      const display=mask.querySelector(".pwd-display");
+      const eye=mask.querySelector(".pwd-eye");
+      if(!display)return;
+      if(visible){
+        display.textContent="•".repeat(Math.min(pwd.length||6,16));
+        mask.dataset.visible="false";
+        if(eye)eye.className="fa-solid fa-eye pwd-eye";
+      }else{
+        display.textContent=pwd;
+        mask.dataset.visible="true";
+        if(eye)eye.className="fa-solid fa-eye-slash pwd-eye";
+      }
+    }
+    async function handlePwdCopyClick(e){
+      e.preventDefault();e.stopPropagation();
+      const copy=e.currentTarget;
+      const mask=copy.closest(".pwd-mask");
+      if(!mask)return;
+      const pwd=decodePwd(mask.dataset.pwd||"");
+      if(!pwd)return;
+      try{
+        if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(pwd);}
+        else{
+          const ta=document.createElement("textarea");
+          ta.value=pwd;ta.style.position="fixed";ta.style.opacity="0";
+          document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();
+        }
+        toast("Password copied.","success");
+      }catch(err){toast("Could not copy.","error");}
+    }
+    function attachPwdMaskHandlersTo(mask){
+      if(pwdMaskHandlersAttached.has(mask))return;
+      pwdMaskHandlersAttached.add(mask);
+      const pwd=decodePwd(mask.dataset.pwd||"");
+      const display=mask.querySelector(".pwd-display");
+      const eye=mask.querySelector(".pwd-eye");
+      if(display)display.textContent="•".repeat(Math.min(pwd.length||6,16));
+      if(eye)eye.className="fa-solid fa-eye pwd-eye";
+      mask.dataset.visible="false";
+      mask.setAttribute("contenteditable","false");
+      mask.addEventListener("click",handlePwdMaskClick);
+      const copy=mask.querySelector(".pwd-copy");
+      if(copy)copy.addEventListener("click",handlePwdCopyClick);
+    }
+    function attachPwdMaskHandlers(container){container.querySelectorAll(".pwd-mask").forEach(attachPwdMaskHandlersTo);}
 
     /* ===== SANITIZE ===== */
-    function sanitizeHTML(html){if(!html)return"";const parsed=new DOMParser().parseFromString(`<div>${html}</div>`,"text/html");const root=parsed.body.firstElementChild;if(!root)return"";sanitizeNode(root);return root.innerHTML;}
+    function sanitizeHTML(html){
+      if(!html)return"";
+      const parsed=new DOMParser().parseFromString(`<div>${html}</div>`,"text/html");
+      const root=parsed.body.firstElementChild;
+      if(!root)return"";
+      sanitizeNode(root);
+      return root.innerHTML;
+    }
     function sanitizeNode(node){
       const children=Array.from(node.childNodes);
       for(const child of children){
@@ -894,6 +963,14 @@
         if(child.nodeType===Node.COMMENT_NODE){child.remove();continue;}
         if(child.nodeType!==Node.ELEMENT_NODE){child.remove();continue;}
         const tag=child.tagName;
+        // Rebuild pwd-mask safely
+        if(tag==="SPAN"&&child.classList&&child.classList.contains("pwd-mask")){
+          const pwd=decodePwd(child.getAttribute("data-pwd")||"");
+          if(!pwd){child.remove();continue;}
+          const fresh=buildPwdMaskElement(child.ownerDocument,pwd);
+          child.replaceWith(fresh);
+          continue;
+        }
         if(DANGEROUS_TAGS.has(tag)){child.remove();continue;}
         if(!ALLOWED_TAGS.has(tag)){
           sanitizeNode(child);
@@ -902,15 +979,8 @@
           parent.removeChild(child);
           continue;
         }
-        const isPwdMask=child.classList&&child.classList.contains("pwd-mask");
         for(const attr of Array.from(child.attributes)){
           const name=attr.name.toLowerCase();
-          if(isPwdMask){
-            if(name==="class"||name==="data-visible"||name==="data-pwd"||name==="contenteditable") continue;
-            if(name==="style"){child.removeAttribute("style");continue;}
-            child.removeAttribute(attr.name);
-            continue;
-          }
           if((tag==="SPAN"||tag==="MARK")&&name==="style"){
             const safe=sanitizeHighlightStyle(attr.value);
             if(safe)child.setAttribute("style",safe);
@@ -918,13 +988,10 @@
           }else{child.removeAttribute(attr.name);}
         }
         sanitizeNode(child);
-        if(!isPwdMask&&tag==="SPAN"&&!child.attributes.length){
+        if(tag==="SPAN"&&!child.attributes.length){
           const parent=child.parentNode;
           while(child.firstChild)parent.insertBefore(child.firstChild,child);
           parent.removeChild(child);
-        }
-        if(tag==="MARK"&&!child.attributes.length){
-          // keep the mark even without style
         }
       }
     }
@@ -939,7 +1006,59 @@
     }
     function stripHTML(html){if(!html)return"";const temp=document.createElement("div");temp.innerHTML=sanitizeHTML(html);return temp.textContent||"";}
 
-    /* ===== AUTH ERRORS ===== */
+    /* ===== PASSWORD AUTO-DETECT + WRAP ===== */
+    function wrapPasswordInEditable(editable){
+      const walker=document.createTreeWalker(editable,NodeFilter.SHOW_TEXT);
+      let node;
+      while((node=walker.nextNode())){
+        if(node.parentElement&&node.parentElement.closest(".pwd-mask"))continue;
+        const text=node.textContent;
+        PASSWORD_PATTERN.lastIndex=0;
+        const match=PASSWORD_PATTERN.exec(text);
+        if(!match)continue;
+        const pwd=match[1];
+        const fullMatchStart=text.indexOf(match[0]);
+        if(fullMatchStart<0)continue;
+        const prefixMatch=match[0].indexOf(pwd);
+        const pwdStart=fullMatchStart+prefixMatch;
+        const before=text.slice(0,pwdStart);
+        const after=text.slice(pwdStart+pwd.length);
+        const parent=node.parentNode;
+        if(!parent)return false;
+        const beforeNode=document.createTextNode(before);
+        const afterNode=document.createTextNode(after);
+        const mask=buildPwdMaskElement(document,pwd);
+        parent.replaceChild(afterNode,node);
+        parent.insertBefore(mask,afterNode);
+        parent.insertBefore(beforeNode,mask);
+        attachPwdMaskHandlersTo(mask);
+        return true;
+      }
+      return false;
+    }
+    function wrapSelectionAsPassword(){
+      const editable=lastFocusedEditable;
+      if(!editable)return;
+      const sel=window.getSelection();
+      if(!sel||!sel.rangeCount||sel.isCollapsed){toast("Select text first.","info");return;}
+      const range=sel.getRangeAt(0);
+      if(!editable.contains(range.commonAncestorContainer))return;
+      const text=range.toString();
+      if(!text.trim()){toast("Select text first.","info");return;}
+      range.deleteContents();
+      const mask=buildPwdMaskElement(document,text);
+      range.insertNode(mask);
+      attachPwdMaskHandlersTo(mask);
+      const newRange=document.createRange();
+      newRange.setStartAfter(mask);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+      if(activeNoteId)scheduleEditorSave();
+      toast("Password hidden. Click the eye to reveal.","success");
+    }
+
+    /* ===== AUTH ===== */
     function authErrorMessage(code){
       switch(code){
         case"auth/popup-closed-by-user":return"Sign-in cancelled.";
@@ -951,14 +1070,11 @@
         default:return"Could not sign in. Please try again.";
       }
     }
-
-    /* ===== THEME ===== */
     function getStoredTheme(){try{return localStorage.getItem("noted-theme");}catch{return null;}}
     function storeTheme(t){try{localStorage.setItem("noted-theme",t);}catch{}}
     function applyTheme(theme){const v=theme==="dark"?"dark":"light";document.documentElement.dataset.theme=v;storeTheme(v);themeToggle.innerHTML=v==="dark"?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';themeToggle.title=v==="dark"?"Switch to light mode":"Switch to dark mode";}
     function initTheme(){const stored=getStoredTheme();const prefersDark=matchMedia("(prefers-color-scheme: dark)").matches;applyTheme(stored||(prefersDark?"dark":"light"));}
 
-    /* ===== AUTH ===== */
     async function signInWithGoogle(){
       if(signInInProgress)return;
       signInInProgress=true;
@@ -968,10 +1084,8 @@
       googleSigninBtn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i><span>Signing in…</span>';
       const provider=new GoogleAuthProvider();
       provider.setCustomParameters({prompt:"select_account"});
-      try{
-        await signInWithPopup(auth,provider);
-      }catch(popupErr){
-        console.warn("Popup auth failed:",popupErr.code);
+      try{await signInWithPopup(auth,provider);}
+      catch(popupErr){
         if(isIOS){
           let msg="Sign-in failed. ";
           if(popupErr.code==="auth/popup-blocked")msg+="Allow popups for this site in Safari settings.";
@@ -984,10 +1098,10 @@
           signInInProgress=false;
           return;
         }
-        const fallbackCodes=["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/cancelled-popup-request"];
-        if(fallbackCodes.includes(popupErr.code)){
+        const fallback=["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/cancelled-popup-request"];
+        if(fallback.includes(popupErr.code)){
           try{await signInWithRedirect(auth,provider);return;}
-          catch(re){console.error(re);authError.textContent=authErrorMessage(re.code);}
+          catch(re){authError.textContent=authErrorMessage(re.code);}
         }else{authError.textContent=authErrorMessage(popupErr.code);}
         googleSigninBtn.disabled=false;
         googleSigninBtn.innerHTML=orig;
@@ -995,13 +1109,11 @@
       }
     }
     async function handleSignOut(){try{await signOut(auth);userMenu.classList.add("hidden");toast("Signed out.","info");}catch(e){console.error(e);}}
-
-    async function upsertUserProfile(user){
-      try{await setDoc(doc(db,"users",user.uid),{uid:user.uid,displayName:user.displayName||"User",email:user.email||"",photoURL:user.photoURL||"",updatedAt:serverTimestamp()},{merge:true});}catch(e){console.warn(e);}
-    }
+    async function upsertUserProfile(user){try{await setDoc(doc(db,"users",user.uid),{uid:user.uid,displayName:user.displayName||"User",email:user.email||"",photoURL:user.photoURL||"",updatedAt:serverTimestamp()},{merge:true});}catch(e){console.warn(e);}}
     async function loadUserPasswordHash(){
       if(!currentUser)return;
-      try{const snap=await getDoc(doc(db,"users",currentUser.uid));userPasswordHash=snap.exists()?(snap.data().passwordHash||null):null;}catch(e){console.warn(e);userPasswordHash=null;}
+      try{const snap=await getDoc(doc(db,"users",currentUser.uid));userPasswordHash=snap.exists()?(snap.data().passwordHash||null):null;}
+      catch(e){userPasswordHash=null;}
       updatePasswordUI();
     }
     function subscribeToUsers(){
@@ -1014,8 +1126,6 @@
         if(activeNoteId)updateEditorMeta(activeNote);
       },err=>console.warn(err));
     }
-
-    /* ===== COLLAB STATUS (based on 2-min note edit activity) ===== */
     function getActiveCollaborators(){
       const active=new Map();
       if(!currentUser)return active;
@@ -1031,7 +1141,7 @@
         const theyAreParticipant=note.owner===updatedBy||collabs.includes(updatedBy);
         if(!iAmParticipant||!theyAreParticipant)return;
         const prev=active.get(updatedBy);
-        if(!prev||prev.lastTime<lastTime) active.set(updatedBy,{lastTime});
+        if(!prev||prev.lastTime<lastTime)active.set(updatedBy,{lastTime});
       });
       return active;
     }
@@ -1051,14 +1161,12 @@
         }).join("");
       }
     }
-
     function updateUserUI(user){
       const name=user.displayName||"User";
       userAvatar.innerHTML=avatarHTML(user.photoURL,name,"sm");
       userMenuAvatar.innerHTML=avatarHTML(user.photoURL,name,"md");
       userName.textContent=name;userEmail.textContent=user.email||"";
     }
-
     function showApp(user){
       currentUser=user;
       authScreen.classList.add("hidden");
@@ -1120,7 +1228,6 @@
       });
     }
 
-    /* ===== FONTS ===== */
     async function loadOwnFont(){if(!currentUser)return;await loadFontForUid(currentUser.uid);updateCurrentFontUI();}
     async function loadFontForUid(uid){
       if(fontCache[uid]!==undefined)return fontCache[uid];
@@ -1168,7 +1275,7 @@
         toast("Font imported!","success");
         renderNotes();
         if(activeNoteId)applyEditorFont();
-      }catch(e){console.error(e);toast("Could not import font.","error");}
+      }catch(e){toast("Could not import font.","error");}
     }
     async function resetFont(){
       if(!currentUser)return;
@@ -1183,7 +1290,6 @@
       }catch(e){toast("Could not reset font.","error");}
     }
 
-    /* ===== PASSWORD ===== */
     function updatePasswordUI(){
       if(!currentUser)return;
       if(userPasswordHash){
@@ -1256,84 +1362,7 @@
       closePasswordModal(true);
     }
 
-    /* ===== PWD MASK in note content ===== */
-    function handlePwdMaskClick(e){
-      e.preventDefault();
-      e.stopPropagation();
-      const mask=e.currentTarget;
-      const visible=mask.dataset.visible==="true";
-      const pwd=mask.dataset.pwd?atob(mask.dataset.pwd):"";
-      const dots="•".repeat(Math.min(pwd.length||6,16));
-      const display=mask.querySelector(".pwd-display");
-      if(!display)return;
-      if(visible){display.textContent=dots;mask.dataset.visible="false";}
-      else{display.textContent=pwd;mask.dataset.visible="true";}
-    }
-    function attachPwdMaskHandlers(container){
-      container.querySelectorAll(".pwd-mask").forEach(mask=>{
-        if(pwdMaskHandlersAttached.has(mask))return;
-        const display=mask.querySelector(".pwd-display");
-        if(display){
-          const pwd=mask.dataset.pwd?atob(mask.dataset.pwd):"";
-          display.textContent="•".repeat(Math.min(pwd.length||6,16));
-        }
-        mask.dataset.visible="false";
-        mask.setAttribute("contenteditable","false");
-        mask.addEventListener("click",handlePwdMaskClick);
-        pwdMaskHandlersAttached.add(mask);
-      });
-    }
-    function wrapPasswordInEditor(){
-      const walker=document.createTreeWalker(editorBody,NodeFilter.SHOW_TEXT);
-      const pattern=/(password\s*[:：]\s*)([^\s<\n]{3,})/i;
-      let node;
-      while((node=walker.nextNode())){
-        if(node.parentElement&&node.parentElement.closest(".pwd-mask"))continue;
-        const match=pattern.exec(node.textContent);
-        if(!match)continue;
-        const fullMatch=match[0];
-        const prefix=match[1];
-        const pwd=match[2];
-        const idx=node.textContent.indexOf(fullMatch);
-        if(idx<0)continue;
-        const before=node.textContent.slice(0,idx+prefix.length);
-        const after=node.textContent.slice(idx+fullMatch.length);
-        const parent=node.parentNode;
-        if(!parent)return false;
-        const mask=document.createElement("span");
-        mask.className="pwd-mask";
-        mask.setAttribute("contenteditable","false");
-        mask.dataset.visible="false";
-        mask.dataset.pwd=btoa(pwd);
-        const dots=document.createElement("span");
-        dots.className="pwd-display";
-        dots.textContent="•".repeat(Math.min(pwd.length,16));
-        const eye=document.createElement("i");
-        eye.className="fa-solid fa-eye pwd-eye";
-        mask.appendChild(dots);
-        mask.appendChild(eye);
-        mask.addEventListener("click",handlePwdMaskClick);
-        pwdMaskHandlersAttached.add(mask);
-        const beforeNode=document.createTextNode(before);
-        const afterNode=document.createTextNode(after);
-        parent.replaceChild(afterNode,node);
-        parent.insertBefore(mask,afterNode);
-        parent.insertBefore(beforeNode,mask);
-        return true;
-      }
-      return false;
-    }
-    function resetPwdMasks(){
-      if(!editorBody)return;
-      editorBody.querySelectorAll(".pwd-mask").forEach(mask=>{
-        mask.dataset.visible="false";
-        const pwd=mask.dataset.pwd?atob(mask.dataset.pwd):"";
-        const display=mask.querySelector(".pwd-display");
-        if(display)display.textContent="•".repeat(Math.min(pwd.length||6,16));
-      });
-    }
-
-    /* ===== RENDER NOTES ===== */
+    /* ===== RENDER NOTES — sorted by CREATION order, pinned first ===== */
     function noteFingerprint(n){
       return [n.title||"",stripHTML(n.body||"").slice(0,400),n.color||"default",n.pinned?"1":"0",(n.labels||[]).join(","),(n.collaborators||[]).length,n.locked?"1":"0",n.deleted?"1":"0"].join("|");
     }
@@ -1356,7 +1385,11 @@
         const labels=(n.labels||[]).join(" ").toLowerCase();
         return title.includes(term)||body.includes(term)||labels.includes(term);
       });
-      filtered.sort((a,b)=>{if(Boolean(a.pinned)!==Boolean(b.pinned))return a.pinned?-1:1;return noteTime(b)-noteTime(a);});
+      // NEWEST CREATED FIRST — editing never changes position
+      filtered.sort((a,b)=>{
+        if(Boolean(a.pinned)!==Boolean(b.pinned))return a.pinned?-1:1;
+        return createdTime(b)-createdTime(a);
+      });
       if(!notes.filter(n=>!n.deleted).length){
         notesGrid.classList.add("hidden");notesGrid.innerHTML="";
         emptyState.classList.remove("hidden");searchEmpty.classList.add("hidden");
@@ -1415,13 +1448,16 @@
       const labels=(note.labels||[]).map(l=>`<span class="label-chip"><i class="fa-solid fa-tag" style="font-size:9px"></i>${escapeHTML(l)}</span>`).join("");
       const collabCount=(note.collaborators||[]).length;
       const isLocked=Boolean(note.locked);
+      const bodyHTML=preview
+        ? `<p class="note-preview ${isLocked?"note-preview-blur":""}" dir="auto">${escapeHTML(preview.slice(0,300))}${preview.length>300?"…":""}</p>`
+        : (isLocked?`<p class="note-preview note-preview-blur">•••••••</p>`:"");
       card.innerHTML=`
         <div class="note-card-top">
-          ${isLocked?'<i class="fa-solid fa-lock note-lock-icon" title="Locked"></i>':""}
+          ${isLocked?'<i class="fa-solid fa-lock note-lock-icon" title="Locked — click to unlock"></i>':""}
           <h3 class="note-title" dir="auto">${escapeHTML(note.title||"Untitled note")}</h3>
           ${note.pinned?'<i class="fa-solid fa-thumbtack note-pin" title="Pinned"></i>':""}
         </div>
-        ${isLocked?'<p class="note-preview note-preview-locked"><i class="fa-solid fa-lock"></i> Locked note — password required</p>':(preview?`<p class="note-preview" dir="auto">${escapeHTML(preview.slice(0,300))}${preview.length>300?"…":""}</p>`:"")}
+        ${bodyHTML}
         ${labels?`<div class="note-labels">${labels}</div>`:""}
         <div class="note-card-bottom">
           <div class="note-byline">
@@ -1447,7 +1483,7 @@
       composerTitle.focus();
     }
     function collapseComposer({reset=true}={}){
-      if(reset){composerTitle.value="";composerBody.innerHTML="";setComposerColor("default");}
+      if(reset){composerTitle.value="";composerBody.innerHTML="";setComposerColor("default");composerPasswordPrompted=false;}
       composerExpanded.classList.add("hidden");
       composerCollapsed.classList.remove("hidden");
       composerPalette.classList.add("hidden");
@@ -1474,7 +1510,7 @@
         });
         toast("Note added.","success");
         collapseComposer({reset:true});
-      }catch(e){console.error(e);toast("Could not create note.","error");}
+      }catch(e){toast("Could not create note.","error");}
       finally{composerSaveBtn.disabled=false;composerSaveBtn.innerHTML=orig;}
     }
 
@@ -1502,7 +1538,6 @@
       activeNoteId=noteId;
       activeNote={...note};
       pendingRemoteNote=null;activeNoteMissingAt=null;
-      remoteBanner.classList.add("hidden");
       editorTitle.value=note.title||"";
       editorBody.innerHTML=sanitizeHTML(note.body||"");
       attachPwdMaskHandlers(editorBody);
@@ -1532,7 +1567,6 @@
       editorModal.classList.remove("open");
       editorModal.setAttribute("aria-hidden","true");
       document.body.classList.remove("modal-open");
-      remoteBanner.classList.add("hidden");
       editorBody.innerHTML="";
       editorTitle.value="";
       editorTitle.style.fontFamily="";
@@ -1575,7 +1609,6 @@
       applyEditorFont();
       activeNote={...note};
       pendingRemoteNote=null;
-      remoteBanner.classList.add("hidden");
       if(hadFocus)editorBody.focus();
     }
     function noteMatchesEditor(note){
@@ -1602,8 +1635,8 @@
       activeNoteMissingAt=null;
       activeNote={...note};
       const focused=document.activeElement===editorTitle||editorBody.contains(document.activeElement);
-      if(noteMatchesEditor(note)){pendingRemoteNote=null;remoteBanner.classList.add("hidden");return;}
-      if(focused){pendingRemoteNote=note;remoteBanner.classList.remove("hidden");}
+      if(noteMatchesEditor(note)){pendingRemoteNote=null;return;}
+      if(focused){pendingRemoteNote=note;} // silent — applied on blur
       else{applyNoteToEditor(note);}
     }
     function maybeApplyPendingOnBlur(){
@@ -1618,7 +1651,6 @@
       },150);
     }
 
-    /* ===== SAVE ===== */
     function scheduleEditorSave(){
       if(!activeNoteId)return;
       lastLocalEditAt=Date.now();
@@ -1631,7 +1663,6 @@
       if(!activeNoteId||!currentUser||isSavingActiveNote)return;
       isSavingActiveNote=true;saveQueued=false;
       setSaveStatus("Saving…");
-      resetPwdMasks();
       try{
         await updateDoc(doc(db,"notes",activeNoteId),{
           title:editorTitle.value.trim(),
@@ -1665,7 +1696,6 @@
       }catch(e){editorPinBtn.classList.toggle("active",!next);toast("Could not update pin.","error");}
     }
 
-    /* ===== DELETE + UNDO ===== */
     async function deleteNoteById(noteId){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
@@ -1704,7 +1734,6 @@
         toast("Note restored.","success");
       }catch(e){toast("Could not restore note.","error");}
     }
-
     async function restoreNote(noteId){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
@@ -1720,14 +1749,9 @@
       if(!note)return;
       if(note.owner!==currentUser?.uid){toast("Only creator can delete.","error");return;}
       if(!confirm("Delete permanently? This cannot be undone."))return;
-      try{
-        await deleteDoc(doc(db,"notes",noteId));
-        toast("Note permanently deleted.","success");
-        renderRecycleList();
-      }catch(e){toast("Could not delete note.","error");}
+      try{await deleteDoc(doc(db,"notes",noteId));toast("Note permanently deleted.","success");renderRecycleList();}
+      catch(e){toast("Could not delete note.","error");}
     }
-
-    /* ===== LOCK ===== */
     async function toggleLockNote(noteId){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
@@ -1745,7 +1769,6 @@
       }catch(e){toast("Could not update lock.","error");}
     }
 
-    /* ===== COLOR PALETTE ===== */
     function setEditorColor(color){currentEditorColor=normalizeColor(color);editorPanel.dataset.color=currentEditorColor;updatePaletteSelection(editorPalette,currentEditorColor);}
     function setComposerColor(color){currentComposerColor=normalizeColor(color);composerExpanded.dataset.color=currentComposerColor;updatePaletteSelection(composerPalette,currentComposerColor);}
     function buildPalette(container){
@@ -1765,17 +1788,13 @@
     }
     function updatePaletteSelection(container,color){container.querySelectorAll(".color-dot").forEach(b=>b.classList.toggle("selected",b.dataset.color===color));}
 
-    /* ===== FORMATTING ===== */
     function execFormat(cmd){
       if(!lastFocusedEditable)return;
       lastFocusedEditable.focus();
-      try{document.execCommand("styleWithCSS",false,false);document.execCommand(cmd,false,null);}
-      catch(e){}
+      try{document.execCommand("styleWithCSS",false,false);document.execCommand(cmd,false,null);}catch(e){}
       updateToolbarStates();
       if(activeNoteId)scheduleEditorSave();
     }
-
-    /* ===== HIGHLIGHT — cross-browser (iOS Safari safe) ===== */
     function getSelectionBgColor(){
       const sel=window.getSelection();
       if(!sel||!sel.rangeCount)return null;
@@ -1794,7 +1813,6 @@
       }
       return null;
     }
-
     function applyHighlightColor(hex){
       if(!lastFocusedEditable)return;
       const editable=lastFocusedEditable;
@@ -1803,7 +1821,6 @@
       if(!sel||!sel.rangeCount||sel.isCollapsed)return;
       const range=sel.getRangeAt(0);
       if(!editable.contains(range.commonAncestorContainer))return;
-      // Manual DOM wrapping — reliable on iOS Safari where hiliteColor silently fails
       try{
         const fragment=range.extractContents();
         const mark=document.createElement("mark");
@@ -1816,17 +1833,15 @@
         sel.addRange(newRange);
         lastHighlightColor=hex;
       }catch(e){
-        console.warn("Highlight wrap failed, trying execCommand:",e);
         try{
           document.execCommand("styleWithCSS",false,true);
           document.execCommand("hiliteColor",false,hex);
           document.execCommand("styleWithCSS",false,false);
-        }catch(e2){console.warn(e2);}
+        }catch(e2){}
       }
       updateToolbarStates();
       if(activeNoteId)scheduleEditorSave();
     }
-
     function hasHighlightInRange(range){
       const editable=lastFocusedEditable;
       if(!editable)return false;
@@ -1837,7 +1852,6 @@
       }
       return false;
     }
-
     function removeHighlightInSelection(){
       if(!lastFocusedEditable)return;
       const editable=lastFocusedEditable;
@@ -1845,7 +1859,6 @@
       const sel=window.getSelection();
       if(!sel||!sel.rangeCount||sel.isCollapsed)return;
       const range=sel.getRangeAt(0);
-      // Walk and unwrap marks in range
       const all=editable.querySelectorAll("mark, span[style*='background-color']");
       all.forEach(el=>{
         if(!range.intersectsNode(el))return;
@@ -1856,7 +1869,6 @@
         while(el.firstChild)parent.insertBefore(el.firstChild,el);
         parent.removeChild(el);
       });
-      // Also try native removal as belt-and-braces
       try{
         document.execCommand("styleWithCSS",false,true);
         document.execCommand("hiliteColor",false,"transparent");
@@ -1865,7 +1877,6 @@
       updateToolbarStates();
       if(activeNoteId)scheduleEditorSave();
     }
-
     function toggleHighlight(){
       if(!lastFocusedEditable)return;
       lastFocusedEditable.focus();
@@ -1875,12 +1886,12 @@
       if(getSelectionBgColor())removeHighlightInSelection();
       else applyHighlightColor(lastHighlightColor);
     }
-
     function updateToolbarStates(){
       if(!lastFocusedEditable)return;
       const scope=lastFocusedEditable===composerBody?composerExpanded:editorPanel;
       scope.querySelectorAll(".format-btn").forEach(btn=>{
         const f=btn.dataset.format;
+        if(!f)return;
         let active=false;
         try{
           if(f==="highlight")active=!!getSelectionBgColor();
@@ -1889,8 +1900,6 @@
         btn.classList.toggle("active",active);
       });
     }
-
-    /* ===== HIGHLIGHT PICKER ===== */
     function buildHighlightPicker(){
       highlightPicker.innerHTML="";
       HIGHLIGHT_COLORS.forEach(color=>{
@@ -1918,7 +1927,6 @@
     }
     function closeHighlightPicker(){highlightPicker.classList.add("hidden");}
 
-    /* ===== CONTEXT MENU ===== */
     function openNoteMenu(noteId,anchorEl){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
@@ -1961,9 +1969,8 @@
     async function changeNoteColor(noteId,color){
       const note=notes.find(n=>n.id===noteId);
       if(!note||!currentUser)return;
-      try{
-        await updateDoc(doc(db,"notes",noteId),{color:normalizeColor(color),updatedAt:serverTimestamp(),updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()});
-      }catch(e){toast("Could not change color.","error");}
+      try{await updateDoc(doc(db,"notes",noteId),{color:normalizeColor(color),updatedAt:serverTimestamp(),updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()});}
+      catch(e){toast("Could not change color.","error");}
     }
     async function makeCopyOfNote(noteId){
       const note=notes.find(n=>n.id===noteId);
@@ -1982,7 +1989,6 @@
       }catch(e){toast("Could not copy note.","error");}
     }
 
-    /* ===== LABELS ===== */
     function collectAllLabels(){
       const map=new Map();
       notes.forEach(n=>{if(n.deleted)return;(n.labels||[]).forEach(l=>{map.set(l,(map.get(l)||0)+1);});});
@@ -2035,13 +2041,9 @@
       }catch(e){toast("Could not remove label.","error");}
     }
 
-    /* ===== DRAWER ===== */
     function renderDrawerLabels(){
       const map=collectAllLabels();
-      if(!map.size){
-        drawerLabels.innerHTML='<div class="drawer-empty">No labels yet.</div>';
-        return;
-      }
+      if(!map.size){drawerLabels.innerHTML='<div class="drawer-empty">No labels yet.</div>';return;}
       drawerLabels.innerHTML=Array.from(map.entries()).sort((a,b)=>a[0].localeCompare(b[0])).map(([label,count])=>
         `<button class="drawer-label-chip" type="button" data-label="${escapeHTML(label)}"><i class="fa-solid fa-tag"></i> ${escapeHTML(label)}<span class="label-count">${count}</span></button>`
       ).join("");
@@ -2054,15 +2056,11 @@
     function setLabelFilter(label){activeLabelFilter=label||null;specialFilter=null;renderNotes();window.scrollTo({top:0,behavior:"smooth"});}
     function clearAllFilters(){activeLabelFilter=null;specialFilter=null;renderNotes();}
 
-    /* ===== RECYCLE ===== */
     function openRecycleModal(){recycleModal.classList.add("open");recycleModal.setAttribute("aria-hidden","false");renderRecycleList();}
     function closeRecycleModal(){recycleModal.classList.remove("open");recycleModal.setAttribute("aria-hidden","true");}
     function renderRecycleList(){
       const deleted=notes.filter(n=>n.deleted).sort((a,b)=>timeMs(b.deletedAt)-timeMs(a.deletedAt));
-      if(!deleted.length){
-        recycleList.innerHTML='<div class="recycle-empty"><i class="fa-solid fa-trash-can" style="font-size:28px;opacity:.4;display:block;margin-bottom:10px"></i>Recycle bin is empty.</div>';
-        return;
-      }
+      if(!deleted.length){recycleList.innerHTML='<div class="recycle-empty"><i class="fa-solid fa-trash-can" style="font-size:28px;opacity:.4;display:block;margin-bottom:10px"></i>Recycle bin is empty.</div>';return;}
       recycleList.innerHTML=deleted.map(n=>{
         const age=daysAgo(n.deletedAt);
         const remaining=Math.max(0,RECYCLE_DAYS-age);
@@ -2082,7 +2080,6 @@
       recycleList.querySelectorAll("[data-permanent]").forEach(btn=>btn.addEventListener("click",()=>permanentDelete(btn.dataset.permanent)));
     }
 
-    /* ===== COLLAB ===== */
     function openCollabModal(noteId){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
@@ -2131,7 +2128,6 @@
       }catch(e){toast("Could not update collaborators.","error");}
     }
 
-    /* ===== MODALS ===== */
     function openSettingsModal(){settingsModal.classList.add("open");settingsModal.setAttribute("aria-hidden","false");updateCurrentFontUI();updatePasswordUI();passwordError.textContent="";settingsPasswordInput.value="";settingsPasswordConfirm.value="";}
     function closeSettingsModal(){settingsModal.classList.remove("open");settingsModal.setAttribute("aria-hidden","true");}
     function openShortcutsModal(){
@@ -2153,7 +2149,7 @@
       appLoader.classList.remove("hidden");
       if(!isIOS){
         try{await getRedirectResult(auth);try{sessionStorage.removeItem("noted-redirect-attempt");}catch{}}
-        catch(e){console.error(e);if(e&&e.code)authError.textContent=authErrorMessage(e.code);try{sessionStorage.removeItem("noted-redirect-attempt");}catch{}}
+        catch(e){if(e&&e.code)authError.textContent=authErrorMessage(e.code);try{sessionStorage.removeItem("noted-redirect-attempt");}catch{}}
       }
       onAuthStateChanged(auth,user=>{if(user)showApp(user);else showAuthScreen();});
     })();
@@ -2223,23 +2219,37 @@
     composerCloseBtn.addEventListener("click",()=>collapseComposer({reset:true}));
     composerSaveBtn.addEventListener("click",saveComposer);
     composerBody.addEventListener("focusin",()=>{lastFocusedEditable=composerBody;updateToolbarStates();});
+    composerBody.addEventListener("input",()=>{
+      clearTimeout(composerPasswordTimer);
+      composerPasswordTimer=setTimeout(()=>{
+        if(composerPasswordPrompted)return;
+        if(composerBody.querySelector(".pwd-mask"))return;
+        const text=composerBody.textContent||"";
+        if(PASSWORD_PATTERN.test(text)){
+          composerPasswordPrompted=true;
+          if(confirm("We noticed a password in your note. Hide it from random viewers?\n\nTip: you can also select text and press Ctrl+Q to hide anything.")){
+            if(wrapPasswordInEditable(composerBody)) toast("Password hidden. Click the eye to reveal.","success");
+          }
+        }
+      },1500);
+    });
+    composerHideBtn.addEventListener("mousedown",e=>e.preventDefault());
+    composerHideBtn.addEventListener("click",()=>{lastFocusedEditable=composerBody;composerBody.focus();wrapSelectionAsPassword();});
 
     editorBody.addEventListener("focusin",()=>{lastFocusedEditable=editorBody;updateToolbarStates();});
     editorTitle.addEventListener("input",scheduleEditorSave);
     editorBody.addEventListener("input",()=>{
       scheduleEditorSave();
-      // Password detection (debounced)
       clearTimeout(passwordCheckTimer);
       passwordCheckTimer=setTimeout(()=>{
         if(!activeNoteId)return;
         if(passwordPromptShownFor.has(activeNoteId))return;
         if(editorBody.querySelector(".pwd-mask"))return;
         const text=editorBody.textContent||"";
-        if(/password\s*[:：]\s*\S{3,}/i.test(text)){
+        if(PASSWORD_PATTERN.test(text)){
           passwordPromptShownFor.add(activeNoteId);
-          if(confirm("We noticed a password in your note. Hide it from random viewers?\n\nClick the eye icon to reveal it while editing.")){
-            wrapPasswordInEditor();
-            scheduleEditorSave();
+          if(confirm("We noticed a password in your note. Hide it from random viewers?\n\nTip: you can also select text and press Ctrl+Q to hide anything.")){
+            if(wrapPasswordInEditable(editorBody)){scheduleEditorSave();toast("Password hidden. Click the eye to reveal.","success");}
           }
         }
       },1500);
@@ -2249,9 +2259,10 @@
     editorDeleteBtn.addEventListener("click",()=>{if(activeNoteId)deleteNoteById(activeNoteId);});
     editorCloseBtn.addEventListener("click",()=>closeEditor());
     editorDoneBtn.addEventListener("click",()=>closeEditor());
-    reloadRemoteBtn.addEventListener("click",()=>{if(pendingRemoteNote){applyNoteToEditor(pendingRemoteNote);toast("Reloaded collaborator changes.","info");}});
     editorBody.addEventListener("blur",maybeApplyPendingOnBlur);
     editorTitle.addEventListener("blur",maybeApplyPendingOnBlur);
+    editorHideBtn.addEventListener("mousedown",e=>e.preventDefault());
+    editorHideBtn.addEventListener("click",()=>{lastFocusedEditable=editorBody;editorBody.focus();wrapSelectionAsPassword();});
 
     collabCloseBtn.addEventListener("click",closeCollabModal);
     collabModal.addEventListener("click",e=>{if(e.target===collabModal)closeCollabModal();});
@@ -2273,7 +2284,7 @@
         btn.addEventListener("touchstart",()=>{lpTimer=setTimeout(()=>{lpTimer=null;openHighlightPicker(btn);},550);},{passive:true});
         btn.addEventListener("touchend",()=>{if(lpTimer){clearTimeout(lpTimer);lpTimer=null;}});
         btn.addEventListener("touchmove",()=>{if(lpTimer){clearTimeout(lpTimer);lpTimer=null;}});
-      }else{
+      }else if(btn.dataset.format){
         btn.addEventListener("click",()=>{execFormat(btn.dataset.format);});
       }
     });
@@ -2289,6 +2300,14 @@
         if(lastFocusedEditable&&lastFocusedEditable.contains(document.activeElement)){
           e.preventDefault();
           execFormat(key==="b"?"bold":key==="i"?"italic":"underline");
+          return;
+        }
+      }
+      // Ctrl+Q = hide selected text as password
+      if(e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey&&(e.key==="q"||e.key==="Q")){
+        if(lastFocusedEditable&&lastFocusedEditable.contains(document.activeElement)){
+          e.preventDefault();
+          wrapSelectionAsPassword();
           return;
         }
       }
@@ -2317,7 +2336,6 @@
       if(document.hidden&&activeNoteId){clearTimeout(saveTimer);saveTimer=null;saveActiveNote();}
     });
 
-    /* Periodic refresh: timestamps + collab status (uses 2-min edit window) */
     setInterval(()=>{
       if(!currentUser)return;
       notesGrid.querySelectorAll(".note-card").forEach(card=>{
