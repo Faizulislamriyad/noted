@@ -259,7 +259,6 @@
     .collab-list{display:flex;flex-direction:column;gap:4px;margin-top:8px}
     .collab-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:.15s}
     .collab-row:hover{background:var(--surface-2)}
-    .collab-row.disabled{cursor:default;opacity:.7}
     .collab-info{flex:1;min-width:0}
     .collab-info strong{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .collab-info small{display:block;color:var(--text-muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -595,6 +594,15 @@
     const db = getFirestore(firebaseApp);
     try { getAnalytics(firebaseApp); } catch (e) { console.warn(e); }
 
+    /* ===== iOS DETECTION ===== */
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    /* ===== PERSISTENCE ON LOAD (not in click handler) ===== */
+    setPersistence(auth, browserLocalPersistence).catch((e) => {
+      console.warn("Persistence setup failed:", e);
+    });
+
     /* ===== DOM ===== */
     const $ = (id) => document.getElementById(id);
     const appLoader=$("app-loader"), authScreen=$("auth-screen"), appRoot=$("app");
@@ -693,7 +701,7 @@
     function authErrorMessage(code){
       switch(code){
         case"auth/popup-closed-by-user":return"Sign-in cancelled.";
-        case"auth/popup-blocked":return"Popup blocked. Please allow popups and try again.";
+        case"auth/popup-blocked":return"Popup blocked. Please allow popups for this site and try again.";
         case"auth/network-request-failed":return"Network error. Check your connection.";
         case"auth/unauthorized-domain":return"Add this domain in Firebase Console → Authentication → Settings → Authorized domains.";
         case"auth/operation-not-allowed":return"Enable Google sign-in in Firebase Console → Authentication → Sign-in method.";
@@ -709,7 +717,7 @@
     function applyTheme(theme){const v=theme==="dark"?"dark":"light";document.documentElement.dataset.theme=v;storeTheme(v);themeToggle.innerHTML=v==="dark"?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';themeToggle.title=v==="dark"?"Switch to light mode":"Switch to dark mode";}
     function initTheme(){const stored=getStoredTheme();const prefersDark=matchMedia("(prefers-color-scheme: dark)").matches;applyTheme(stored||(prefersDark?"dark":"light"));}
 
-    /* ===== SIGN IN — popup first, redirect fallback only ===== */
+    /* ===== SIGN IN — popup only on iOS; popup-first elsewhere ===== */
     async function signInWithGoogle(){
       if(signInInProgress)return;
       signInInProgress=true;
@@ -717,27 +725,53 @@
       googleSigninBtn.disabled=true;
       const orig=googleSigninBtn.innerHTML;
       googleSigninBtn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i><span>Signing in…</span>';
+
+      const provider=new GoogleAuthProvider();
+      provider.setCustomParameters({prompt:"select_account"});
+
       try{
-        await setPersistence(auth,browserLocalPersistence);
-        const provider=new GoogleAuthProvider();
-        provider.setCustomParameters({prompt:"select_account"});
-        try{
-          await signInWithPopup(auth,provider);
-          signInInProgress=false;
-          // onAuthStateChanged will handle showing the app
-        }catch(popupErr){
-          console.warn("Popup auth failed:",popupErr.code);
-          const fallbackCodes=["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/cancelled-popup-request"];
-          if(fallbackCodes.includes(popupErr.code)){
-            try{ sessionStorage.setItem("noted-redirect-attempt","1"); }catch{}
-            await signInWithRedirect(auth,provider);
-            return; // Page will navigate; no further code runs
+        // No await before this on iOS — Safari requires the popup to be
+        // opened synchronously inside the user gesture.
+        await signInWithPopup(auth,provider);
+        // onAuthStateChanged will handle showing the app.
+      }catch(popupErr){
+        console.warn("Popup auth failed:",popupErr.code);
+
+        if(isIOS){
+          // Never fall back to redirect on iOS — ITP breaks it and causes loops.
+          let msg="Sign-in failed. ";
+          if(popupErr.code==="auth/popup-blocked"){
+            msg+="Please allow popups for this site in Safari settings (Settings → Safari → Block Pop-ups → Off), then try again.";
+          }else if(popupErr.code==="auth/popup-closed-by-user"){
+            msg+="The sign-in window was closed. Please try again.";
+          }else if(popupErr.code==="auth/network-request-failed"){
+            msg+="Network error. Check your connection and try again.";
+          }else if(popupErr.code==="auth/unauthorized-domain"){
+            msg+="This domain is not authorized in Firebase. Add it under Authentication → Settings → Authorized domains.";
+          }else{
+            msg+="Please try again. If it keeps failing, allow popups for this site in Safari settings.";
           }
-          throw popupErr;
+          authError.textContent=msg;
+          googleSigninBtn.disabled=false;
+          googleSigninBtn.innerHTML=orig;
+          signInInProgress=false;
+          return;
         }
-      }catch(e){
-        console.error("Sign-in failed:",e);
-        authError.textContent=authErrorMessage(e.code);
+
+        // Non-iOS: redirect fallback only when the popup was truly blocked.
+        const fallbackCodes=["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/cancelled-popup-request"];
+        if(fallbackCodes.includes(popupErr.code)){
+          try{
+            await signInWithRedirect(auth,provider);
+            return;
+          }catch(redirectErr){
+            console.error("Redirect fallback failed:",redirectErr);
+            authError.textContent=authErrorMessage(redirectErr.code);
+          }
+        }else{
+          authError.textContent=authErrorMessage(popupErr.code);
+        }
+
         googleSigninBtn.disabled=false;
         googleSigninBtn.innerHTML=orig;
         signInInProgress=false;
@@ -799,6 +833,9 @@
       emptyState.classList.add("hidden");
       searchEmpty.classList.add("hidden");
       authError.textContent="";
+      googleSigninBtn.disabled=false;
+      googleSigninBtn.innerHTML='<i class="fa-brands fa-google"></i><span>Continue with Google</span>';
+      signInInProgress=false;
     }
 
     /* ===== NOTES SUBSCRIPTION ===== */
@@ -811,9 +848,7 @@
       searchEmpty.classList.add("hidden");
       const q=query(collection(db,"notes"),where("visibleTo","array-contains",currentUser.uid),limit(500));
       unsubscribeNotes=onSnapshot(q,snap=>{
-        const previousOrder=notes.map(n=>n.id).join("|");
         notes=snap.docs.map(d=>({id:d.id,...d.data()}));
-        const newOrder=notes.map(n=>n.id).join("|");
         hasLoadedNotes=true;
         notesLoading.classList.add("hidden");
         updateLiveStatus(true);
@@ -934,11 +969,9 @@
       const desiredIds=filtered.map(n=>n.id);
       const existingCards=Array.from(notesGrid.querySelectorAll(".note-card"));
       const existingIds=existingCards.map(c=>c.dataset.id);
-
       const orderChanged=desiredIds.length!==existingIds.length||desiredIds.some((id,i)=>id!==existingIds[i]);
 
       if(orderChanged){
-        // Reorder/replace by re-appending existing cards in new order
         const cardMap=new Map(existingCards.map(c=>[c.dataset.id,c]));
         const fragment=document.createDocumentFragment();
         filtered.forEach(note=>{
@@ -950,7 +983,6 @@
         notesGrid.innerHTML="";
         notesGrid.appendChild(fragment);
       }else{
-        // Same order — update in place only
         filtered.forEach((note,i)=>{
           const card=existingCards[i];
           if(card)updateNoteCardInPlace(card,note);
@@ -972,7 +1004,6 @@
     function updateNoteCardInPlace(card,note){
       const fp=noteFingerprint(note);
       if(card.dataset.fp===fp){
-        // Only time might have changed
         const timeEl=card.querySelector(".note-time");
         if(timeEl){
           const t=timeAgo(note.updatedAt||note.clientUpdatedAt);
@@ -980,7 +1011,6 @@
         }
         return;
       }
-      // Rebuild this card's content in place
       const newCard=createNoteCard(note);
       card.replaceWith(newCard);
     }
@@ -1150,7 +1180,6 @@
     }
 
     function applyNoteToEditor(note){
-      // Save current selection/caret if possible
       const hadFocus=editorBody.contains(document.activeElement)||document.activeElement===editorTitle;
       editorTitle.value=note.title||"";
       editorBody.innerHTML=sanitizeHTML(note.body||"");
@@ -1161,7 +1190,7 @@
       activeNote={...note};
       pendingRemoteNote=null;
       remoteBanner.classList.add("hidden");
-      if(hadFocus){editorBody.focus();}
+      if(hadFocus)editorBody.focus();
     }
 
     function noteMatchesEditor(note){
@@ -1169,14 +1198,11 @@
       const et=editorTitle.value.trim();
       const nb=stripHTML(note.body||"").replace(/\s+/g," ").trim();
       const eb=(editorBody.textContent||"").replace(/\s+/g," ").trim();
-      return nt===et
-        && nb===eb
+      return nt===et && nb===eb
         && normalizeColor(note.color)===currentEditorColor
         && Boolean(note.pinned)===editorPinBtn.classList.contains("active");
     }
 
-    // Called whenever the notes collection updates. Never closes the editor
-    // unless the note is confirmed deleted (missing for > 3 seconds).
     function handleActiveNoteRemoteUpdate(){
       if(!activeNoteId)return;
       const note=notes.find(n=>n.id===activeNoteId);
@@ -1186,10 +1212,7 @@
           setTimeout(()=>{
             if(!activeNoteId)return;
             const still=notes.find(n=>n.id===activeNoteId);
-            if(!still){
-              toast("This note was deleted.","info");
-              closeEditor({save:false});
-            }
+            if(!still){toast("This note was deleted.","info");closeEditor({save:false});}
             activeNoteMissingAt=null;
           },3000);
         }
@@ -1199,23 +1222,11 @@
       activeNote={...note};
 
       const focused=document.activeElement===editorTitle||editorBody.contains(document.activeElement);
-
-      if(noteMatchesEditor(note)){
-        pendingRemoteNote=null;
-        remoteBanner.classList.add("hidden");
-        return;
-      }
-      if(focused){
-        // Show banner, but NEVER touch the content while the user is editing
-        pendingRemoteNote=note;
-        remoteBanner.classList.remove("hidden");
-      }else{
-        // Not focused: apply silently — this is what makes collaboration feel smooth
-        applyNoteToEditor(note);
-      }
+      if(noteMatchesEditor(note)){pendingRemoteNote=null;remoteBanner.classList.add("hidden");return;}
+      if(focused){pendingRemoteNote=note;remoteBanner.classList.remove("hidden");}
+      else{applyNoteToEditor(note);}
     }
 
-    // On blur, if there's a pending remote and the user hasn't typed recently, apply it
     function maybeApplyPendingOnBlur(){
       if(!pendingRemoteNote||!activeNoteId)return;
       if(!editorModal.classList.contains("open"))return;
@@ -1327,7 +1338,7 @@
     }
     function updatePaletteSelection(container,color){container.querySelectorAll(".color-dot").forEach(b=>b.classList.toggle("selected",b.dataset.color===color));}
 
-    /* ===== FORMATTING (bold/italic/underline) ===== */
+    /* ===== FORMATTING ===== */
     function execFormat(cmd){
       if(!lastFocusedEditable)return;
       lastFocusedEditable.focus();
@@ -1337,7 +1348,7 @@
       if(activeNoteId)scheduleEditorSave();
     }
 
-    /* ===== HIGHLIGHT — one-click toggle with yellow default ===== */
+    /* ===== HIGHLIGHT — one-click toggle ===== */
     function getSelectionBgColor(){
       const sel=window.getSelection();
       if(!sel||!sel.rangeCount)return null;
@@ -1378,18 +1389,15 @@
       if(!sel||!sel.rangeCount||sel.isCollapsed)return;
       const range=sel.getRangeAt(0);
 
-      // Try native first
       let cleared=false;
       try{
         document.execCommand("styleWithCSS",false,true);
         cleared=document.execCommand("hiliteColor",false,"transparent");
         document.execCommand("styleWithCSS",false,false);
-      }catch(e){/* fall through */}
+      }catch(e){}
 
-      // Verify by walking the DOM
       const stillHighlighted=hasHighlightInRange(range);
       if(stillHighlighted||!cleared){
-        // Manual unwrap
         const editable=lastFocusedEditable;
         const all=editable.querySelectorAll("mark, span[style*='background-color']");
         all.forEach(el=>{
@@ -1419,19 +1427,14 @@
       return false;
     }
 
-    // Main toggle — click icon: yellow on/off. Right-click/long-press: picker.
     function toggleHighlight(){
       if(!lastFocusedEditable)return;
       lastFocusedEditable.focus();
       const sel=window.getSelection();
       if(!sel||!sel.rangeCount||sel.isCollapsed)return;
       if(!lastFocusedEditable.contains(sel.getRangeAt(0).commonAncestorContainer))return;
-
-      if(getSelectionBgColor()){
-        removeHighlightInSelection();
-      }else{
-        applyHighlightColor(lastHighlightColor);
-      }
+      if(getSelectionBgColor())removeHighlightInSelection();
+      else applyHighlightColor(lastHighlightColor);
     }
 
     function updateToolbarStates(){
@@ -1448,7 +1451,7 @@
       });
     }
 
-    /* ===== HIGHLIGHT PICKER (via right-click / long-press) ===== */
+    /* ===== HIGHLIGHT PICKER ===== */
     function buildHighlightPicker(){
       highlightPicker.innerHTML="";
       HIGHLIGHT_COLORS.forEach(color=>{
@@ -1458,10 +1461,7 @@
         btn.style.background=color;
         btn.title=color;
         btn.addEventListener("mousedown",e=>e.preventDefault());
-        btn.addEventListener("click",()=>{
-          applyHighlightColor(color);
-          closeHighlightPicker();
-        });
+        btn.addEventListener("click",()=>{applyHighlightColor(color);closeHighlightPicker();});
         highlightPicker.appendChild(btn);
       });
     }
@@ -1483,7 +1483,7 @@
     }
     function closeHighlightPicker(){highlightPicker.classList.add("hidden");}
 
-    /* ===== CONTEXT MENU (3-dot) ===== */
+    /* ===== CONTEXT MENU ===== */
     function openNoteMenu(noteId,anchorEl){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
@@ -1658,17 +1658,18 @@
     setComposerColor("default");
     setEditorColor("default");
 
-    /* AUTH: resolve redirect BEFORE subscribing to auth state (prevents loops) */
+    /* AUTH INIT — redirect result only on non-iOS */
     (async function initAuth(){
       appLoader.classList.remove("hidden");
-      try{
-        await getRedirectResult(auth);
-        try{ sessionStorage.removeItem("noted-redirect-attempt"); }catch{}
-      }catch(e){
-        console.error("Redirect result error:",e);
-        // Don't fail silently — show a small message but still let auth state settle
-        if(e&&e.code)authError.textContent=authErrorMessage(e.code);
-        try{ sessionStorage.removeItem("noted-redirect-attempt"); }catch{}
+      if(!isIOS){
+        try{
+          await getRedirectResult(auth);
+          try{sessionStorage.removeItem("noted-redirect-attempt");}catch{}
+        }catch(e){
+          console.error("Redirect result error:",e);
+          if(e&&e.code)authError.textContent=authErrorMessage(e.code);
+          try{sessionStorage.removeItem("noted-redirect-attempt");}catch{}
+        }
       }
       onAuthStateChanged(auth,(user)=>{
         if(user)showApp(user);
@@ -1679,7 +1680,6 @@
     googleSigninBtn.addEventListener("click",signInWithGoogle);
     signoutBtn.addEventListener("click",handleSignOut);
 
-    /* THEME + SETTINGS + USER MENU */
     themeToggle.addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
     settingsBtn.addEventListener("click",openSettingsModal);
     settingsCloseBtn.addEventListener("click",closeSettingsModal);
@@ -1700,12 +1700,10 @@
       if(!highlightPicker.contains(e.target)&&!e.target.closest(".hl-trigger"))closeHighlightPicker();
     });
 
-    /* SEARCH */
     searchInput.addEventListener("input",renderNotes);
     clearSearchBtn.addEventListener("click",()=>{searchInput.value="";renderNotes();searchInput.focus();});
     emptyCreateBtn.addEventListener("click",()=>{expandComposer();window.scrollTo({top:0,behavior:"smooth"});});
 
-    /* GRID */
     notesGrid.addEventListener("click",e=>{
       const menuBtn=e.target.closest("[data-menu-btn]");
       if(menuBtn){e.stopPropagation();const card=menuBtn.closest(".note-card");openNoteMenu(card.dataset.id,menuBtn);return;}
@@ -1721,7 +1719,6 @@
       openEditor(card.dataset.id);
     });
 
-    /* COMPOSER */
     composerCollapsed.addEventListener("click",expandComposer);
     composerCollapsed.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();expandComposer();}});
     composerTitle.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();composerBody.focus();}});
@@ -1731,7 +1728,6 @@
     composerBody.addEventListener("focusin",()=>{lastFocusedEditable=composerBody;updateToolbarStates();});
     composerBody.addEventListener("blur",()=>setTimeout(()=>{if(document.activeElement!==composerTitle&&!composerBody.contains(document.activeElement))updateToolbarStates();},50));
 
-    /* EDITOR */
     editorBody.addEventListener("focusin",()=>{lastFocusedEditable=editorBody;updateToolbarStates();});
     editorTitle.addEventListener("input",scheduleEditorSave);
     editorBody.addEventListener("input",scheduleEditorSave);
@@ -1740,15 +1736,12 @@
     editorDeleteBtn.addEventListener("click",()=>{if(activeNoteId)deleteNoteById(activeNoteId);});
     editorCloseBtn.addEventListener("click",()=>closeEditor());
     editorDoneBtn.addEventListener("click",()=>closeEditor());
-    // Do NOT close editor on overlay click — protects against accidental closes while typing
     reloadRemoteBtn.addEventListener("click",()=>{
       if(pendingRemoteNote){applyNoteToEditor(pendingRemoteNote);toast("Reloaded collaborator changes.","info");}
     });
-    // Apply pending remote on blur (when user has paused)
     editorBody.addEventListener("blur",maybeApplyPendingOnBlur);
     editorTitle.addEventListener("blur",maybeApplyPendingOnBlur);
 
-    /* MODALS */
     collabCloseBtn.addEventListener("click",closeCollabModal);
     collabModal.addEventListener("click",e=>{if(e.target===collabModal)closeCollabModal();});
     labelCloseBtn.addEventListener("click",closeLabelModal);
@@ -1758,12 +1751,10 @@
       if(e.key==="Enter"){e.preventDefault();if(labelNoteId)addLabelToNote(labelNoteId,labelInput.value).then(()=>{labelInput.value="";labelInput.focus();});}
     });
 
-    /* FORMAT BUTTONS */
     document.querySelectorAll(".format-btn").forEach(btn=>{
       btn.addEventListener("mousedown",e=>e.preventDefault());
       const isHighlight=btn.dataset.format==="highlight";
       if(isHighlight){
-        // Click toggles yellow default; right-click / long-press shows picker
         btn.addEventListener("click",()=>{toggleHighlight();});
         btn.addEventListener("contextmenu",e=>{e.preventDefault();openHighlightPicker(btn);});
         let lpTimer=null;
@@ -1775,16 +1766,13 @@
       }
     });
 
-    /* SELECTION CHANGE */
     document.addEventListener("selectionchange",()=>{
       if(lastFocusedEditable&&lastFocusedEditable.contains(document.activeElement))updateToolbarStates();
     });
 
-    /* GLOBAL SHORTCUTS */
     document.addEventListener("keydown",e=>{
       const mod=e.ctrlKey||e.metaKey;
       const key=e.key.toLowerCase();
-
       if(mod&&!e.shiftKey&&!e.altKey&&["b","i","u"].includes(key)){
         if(lastFocusedEditable&&lastFocusedEditable.contains(document.activeElement)){
           e.preventDefault();
@@ -1792,14 +1780,11 @@
           return;
         }
       }
-
       if(mod&&key==="enter"){
         if(editorModal.classList.contains("open")){e.preventDefault();saveActiveNote();return;}
         if(!composerExpanded.classList.contains("hidden")){e.preventDefault();saveComposer();return;}
       }
-
       if(mod&&key==="k"){e.preventDefault();searchInput.focus();return;}
-
       if(key==="escape"){
         if(!highlightPicker.classList.contains("hidden")){closeHighlightPicker();return;}
         if(!noteContextMenu.classList.contains("hidden")){closeNoteMenu();return;}
@@ -1812,12 +1797,10 @@
       }
     });
 
-    /* SAVE ON HIDE */
     document.addEventListener("visibilitychange",()=>{
       if(document.hidden&&activeNoteId){clearTimeout(saveTimer);saveTimer=null;saveActiveNote();}
     });
 
-    /* SMOOTH 2-SECOND REFRESH: only update time elements that changed, never touch content */
     setInterval(()=>{
       if(!currentUser)return;
       notesGrid.querySelectorAll(".note-card").forEach(card=>{
@@ -1830,7 +1813,6 @@
       });
     },2000);
 
-    /* ONLINE / OFFLINE */
     window.addEventListener("online",()=>updateLiveStatus(true));
     window.addEventListener("offline",()=>updateLiveStatus(false));
   </script>
