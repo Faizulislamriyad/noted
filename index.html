@@ -44,7 +44,6 @@
     ::selection{background:rgba(26,115,232,.22)}
     .hidden{display:none!important}
 
-    /* Kill focus outline on editor fields */
     #editor-title,#editor-body,#composer-title,#composer-body{outline:none!important;box-shadow:none!important;border:0!important}
 
     .app-loader{position:fixed;inset:0;z-index:500;display:grid;place-items:center;background:var(--bg)}
@@ -69,7 +68,6 @@
     .auth-note{display:flex;align-items:flex-start;gap:7px;margin:18px 0 0;color:var(--text-muted);font-size:11.5px;line-height:1.5;text-align:left}
     .auth-note i{margin-top:2px;color:var(--success)}
 
-    /* ===== HEADER ===== */
     .app-header{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);background:var(--header-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
     .header-inner{width:100%;max-width:1440px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:10px}
     .header-left{display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -114,7 +112,6 @@
     .menu-item:hover{background:var(--surface-2)}
     .menu-item i{width:18px;text-align:center;color:var(--text-muted)}
 
-    /* ===== DRAWER ===== */
     .drawer-overlay{position:fixed;inset:0;z-index:199;background:var(--backdrop);opacity:0;visibility:hidden;transition:.22s}
     .drawer-overlay.open{opacity:1;visibility:visible}
     .drawer{position:fixed;top:0;left:0;bottom:0;z-index:200;width:300px;max-width:86vw;background:var(--surface);box-shadow:var(--shadow-lg);transform:translateX(-105%);transition:transform .25s ease;display:flex;flex-direction:column;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
@@ -142,7 +139,6 @@
     .main{width:100%;max-width:1440px;margin:0 auto;padding:24px 22px 100px}
     .notes-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:48px 16px;color:var(--text-muted);font-size:14px;font-weight:600}
 
-    /* ===== COMPOSER ===== */
     .composer{width:100%;max-width:640px;margin:0 auto 28px}
     .composer-collapsed{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border:1px solid var(--border);border-radius:16px;background:var(--surface);box-shadow:var(--shadow-sm);cursor:text;transition:.15s}
     .composer-collapsed:hover{box-shadow:var(--shadow-md)}
@@ -168,7 +164,6 @@
     .text-btn:hover{background:var(--surface-2);color:var(--text)}
     .composer-palette-wrap{padding:10px 14px 12px;border-top:1px solid var(--sep)}
 
-    /* ===== NOTE COLORS ===== */
     [data-color="default"]{--note-bg:var(--surface)}
     [data-color="red"]{--note-bg:#fce8e6}
     [data-color="orange"]{--note-bg:#feefc3}
@@ -207,7 +202,6 @@
     .color-dot[data-color="pink"]{background:#fdcfe8}
     .color-dot[data-color="gray"]{background:#e6e6e6}
 
-    /* ===== NOTES GRID ===== */
     .notes-grid{columns:1;column-gap:16px}
     @media(min-width:600px){.notes-grid{columns:2}}
     @media(min-width:960px){.notes-grid{columns:3}}
@@ -231,7 +225,6 @@
     .note-card:hover .card-menu-btn,.note-card:focus-within .card-menu-btn{opacity:1}
     @media(hover:none){.card-menu-btn{opacity:1}}
 
-    /* ===== EMPTY STATES ===== */
     .empty-state{max-width:460px;margin:52px auto;text-align:center;padding:20px}
     .empty-state .empty-icon{width:74px;height:74px;display:grid;place-items:center;margin:0 auto 18px;border-radius:22px;background:var(--surface-2);color:var(--text-muted);font-size:30px}
     .empty-state h2{margin:0 0 8px;font-size:21px;letter-spacing:-.02em}
@@ -239,7 +232,6 @@
     .secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:14px;font-weight:700;cursor:pointer}
     .secondary-btn:hover{background:var(--surface-2)}
 
-    /* ===== MODALS ===== */
     .modal-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--backdrop);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:.2s}
     .modal-overlay.open{opacity:1;visibility:visible}
     .modal-panel{width:100%;max-height:90vh;max-height:90dvh;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--border);border-radius:22px;background:var(--surface);box-shadow:var(--shadow-lg);transform:translateY(14px) scale(.985);transition:transform .2s}
@@ -249,7 +241,6 @@
     .modal-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 20px}
     .modal-sub{color:var(--text-muted);font-size:12.5px;line-height:1.5;margin:0 0 12px}
 
-    /* ===== EDITOR ===== */
     .editor-panel{max-width:720px}
     .editor-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;padding:10px 14px;background:var(--note-bg,var(--surface));position:relative}
     .editor-toolbar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--sep)}
@@ -272,23 +263,20 @@
     .save-status{min-width:74px;color:var(--text-muted);font-size:11px;font-weight:700;text-align:right}
     .save-status.error{color:var(--danger)}
 
-    /* ===== HIGHLIGHTS ===== */
     .editor-body mark,
     .composer-body mark,
     .editor-body span[style*="background-color"],
     .composer-body span[style*="background-color"]{color:#1f2328!important;padding:0 2px;border-radius:3px}
 
-    /* ===== PASSWORD MASK ===== */
-    .pwd-mask{display:inline-flex;align-items:center;gap:5px;padding:1px 7px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;user-select:none;vertical-align:baseline;line-height:1.5;transition:.15s}
+    .pwd-mask{display:inline-flex;align-items:center;gap:5px;padding:1px 7px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;vertical-align:baseline;line-height:1.5;transition:.15s}
     .pwd-mask:hover{background:rgba(26,115,232,.2)}
-    .pwd-mask .pwd-display{white-space:nowrap}
-    .pwd-mask .pwd-eye{font-size:10px}
-    .pwd-mask .pwd-copy{font-size:10px;display:none;margin-left:1px}
+    .pwd-mask .pwd-display{white-space:nowrap;user-select:text;cursor:text}
+    .pwd-mask .pwd-toggle{font-size:10px;padding:2px;cursor:pointer;user-select:none;pointer-events:none}
+    .pwd-mask .pwd-copy{font-size:10px;display:none;padding:2px;cursor:pointer;user-select:none}
     .pwd-mask[data-visible="true"]{background:rgba(24,128,56,.13);color:var(--success)}
     .pwd-mask[data-visible="true"]:hover{background:rgba(24,128,56,.2)}
     .pwd-mask[data-visible="true"] .pwd-copy{display:inline-block}
 
-    /* ===== CONTEXT MENU ===== */
     .context-menu{position:fixed;z-index:210;width:230px;padding:6px;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-lg);animation:menuIn .12s ease both}
     .context-colors{display:flex;flex-wrap:wrap;gap:6px;padding:6px 4px 10px;border-bottom:1px solid var(--sep);margin-bottom:4px}
     .context-colors .color-dot{width:24px;height:24px}
@@ -300,13 +288,11 @@
     .context-item.active{color:var(--accent)}
     .context-item.active i{color:var(--accent)}
 
-    /* ===== HIGHLIGHT PICKER ===== */
     .highlight-picker{position:fixed;z-index:220;display:flex;gap:6px;padding:8px;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-lg);animation:menuIn .12s ease both}
     .highlight-picker button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;transition:.12s}
     .highlight-picker button:hover{transform:scale(1.15);border-color:var(--text-muted)}
     .highlight-picker button.active{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent)}
 
-    /* ===== SETTINGS / MODALS ===== */
     .settings-panel,.collab-panel,.label-panel,.recycle-panel,.password-panel,.shortcuts-panel{max-width:520px}
     .settings-section{padding:14px 0;border-bottom:1px solid var(--sep)}
     .settings-section:last-child{border-bottom:0;padding-bottom:0}
@@ -402,6 +388,19 @@
       .header-actions{gap:4px}
       .icon-btn{width:36px;height:36px;font-size:14px}
     }
+    @media(max-width:900px){
+      .search-box input,
+      .label-input-row input,
+      .settings-input-col input,
+      .button-row input[type="text"],
+      .button-row input[type="password"],
+      #password-input,
+      #settings-password-input,
+      #settings-password-confirm,
+      #settings-password-answer{
+        font-size:16px !important;
+      }
+    }
     @media(prefers-reduced-motion:reduce){
       *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
     }
@@ -440,7 +439,7 @@
       <div class="header-inner">
         <div class="header-left">
           <button class="icon-btn" id="drawer-btn" type="button" title="Menu" aria-label="Menu">
-            <i class="fa-solid fa-ellipsis-vertical"></i>
+            <i class="fa-solid fa-bars-staggered"></i>
           </button>
           <div class="brand">
             <div class="brand-icon"><i class="fa-solid fa-note-sticky"></i></div>
@@ -612,20 +611,30 @@
       <div class="modal-body">
         <div class="settings-section">
           <h3>Note Password</h3>
-          <p>Set a password to protect special notes. You can then lock any of your own notes from the note's 3-dot menu. Only you can unlock them.</p>
-          <div class="current-font" id="password-status">
-            <i class="fa-solid fa-lock"></i>
-            <span class="font-name" id="password-status-text">No password set</span>
+          <p id="password-desc">Set a password to protect special notes. You can then lock any of your own notes from the note's 3-dot menu. Only you can unlock them.</p>
+
+          <div id="password-setup-form">
+            <div class="settings-input-col">
+              <input type="password" id="settings-password-input" placeholder="New password (min 4 characters)" autocomplete="new-password" />
+              <input type="password" id="settings-password-confirm" placeholder="Confirm new password" autocomplete="new-password" />
+              <input type="text" id="settings-password-answer" placeholder="Your favorite thing (used for password recovery)" autocomplete="off" />
+            </div>
+            <div class="button-row">
+              <button class="primary-btn" id="set-password-btn" type="button"><i class="fa-solid fa-lock"></i> <span id="set-password-text">Set Password</span></button>
+            </div>
+            <p class="auth-error" id="password-error" role="alert" style="min-height:16px;margin-top:8px;text-align:left"></p>
           </div>
-          <div class="settings-input-col">
-            <input type="password" id="settings-password-input" placeholder="New password (min 4 characters)" autocomplete="new-password" />
-            <input type="password" id="settings-password-confirm" placeholder="Confirm new password" autocomplete="new-password" />
+
+          <div id="password-set-info" class="hidden">
+            <div class="current-font">
+              <i class="fa-solid fa-lock"></i>
+              <span class="font-name">Password is set</span>
+            </div>
+            <div class="button-row">
+              <button class="secondary-btn" id="remove-password-btn" type="button"><i class="fa-solid fa-unlock"></i> Remove Password</button>
+              <button class="text-btn" id="forgot-password-btn" type="button">Forgot password?</button>
+            </div>
           </div>
-          <div class="button-row">
-            <button class="primary-btn" id="set-password-btn" type="button"><i class="fa-solid fa-lock"></i> <span id="set-password-text">Set Password</span></button>
-            <button class="secondary-btn hidden" id="remove-password-btn" type="button"><i class="fa-solid fa-unlock"></i> Remove Password</button>
-          </div>
-          <p class="auth-error" id="password-error" role="alert" style="min-height:16px;margin-top:8px;text-align:left"></p>
         </div>
         <div class="settings-section">
           <h3>Custom Font</h3>
@@ -710,7 +719,7 @@
       </div>
       <div class="modal-body">
         <p class="modal-sub" id="password-modal-sub">Enter your password to open this locked note.</p>
-        <input type="password" id="password-input" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:15px;outline:0" />
+        <input type="password" id="password-input" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:16px;outline:0" />
         <p class="auth-error" id="password-modal-error" role="alert" style="min-height:16px;margin-top:8px;text-align:left"></p>
       </div>
       <div class="editor-footer" style="justify-content:flex-end;gap:8px">
@@ -789,9 +798,15 @@
     const settingsModal=$("settings-modal"), settingsCloseBtn=$("settings-close-btn");
     const currentFontName=$("current-font-name"), fontFileInput=$("font-file-input");
     const importFontBtn=$("import-font-btn"), resetFontBtn=$("reset-font-btn");
-    const passwordStatusText=$("password-status-text"), settingsPasswordInput=$("settings-password-input");
-    const settingsPasswordConfirm=$("settings-password-confirm"), setPasswordBtn=$("set-password-btn");
-    const setPasswordText=$("set-password-text"), removePasswordBtn=$("remove-password-btn");
+    const passwordSetupForm=$("password-setup-form");
+    const passwordSetInfo=$("password-set-info");
+    const settingsPasswordInput=$("settings-password-input");
+    const settingsPasswordConfirm=$("settings-password-confirm");
+    const settingsPasswordAnswer=$("settings-password-answer");
+    const setPasswordBtn=$("set-password-btn");
+    const setPasswordText=$("set-password-text");
+    const removePasswordBtn=$("remove-password-btn");
+    const forgotPasswordBtn=$("forgot-password-btn");
     const passwordError=$("password-error");
     const shortcutsModal=$("shortcuts-modal"), shortcutsCloseBtn=$("shortcuts-close-btn"), shortcutsList=$("shortcuts-list");
     const collabModal=$("collab-modal"), collabCloseBtn=$("collab-close-btn"), collabList=$("collab-list");
@@ -806,7 +821,6 @@
     const noteContextMenu=$("note-context-menu"), highlightPicker=$("highlight-picker");
     const undoToast=$("undo-toast"), undoBtn=$("undo-btn"), undoProgress=$("undo-progress");
 
-    /* ===== STATE ===== */
     let currentUser=null;
     let notes=[];
     let unsubscribeNotes=null, unsubscribeUsers=null;
@@ -826,14 +840,26 @@
     let specialFilter=null;
     let unlockedNoteIds=new Set();
     let userPasswordHash=null;
+    let userSecurityAnswerHash=null;
     let passwordResolve=null;
     let undoTimeout=null, pendingDeleteNoteId=null;
     let passwordCheckTimer=null, composerPasswordTimer=null;
     let passwordPromptShownFor=new Set();
     let composerPasswordPrompted=false;
     const pwdMaskHandlersAttached=new WeakSet();
+    let lastNonCollapsedRange=null, lastRangeEditable=null;
 
-    /* ===== CONSTANTS ===== */
+    document.addEventListener("selectionchange",()=>{
+      const sel=window.getSelection();
+      if(sel&&sel.rangeCount&&!sel.isCollapsed){
+        const range=sel.getRangeAt(0);
+        if(lastFocusedEditable&&lastFocusedEditable.contains(range.commonAncestorContainer)){
+          lastNonCollapsedRange=range.cloneRange();
+          lastRangeEditable=lastFocusedEditable;
+        }
+      }
+    });
+
     const COLORS=[
       {name:"default",label:"Default"},{name:"red",label:"Red"},{name:"orange",label:"Orange"},
       {name:"yellow",label:"Yellow"},{name:"green",label:"Green"},{name:"teal",label:"Teal"},
@@ -859,14 +885,12 @@
       {label:"Choose highlight color",keys:["Right-click"]}
     ];
 
-    /* ===== UTILS ===== */
     function escapeHTML(v=""){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
     function initials(name=""){const v=String(name).trim();if(!v)return"?";return v.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();}
     function safeImageURL(url){if(!url)return"";try{const u=new URL(url,location.href);if(u.protocol==="https:"||u.protocol==="http:")return u.href;}catch{}return"";}
     function avatarHTML(photo,name,size="sm"){const p=safeImageURL(photo);if(p)return`<img class="avatar avatar-${size}" src="${escapeHTML(p)}" alt="" loading="lazy" referrerpolicy="no-referrer"/>`;return`<span class="avatar avatar-${size} avatar-initials">${escapeHTML(initials(name))}</span>`;}
     function timeMs(ts){if(!ts)return 0;if(typeof ts==="number")return ts;if(typeof ts.toMillis==="function")return ts.toMillis();if(ts instanceof Date)return ts.getTime();return 0;}
     function createdTime(n){return timeMs(n.createdAt)||Number(n.clientCreatedAt)||0;}
-    function noteTime(n){return timeMs(n.updatedAt)||timeMs(n.createdAt)||Number(n.clientUpdatedAt)||Number(n.clientCreatedAt)||0;}
     function timeAgo(ts){const ms=timeMs(ts);if(!ms)return"Just now";const s=Math.max(0,Math.floor((Date.now()-ms)/1000));if(s<60)return"Just now";const m=Math.floor(s/60);if(m<60)return`${m}m ago`;const h=Math.floor(m/60);if(h<24)return`${h}h ago`;const d=Math.floor(h/24);if(d<7)return`${d}d ago`;return new Intl.DateTimeFormat(undefined,{month:"short",day:"numeric"}).format(new Date(ms));}
     function daysAgo(ts){const ms=timeMs(ts);if(!ms)return 0;return Math.floor((Date.now()-ms)/(1000*60*60*24));}
     function normalizeColor(c){return COLOR_NAMES.has(c)?c:"default";}
@@ -877,7 +901,6 @@
     function encodePwd(str){try{return btoa(unescape(encodeURIComponent(str)));}catch(e){try{return btoa(str);}catch(e2){return "";}}}
     function decodePwd(b64){try{return decodeURIComponent(escape(atob(b64)));}catch(e){try{return atob(b64);}catch(e2){return "";}}}
 
-    /* ===== PWD MASK ===== */
     function buildPwdMaskElement(doc,pwd){
       const mask=doc.createElement("span");
       mask.className="pwd-mask";
@@ -888,37 +911,34 @@
       display.className="pwd-display";
       display.textContent="•".repeat(Math.min(pwd.length||6,16));
       const eye=doc.createElement("i");
-      eye.className="fa-solid fa-eye pwd-eye";
+      eye.className="fa-solid fa-eye pwd-toggle";
       eye.setAttribute("contenteditable","false");
       const copy=doc.createElement("i");
       copy.className="fa-solid fa-copy pwd-copy";
       copy.setAttribute("contenteditable","false");
+      copy.title="Copy password";
       mask.appendChild(display);mask.appendChild(eye);mask.appendChild(copy);
       return mask;
     }
-    function handlePwdMaskClick(e){
-      e.preventDefault();e.stopPropagation();
-      const mask=e.currentTarget;
+
+    function togglePwdMask(mask){
       const visible=mask.dataset.visible==="true";
       const pwd=decodePwd(mask.dataset.pwd||"");
       const display=mask.querySelector(".pwd-display");
-      const eye=mask.querySelector(".pwd-eye");
+      const eye=mask.querySelector(".pwd-toggle");
       if(!display)return;
       if(visible){
         display.textContent="•".repeat(Math.min(pwd.length||6,16));
         mask.dataset.visible="false";
-        if(eye)eye.className="fa-solid fa-eye pwd-eye";
+        if(eye)eye.className="fa-solid fa-eye pwd-toggle";
       }else{
         display.textContent=pwd;
         mask.dataset.visible="true";
-        if(eye)eye.className="fa-solid fa-eye-slash pwd-eye";
+        if(eye)eye.className="fa-solid fa-eye-slash pwd-toggle";
       }
     }
-    async function handlePwdCopyClick(e){
-      e.preventDefault();e.stopPropagation();
-      const copy=e.currentTarget;
-      const mask=copy.closest(".pwd-mask");
-      if(!mask)return;
+
+    async function copyPwdFromMask(mask){
       const pwd=decodePwd(mask.dataset.pwd||"");
       if(!pwd)return;
       try{
@@ -929,25 +949,36 @@
           document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();
         }
         toast("Password copied.","success");
-      }catch(err){toast("Could not copy.","error");}
+      }catch(e){toast("Could not copy.","error");}
     }
+
+    function handlePwdMaskClick(e){
+      const mask=e.currentTarget;
+      const copyEl=e.target.closest(".pwd-copy");
+      if(copyEl){
+        e.preventDefault();e.stopPropagation();
+        copyPwdFromMask(mask);
+        return;
+      }
+      const sel=window.getSelection();
+      if(sel&&!sel.isCollapsed)return;
+      togglePwdMask(mask);
+    }
+
     function attachPwdMaskHandlersTo(mask){
       if(pwdMaskHandlersAttached.has(mask))return;
       pwdMaskHandlersAttached.add(mask);
       const pwd=decodePwd(mask.dataset.pwd||"");
       const display=mask.querySelector(".pwd-display");
-      const eye=mask.querySelector(".pwd-eye");
+      const eye=mask.querySelector(".pwd-toggle");
       if(display)display.textContent="•".repeat(Math.min(pwd.length||6,16));
-      if(eye)eye.className="fa-solid fa-eye pwd-eye";
+      if(eye)eye.className="fa-solid fa-eye pwd-toggle";
       mask.dataset.visible="false";
       mask.setAttribute("contenteditable","false");
       mask.addEventListener("click",handlePwdMaskClick);
-      const copy=mask.querySelector(".pwd-copy");
-      if(copy)copy.addEventListener("click",handlePwdCopyClick);
     }
     function attachPwdMaskHandlers(container){container.querySelectorAll(".pwd-mask").forEach(attachPwdMaskHandlersTo);}
 
-    /* ===== SANITIZE ===== */
     function sanitizeHTML(html){
       if(!html)return"";
       const parsed=new DOMParser().parseFromString(`<div>${html}</div>`,"text/html");
@@ -963,7 +994,6 @@
         if(child.nodeType===Node.COMMENT_NODE){child.remove();continue;}
         if(child.nodeType!==Node.ELEMENT_NODE){child.remove();continue;}
         const tag=child.tagName;
-        // Rebuild pwd-mask safely
         if(tag==="SPAN"&&child.classList&&child.classList.contains("pwd-mask")){
           const pwd=decodePwd(child.getAttribute("data-pwd")||"");
           if(!pwd){child.remove();continue;}
@@ -1006,7 +1036,6 @@
     }
     function stripHTML(html){if(!html)return"";const temp=document.createElement("div");temp.innerHTML=sanitizeHTML(html);return temp.textContent||"";}
 
-    /* ===== PASSWORD AUTO-DETECT + WRAP ===== */
     function wrapPasswordInEditable(editable){
       const walker=document.createTreeWalker(editable,NodeFilter.SHOW_TEXT);
       let node;
@@ -1036,29 +1065,35 @@
       }
       return false;
     }
+
     function wrapSelectionAsPassword(){
       const editable=lastFocusedEditable;
-      if(!editable)return;
+      if(!editable){toast("Select text first.","info");return;}
       const sel=window.getSelection();
       if(!sel||!sel.rangeCount||sel.isCollapsed){toast("Select text first.","info");return;}
       const range=sel.getRangeAt(0);
-      if(!editable.contains(range.commonAncestorContainer))return;
+      if(!editable.contains(range.commonAncestorContainer)){toast("Select text first.","info");return;}
       const text=range.toString();
       if(!text.trim()){toast("Select text first.","info");return;}
-      range.deleteContents();
-      const mask=buildPwdMaskElement(document,text);
-      range.insertNode(mask);
-      attachPwdMaskHandlersTo(mask);
-      const newRange=document.createRange();
-      newRange.setStartAfter(mask);
-      newRange.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(newRange);
-      if(activeNoteId)scheduleEditorSave();
-      toast("Password hidden. Click the eye to reveal.","success");
+      try{
+        range.deleteContents();
+        const mask=buildPwdMaskElement(document,text);
+        range.insertNode(mask);
+        attachPwdMaskHandlersTo(mask);
+        const newRange=document.createRange();
+        newRange.setStartAfter(mask);
+        newRange.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+        lastNonCollapsedRange=null;
+        if(activeNoteId)scheduleEditorSave();
+        toast("Password hidden. Click it to reveal — select the text to copy.","success");
+      }catch(e){
+        console.error(e);
+        toast("Could not hide selection.","error");
+      }
     }
 
-    /* ===== AUTH ===== */
     function authErrorMessage(code){
       switch(code){
         case"auth/popup-closed-by-user":return"Sign-in cancelled.";
@@ -1110,12 +1145,26 @@
     }
     async function handleSignOut(){try{await signOut(auth);userMenu.classList.add("hidden");toast("Signed out.","info");}catch(e){console.error(e);}}
     async function upsertUserProfile(user){try{await setDoc(doc(db,"users",user.uid),{uid:user.uid,displayName:user.displayName||"User",email:user.email||"",photoURL:user.photoURL||"",updatedAt:serverTimestamp()},{merge:true});}catch(e){console.warn(e);}}
+
     async function loadUserPasswordHash(){
       if(!currentUser)return;
-      try{const snap=await getDoc(doc(db,"users",currentUser.uid));userPasswordHash=snap.exists()?(snap.data().passwordHash||null):null;}
-      catch(e){userPasswordHash=null;}
+      try{
+        const snap=await getDoc(doc(db,"users",currentUser.uid));
+        if(snap.exists()){
+          const data=snap.data();
+          userPasswordHash=data.passwordHash||null;
+          userSecurityAnswerHash=data.securityAnswerHash||null;
+        }else{
+          userPasswordHash=null;
+          userSecurityAnswerHash=null;
+        }
+      }catch(e){
+        userPasswordHash=null;
+        userSecurityAnswerHash=null;
+      }
       updatePasswordUI();
     }
+
     function subscribeToUsers(){
       if(unsubscribeUsers)unsubscribeUsers();
       const q=query(collection(db,"users"),limit(500));
@@ -1185,7 +1234,8 @@
       if(unsubscribeUsers){unsubscribeUsers();unsubscribeUsers=null;}
       notes=[];allUsers=[];hasLoadedNotes=false;
       activeNoteId=null;activeNote=null;pendingRemoteNote=null;activeNoteMissingAt=null;
-      activeLabelFilter=null;specialFilter=null;unlockedNoteIds.clear();userPasswordHash=null;
+      activeLabelFilter=null;specialFilter=null;unlockedNoteIds.clear();
+      userPasswordHash=null;userSecurityAnswerHash=null;
       if(editorModal.classList.contains("open"))closeEditor({save:false});
       appRoot.classList.add("hidden");
       authScreen.classList.remove("hidden");
@@ -1292,45 +1342,71 @@
 
     function updatePasswordUI(){
       if(!currentUser)return;
-      if(userPasswordHash){
-        passwordStatusText.textContent="Password is set";
-        setPasswordText.textContent="Change Password";
-        removePasswordBtn.classList.remove("hidden");
+      const isSet=!!userPasswordHash;
+      if(isSet){
+        passwordSetupForm.classList.add("hidden");
+        passwordSetInfo.classList.remove("hidden");
       }else{
-        passwordStatusText.textContent="No password set";
-        setPasswordText.textContent="Set Password";
-        removePasswordBtn.classList.add("hidden");
+        passwordSetupForm.classList.remove("hidden");
+        passwordSetInfo.classList.add("hidden");
       }
+      if(passwordError)passwordError.textContent="";
+      if(settingsPasswordInput)settingsPasswordInput.value="";
+      if(settingsPasswordConfirm)settingsPasswordConfirm.value="";
+      if(settingsPasswordAnswer)settingsPasswordAnswer.value="";
     }
+
     async function handleSetPassword(){
       if(!currentUser)return;
       passwordError.textContent="";
       const pw=settingsPasswordInput.value;
       const confirmPw=settingsPasswordConfirm.value;
+      const answer=settingsPasswordAnswer.value.trim().toLowerCase();
       if(pw.length<4){passwordError.textContent="Password must be at least 4 characters.";return;}
       if(pw!==confirmPw){passwordError.textContent="Passwords do not match.";return;}
+      if(answer.length<2){passwordError.textContent="Please write your favorite thing for password recovery.";return;}
       try{
         const hash=await hashPassword(pw);
-        await updateDoc(doc(db,"users",currentUser.uid),{passwordHash:hash});
+        const answerHash=await hashPassword(answer);
+        await updateDoc(doc(db,"users",currentUser.uid),{passwordHash:hash,securityAnswerHash:answerHash});
         userPasswordHash=hash;
-        settingsPasswordInput.value="";
-        settingsPasswordConfirm.value="";
+        userSecurityAnswerHash=answerHash;
         updatePasswordUI();
         toast("Password saved.","success");
       }catch(e){passwordError.textContent="Could not save password.";}
     }
+
     async function handleRemovePassword(){
       if(!currentUser||!userPasswordHash)return;
+      const ok=await promptForPassword("Remove Password","Enter your current password to remove it.");
+      if(!ok)return;
       if(!confirm("Remove your password? All your locked notes will be unlocked."))return;
       try{
         const lockedOwned=notes.filter(n=>n.owner===currentUser.uid&&n.locked&&!n.deleted);
         for(const n of lockedOwned){try{await updateDoc(doc(db,"notes",n.id),{locked:false,updatedAt:serverTimestamp()});}catch(e){}}
+        await updateDoc(doc(db,"users",currentUser.uid),{passwordHash:null,securityAnswerHash:null});
+        userPasswordHash=null;
+        userSecurityAnswerHash=null;
+        updatePasswordUI();
+        toast("Password removed. Set a new one if you like.","success");
+      }catch(e){toast("Could not remove password.","error");}
+    }
+
+    async function handleForgotPassword(){
+      if(!currentUser||!userSecurityAnswerHash){toast("No recovery answer set.","info");return;}
+      const answer=prompt("What is your favorite thing?");
+      if(!answer)return;
+      const answerHash=await hashPassword(answer.trim().toLowerCase());
+      if(answerHash!==userSecurityAnswerHash){toast("Incorrect answer.","error");return;}
+      if(!confirm("Answer verified. Set a new password now.\n\nYour locked notes stay locked until you unlock them."))return;
+      try{
         await updateDoc(doc(db,"users",currentUser.uid),{passwordHash:null});
         userPasswordHash=null;
         updatePasswordUI();
-        toast("Password removed.","success");
-      }catch(e){toast("Could not remove password.","error");}
+        toast("Please set a new password.","info");
+      }catch(e){toast("Could not reset password.","error");}
     }
+
     async function verifyPassword(password){
       if(!currentUser||!userPasswordHash)return false;
       return (await hashPassword(password))===userPasswordHash;
@@ -1362,7 +1438,6 @@
       closePasswordModal(true);
     }
 
-    /* ===== RENDER NOTES — sorted by CREATION order, pinned first ===== */
     function noteFingerprint(n){
       return [n.title||"",stripHTML(n.body||"").slice(0,400),n.color||"default",n.pinned?"1":"0",(n.labels||[]).join(","),(n.collaborators||[]).length,n.locked?"1":"0",n.deleted?"1":"0"].join("|");
     }
@@ -1385,7 +1460,6 @@
         const labels=(n.labels||[]).join(" ").toLowerCase();
         return title.includes(term)||body.includes(term)||labels.includes(term);
       });
-      // NEWEST CREATED FIRST — editing never changes position
       filtered.sort((a,b)=>{
         if(Boolean(a.pinned)!==Boolean(b.pinned))return a.pinned?-1:1;
         return createdTime(b)-createdTime(a);
@@ -1473,7 +1547,6 @@
       return card;
     }
 
-    /* ===== COMPOSER ===== */
     function expandComposer(){
       composerCollapsed.classList.add("hidden");
       composerExpanded.classList.remove("hidden");
@@ -1514,7 +1587,6 @@
       finally{composerSaveBtn.disabled=false;composerSaveBtn.innerHTML=orig;}
     }
 
-    /* ===== EDITOR ===== */
     function applyEditorFont(){
       if(!activeNoteId||!activeNote)return;
       const f=fontCache[activeNote.owner];
@@ -1636,8 +1708,7 @@
       activeNote={...note};
       const focused=document.activeElement===editorTitle||editorBody.contains(document.activeElement);
       if(noteMatchesEditor(note)){pendingRemoteNote=null;return;}
-      if(focused){pendingRemoteNote=note;} // silent — applied on blur
-      else{applyNoteToEditor(note);}
+      if(focused){pendingRemoteNote=note;}else{applyNoteToEditor(note);}
     }
     function maybeApplyPendingOnBlur(){
       if(!pendingRemoteNote||!activeNoteId)return;
@@ -1758,13 +1829,19 @@
       if(note.owner!==currentUser?.uid){toast("Only the owner can lock this note.","error");return;}
       if(!userPasswordHash){toast("Set a note password in Settings first.","info");openSettingsModal();return;}
       const next=!note.locked;
+      if(!next){
+        if(!userPasswordHash)await loadUserPasswordHash();
+        const ok=await promptForPassword("Unlock Note","Enter your password to unlock this note.");
+        if(!ok)return;
+      }
       try{
         await updateDoc(doc(db,"notes",noteId),{
           locked:next,updatedAt:serverTimestamp(),
           updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",
           updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()
         });
-        if(next)unlockedNoteIds.delete(noteId);
+        if(next){unlockedNoteIds.delete(noteId);}
+        else{unlockedNoteIds.add(noteId);}
         toast(next?"Note locked.":"Note unlocked.","success");
       }catch(e){toast("Could not update lock.","error");}
     }
@@ -2128,7 +2205,12 @@
       }catch(e){toast("Could not update collaborators.","error");}
     }
 
-    function openSettingsModal(){settingsModal.classList.add("open");settingsModal.setAttribute("aria-hidden","false");updateCurrentFontUI();updatePasswordUI();passwordError.textContent="";settingsPasswordInput.value="";settingsPasswordConfirm.value="";}
+    function openSettingsModal(){
+      settingsModal.classList.add("open");
+      settingsModal.setAttribute("aria-hidden","false");
+      updateCurrentFontUI();
+      updatePasswordUI();
+    }
     function closeSettingsModal(){settingsModal.classList.remove("open");settingsModal.setAttribute("aria-hidden","true");}
     function openShortcutsModal(){
       shortcutsList.innerHTML=SHORTCUTS.map(s=>`<div class="shortcut-row"><span class="shortcut-label">${escapeHTML(s.label)}</span><span class="shortcut-keys">${s.keys.map(k=>`<span class="kbd">${escapeHTML(k)}</span>`).join("")}</span></div>`).join("");
@@ -2137,7 +2219,6 @@
     }
     function closeShortcutsModal(){shortcutsModal.classList.remove("open");shortcutsModal.setAttribute("aria-hidden","true");}
 
-    /* ===== INIT ===== */
     initTheme();
     buildPalette(composerPalette);
     buildPalette(editorPalette);
@@ -2154,7 +2235,6 @@
       onAuthStateChanged(auth,user=>{if(user)showApp(user);else showAuthScreen();});
     })();
 
-    /* ===== EVENTS ===== */
     googleSigninBtn.addEventListener("click",signInWithGoogle);
     signoutBtn.addEventListener("click",handleSignOut);
     themeToggle.addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
@@ -2176,7 +2256,9 @@
     resetFontBtn.addEventListener("click",resetFont);
     setPasswordBtn.addEventListener("click",handleSetPassword);
     removePasswordBtn.addEventListener("click",handleRemovePassword);
+    forgotPasswordBtn.addEventListener("click",handleForgotPassword);
     settingsPasswordConfirm.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();handleSetPassword();}});
+    settingsPasswordAnswer.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();handleSetPassword();}});
 
     passwordSubmitBtn.addEventListener("click",submitPasswordPrompt);
     passwordCancelBtn.addEventListener("click",()=>closePasswordModal(false));
@@ -2233,8 +2315,25 @@
         }
       },1500);
     });
-    composerHideBtn.addEventListener("mousedown",e=>e.preventDefault());
-    composerHideBtn.addEventListener("click",()=>{lastFocusedEditable=composerBody;composerBody.focus();wrapSelectionAsPassword();});
+    composerHideBtn.addEventListener("mousedown",e=>{
+      e.preventDefault();
+      const sel=window.getSelection();
+      if(sel&&sel.rangeCount&&!sel.isCollapsed){
+        const range=sel.getRangeAt(0);
+        if(composerBody.contains(range.commonAncestorContainer)){
+          lastNonCollapsedRange=range.cloneRange();
+          lastRangeEditable=composerBody;
+        }
+      }
+    });
+    composerHideBtn.addEventListener("click",()=>{
+      if(!lastNonCollapsedRange||!lastRangeEditable){toast("Select text first.","info");return;}
+      lastFocusedEditable=lastRangeEditable;
+      const sel=window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(lastNonCollapsedRange);
+      wrapSelectionAsPassword();
+    });
 
     editorBody.addEventListener("focusin",()=>{lastFocusedEditable=editorBody;updateToolbarStates();});
     editorTitle.addEventListener("input",scheduleEditorSave);
@@ -2249,7 +2348,7 @@
         if(PASSWORD_PATTERN.test(text)){
           passwordPromptShownFor.add(activeNoteId);
           if(confirm("We noticed a password in your note. Hide it from random viewers?\n\nTip: you can also select text and press Ctrl+Q to hide anything.")){
-            if(wrapPasswordInEditable(editorBody)){scheduleEditorSave();toast("Password hidden. Click the eye to reveal.","success");}
+            if(wrapPasswordInEditor()){scheduleEditorSave();toast("Password hidden. Click the eye to reveal.","success");}
           }
         }
       },1500);
@@ -2261,8 +2360,25 @@
     editorDoneBtn.addEventListener("click",()=>closeEditor());
     editorBody.addEventListener("blur",maybeApplyPendingOnBlur);
     editorTitle.addEventListener("blur",maybeApplyPendingOnBlur);
-    editorHideBtn.addEventListener("mousedown",e=>e.preventDefault());
-    editorHideBtn.addEventListener("click",()=>{lastFocusedEditable=editorBody;editorBody.focus();wrapSelectionAsPassword();});
+    editorHideBtn.addEventListener("mousedown",e=>{
+      e.preventDefault();
+      const sel=window.getSelection();
+      if(sel&&sel.rangeCount&&!sel.isCollapsed){
+        const range=sel.getRangeAt(0);
+        if(editorBody.contains(range.commonAncestorContainer)){
+          lastNonCollapsedRange=range.cloneRange();
+          lastRangeEditable=editorBody;
+        }
+      }
+    });
+    editorHideBtn.addEventListener("click",()=>{
+      if(!lastNonCollapsedRange||!lastRangeEditable){toast("Select text first.","info");return;}
+      lastFocusedEditable=lastRangeEditable;
+      const sel=window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(lastNonCollapsedRange);
+      wrapSelectionAsPassword();
+    });
 
     collabCloseBtn.addEventListener("click",closeCollabModal);
     collabModal.addEventListener("click",e=>{if(e.target===collabModal)closeCollabModal();});
@@ -2303,7 +2419,6 @@
           return;
         }
       }
-      // Ctrl+Q = hide selected text as password
       if(e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey&&(e.key==="q"||e.key==="Q")){
         if(lastFocusedEditable&&lastFocusedEditable.contains(document.activeElement)){
           e.preventDefault();
