@@ -268,7 +268,6 @@
     .editor-body span[style*="background-color"],
     .composer-body span[style*="background-color"]{color:#1f2328!important;padding:0 2px;border-radius:3px}
 
-    /* Password mask — clean, no icons */
     .pwd-mask{display:inline-block;padding:1px 7px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;vertical-align:baseline;line-height:1.5;transition:background-color .15s;user-select:none;white-space:nowrap}
     .pwd-mask:hover{background:rgba(26,115,232,.24)}
     .pwd-mask .pwd-display{white-space:nowrap;cursor:pointer;user-select:none}
@@ -364,7 +363,11 @@
       .search-box{order:5;flex-basis:100%;max-width:none;height:40px;margin:0}
       .header-left{flex-shrink:0}
       .collab-status-text{display:none}
-      .collab-status-badge{padding:6px 8px}
+      .collab-status-badge{padding:3px;gap:0;background:transparent}
+      .collab-status-badge.solo{display:none}
+      .collab-status-badge .live-dot{display:none}
+      .collab-status-avatars .avatar{border:none;width:28px;height:28px;font-size:11px}
+      .collab-status-avatars .avatar + .avatar{margin-left:0}
       .main{padding:16px 14px 80px}
       .composer{margin-bottom:20px}
       .notes-grid{columns:1}
@@ -827,6 +830,7 @@
     let activeNoteId=null, activeNote=null;
     let editorDirty=false;
     let pendingRemoteNote=null, activeNoteMissingAt=null;
+    let pendingRemoteApplyTimer=null;
     let currentEditorColor="default", currentComposerColor="default";
     let lastFocusedEditable=null;
     let saveTimer=null, isSavingActiveNote=false, saveQueued=false, saveStatusTimer=null;
@@ -847,6 +851,8 @@
     let composerPasswordPrompted=false;
     const pwdMaskHandlersAttached=new WeakSet();
     let lastNonCollapsedRange=null, lastRangeEditable=null;
+    let avatarRotationTimer=null;
+    let avatarRotationUids=[];
 
     document.addEventListener("selectionchange",()=>{
       const sel=window.getSelection();
@@ -882,7 +888,8 @@
       {label:"Focus search",keys:["Ctrl","K"]},
       {label:"Close editor / dismiss",keys:["Esc"]},
       {label:"Highlight (click icon)",keys:["Click"]},
-      {label:"Choose highlight color",keys:["Right-click"]}
+      {label:"Choose highlight color",keys:["Right-click"]},
+      {label:"Restore hidden text (mobile)",keys:["Long-press"]}
     ];
 
     function escapeHTML(v=""){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -901,14 +908,48 @@
     function encodePwd(str){try{return btoa(unescape(encodeURIComponent(str)));}catch(e){try{return btoa(str);}catch(e2){return "";}}}
     function decodePwd(b64){try{return decodeURIComponent(escape(atob(b64)));}catch(e){try{return atob(b64);}catch(e2){return "";}}}
 
-    /* ===== PASSWORD MASK — clean, no icons ===== */
+    /* ===== CARET PRESERVATION (for live remote sync) ===== */
+    function getCaretCharOffset(container){
+      const sel=window.getSelection();
+      if(!sel||!sel.rangeCount)return -1;
+      const range=sel.getRangeAt(0);
+      if(!container.contains(range.startContainer))return -1;
+      const pre=range.cloneRange();
+      pre.selectNodeContents(container);
+      pre.setEnd(range.startContainer,range.startOffset);
+      return pre.toString().length;
+    }
+    function setCaretCharOffset(container,offset){
+      if(offset<0)return;
+      const sel=window.getSelection();
+      if(!sel)return;
+      let remaining=offset;
+      const range=document.createRange();
+      const walker=document.createTreeWalker(container,NodeFilter.SHOW_TEXT,null);
+      let node,found=false;
+      while((node=walker.nextNode())){
+        const len=node.textContent.length;
+        if(remaining<=len){
+          try{range.setStart(node,remaining);found=true;}catch(e){}
+          break;
+        }
+        remaining-=len;
+      }
+      if(!found){
+        range.selectNodeContents(container);
+      }
+      range.collapse(true);
+      try{sel.removeAllRanges();sel.addRange(range);}catch(e){}
+    }
+
+    /* ===== PWD MASK ===== */
     function buildPwdMaskElement(doc,pwd){
       const mask=doc.createElement("span");
       mask.className="pwd-mask";
       mask.setAttribute("contenteditable","false");
       mask.setAttribute("data-visible","false");
       mask.setAttribute("data-pwd",encodePwd(pwd));
-      mask.title="Click to reveal/hide. Ctrl+Shift+Q to restore as plain text.";
+      mask.title="Tap to reveal/hide. Long-press or right-click to restore as plain text.";
       const display=doc.createElement("span");
       display.className="pwd-display";
       display.textContent="•".repeat(Math.min(pwd.length||6,16));
@@ -935,6 +976,26 @@
       togglePwdMask(mask);
     }
 
+    function restoreMaskToPlain(mask){
+      const pwd=decodePwd(mask.dataset.pwd||"");
+      if(!pwd)return false;
+      const parent=mask.parentNode;
+      if(!parent)return false;
+      const textNode=document.createTextNode(pwd);
+      parent.replaceChild(textNode,mask);
+      return true;
+    }
+
+    function promptRestoreMask(mask){
+      const pwd=decodePwd(mask.dataset.pwd||"");
+      if(!pwd)return;
+      if(!confirm("Restore this hidden text to normal?"))return;
+      if(restoreMaskToPlain(mask)){
+        if(activeNoteId){editorDirty=true;scheduleEditorSave();}
+        toast("Restored to plain text.","success");
+      }
+    }
+
     function attachPwdMaskHandlersTo(mask){
       if(pwdMaskHandlersAttached.has(mask))return;
       pwdMaskHandlersAttached.add(mask);
@@ -943,21 +1004,35 @@
       if(display)display.textContent="•".repeat(Math.min(pwd.length||6,16));
       mask.dataset.visible="false";
       mask.setAttribute("contenteditable","false");
-      if(!mask.title)mask.title="Click to reveal/hide. Ctrl+Shift+Q to restore as plain text.";
+      if(!mask.title)mask.title="Tap to reveal/hide. Long-press or right-click to restore as plain text.";
+
       mask.addEventListener("click",handlePwdMaskClick);
+
+      mask.addEventListener("contextmenu",(e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        promptRestoreMask(mask);
+      });
+
+      let longPressTimer=null;
+      let didLongPress=false;
+      mask.addEventListener("touchstart",()=>{
+        didLongPress=false;
+        longPressTimer=setTimeout(()=>{
+          longPressTimer=null;
+          didLongPress=true;
+          promptRestoreMask(mask);
+        },600);
+      },{passive:true});
+      const cancelLp=()=>{if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}};
+      mask.addEventListener("touchend",(e)=>{
+        cancelLp();
+        if(didLongPress){e.preventDefault();e.stopPropagation();}
+      });
+      mask.addEventListener("touchmove",cancelLp);
+      mask.addEventListener("touchcancel",cancelLp);
     }
     function attachPwdMaskHandlers(container){container.querySelectorAll(".pwd-mask").forEach(attachPwdMaskHandlersTo);}
-
-    /* ===== UNWRAP (restore hidden text to plain) ===== */
-    function unwrapMask(mask){
-      const parent=mask.parentNode;
-      if(!parent)return false;
-      const pwd=decodePwd(mask.dataset.pwd||"");
-      if(!pwd)return false;
-      const textNode=document.createTextNode(pwd);
-      parent.replaceChild(textNode,mask);
-      return true;
-    }
 
     function unwrapMaskAtCursor(){
       if(!lastFocusedEditable){toast("Place cursor on hidden text first.","info");return;}
@@ -967,36 +1042,24 @@
       let node=range.startContainer;
       if(node.nodeType===3)node=node.parentElement;
       let mask=node&&node.closest?node.closest(".pwd-mask"):null;
-
-      // If selection spans multiple, find any mask that intersects
       if(!mask&&!sel.isCollapsed){
-        const container=range.commonAncestorContainer;
-        const el=container.nodeType===1?container:container.parentElement;
-        if(el){
-          const masks=el.querySelectorAll?.(".pwd-mask")||[];
-          for(const m of masks){
-            if(range.intersectsNode(m)){mask=m;break;}
-          }
-        }
+        const masks=lastFocusedEditable.querySelectorAll(".pwd-mask");
+        for(const m of masks){if(range.intersectsNode(m)){mask=m;break;}}
       }
-      // Fallback: any mask inside editable
       if(!mask){
         const masks=lastFocusedEditable.querySelectorAll(".pwd-mask");
-        for(const m of masks){
-          if(range.intersectsNode(m)){mask=m;break;}
-        }
+        for(const m of masks){if(range.intersectsNode(m)){mask=m;break;}}
       }
       if(!mask){toast("No hidden text at cursor.","info");return;}
-      const ok=unwrapMask(mask);
-      if(ok){
-        if(activeNoteId)scheduleEditorSave();
+      if(restoreMaskToPlain(mask)){
+        if(activeNoteId){editorDirty=true;scheduleEditorSave();}
         toast("Hidden text restored to normal.","success");
       }else{
         toast("Could not restore.","error");
       }
     }
 
-    /* ===== COPY — substitute actual password for hidden dots ===== */
+    /* ===== COPY — substitute actual password ===== */
     document.addEventListener("copy",(e)=>{
       const sel=window.getSelection();
       if(!sel||sel.isCollapsed)return;
@@ -1025,7 +1088,7 @@
       }catch(err){console.warn("Copy handler error:",err);}
     });
 
-    /* ===== PASTE — clean plain text, preserve newlines ===== */
+    /* ===== PASTE ===== */
     function handlePasteEvent(e){
       e.preventDefault();
       const clipboard=e.clipboardData||window.clipboardData;
@@ -1165,8 +1228,8 @@
         sel.removeAllRanges();
         sel.addRange(newRange);
         lastNonCollapsedRange=null;
-        if(activeNoteId)scheduleEditorSave();
-        toast("Hidden. Click to reveal. Ctrl+Shift+Q to restore.","success");
+        if(activeNoteId){editorDirty=true;scheduleEditorSave();}
+        toast("Hidden. Tap to reveal. Long-press to restore.","success");
       }catch(e){
         console.error(e);
         toast("Could not hide selection.","error");
@@ -1273,22 +1336,62 @@
       });
       return active;
     }
+
+    /* ===== AVATAR ROTATION FOR MOBILE ===== */
+    function stopAvatarRotation(){
+      if(avatarRotationTimer){clearInterval(avatarRotationTimer);avatarRotationTimer=null;}
+      avatarRotationUids=[];
+    }
+    function startAvatarRotation(uids){
+      const sameSet=uids.length===avatarRotationUids.length
+        &&uids.every((uid,i)=>uid===avatarRotationUids[i]);
+      if(sameSet&&avatarRotationTimer)return;
+      stopAvatarRotation();
+      avatarRotationUids=uids.slice();
+      let index=0;
+      const renderCurrent=()=>{
+        if(!currentUser||avatarRotationUids.length===0)return;
+        const uid=avatarRotationUids[index%avatarRotationUids.length];
+        const u=allUsers.find(x=>x.uid===uid);
+        if(u)collabStatusAvatars.innerHTML=avatarHTML(u.photoURL,u.displayName,"sm");
+        index++;
+      };
+      renderCurrent();
+      if(avatarRotationUids.length>1){
+        avatarRotationTimer=setInterval(renderCurrent,2000);
+      }
+    }
+
     function updateCollabStatusBadge(){
       if(!currentUser)return;
       const active=getActiveCollaborators();
+      const isMobile=window.innerWidth<=900;
       if(active.size===0){
         collabStatusBadge.classList.add("solo");
         collabStatusText.textContent="Solo";
         collabStatusAvatars.innerHTML="";
+        stopAvatarRotation();
+        return;
+      }
+      collabStatusBadge.classList.remove("solo");
+      if(isMobile){
+        // Mobile: rotate through one avatar at a time
+        collabStatusText.textContent="";
+        collabStatusBadge.title=active.size===1?"1 collaborator active":`${active.size} collaborators active`;
+        startAvatarRotation(Array.from(active.keys()));
       }else{
-        collabStatusBadge.classList.remove("solo");
         collabStatusText.textContent=active.size===1?"1 online":`${active.size} online`;
+        collabStatusBadge.title="Collaborator activity";
         collabStatusAvatars.innerHTML=Array.from(active.keys()).slice(0,3).map(uid=>{
           const u=allUsers.find(x=>x.uid===uid);
           return u?avatarHTML(u.photoURL,u.displayName,"xs"):"";
         }).join("");
+        stopAvatarRotation();
       }
     }
+
+    window.addEventListener("resize",()=>{if(currentUser)updateCollabStatusBadge();});
+
     function updateUserUI(user){
       const name=user.displayName||"User";
       userAvatar.innerHTML=avatarHTML(user.photoURL,name,"sm");
@@ -1311,8 +1414,10 @@
       currentUser=null;
       if(unsubscribeNotes){unsubscribeNotes();unsubscribeNotes=null;}
       if(unsubscribeUsers){unsubscribeUsers();unsubscribeUsers=null;}
+      stopAvatarRotation();
       notes=[];allUsers=[];hasLoadedNotes=false;
       activeNoteId=null;activeNote=null;pendingRemoteNote=null;activeNoteMissingAt=null;
+      clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
       activeLabelFilter=null;specialFilter=null;unlockedNoteIds.clear();
       userPasswordHash=null;userSecurityAnswerHash=null;
       editorDirty=false;
@@ -1344,11 +1449,16 @@
         notes=snap.docs.map(d=>({id:d.id,...d.data()}));
         hasLoadedNotes=true;
         notesLoading.classList.add("hidden");
+
+        // Apply to open editor IMMEDIATELY for low-latency live sync
+        handleActiveNoteRemoteUpdate();
+
+        // Font-dependent renders
         ensureFontsLoaded(notes).then(()=>{
           renderNotes();
           renderDrawerLabels();
           updateCollabStatusBadge();
-          handleActiveNoteRemoteUpdate();
+          if(activeNoteId)applyEditorFont();
         });
       },err=>{
         console.error(err);
@@ -1691,6 +1801,7 @@
       activeNote={...note};
       editorDirty=false;
       pendingRemoteNote=null;activeNoteMissingAt=null;
+      clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
       editorTitle.value=note.title||"";
       editorBody.innerHTML=sanitizeHTML(note.body||"");
       attachPwdMaskHandlers(editorBody);
@@ -1715,6 +1826,7 @@
       }
     }
     async function closeEditor({save=true}={}){
+      clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
       if(save&&activeNoteId&&editorDirty){
         clearTimeout(saveTimer);saveTimer=null;
         await saveActiveNote();
@@ -1755,8 +1867,15 @@
         ${noteActiveCollabs.length?`<span class="meta-online" title="${noteActiveCollabs.length} active"><span class="meta-online-dot"></span><span class="meta-avatars" style="margin-left:2px">${onlineAvatars}</span></span>`:""}
       `;
     }
+
+    /* ===== LIVE SYNC WITH CARET PRESERVATION ===== */
     function applyNoteToEditor(note){
-      const hadFocus=editorBody.contains(document.activeElement)||document.activeElement===editorTitle;
+      const titleHadFocus=document.activeElement===editorTitle;
+      const bodyHadFocus=editorBody.contains(document.activeElement);
+      const caretOffset=bodyHadFocus?getCaretCharOffset(editorBody):-1;
+      const titleSelStart=titleHadFocus?editorTitle.selectionStart:-1;
+      const titleSelEnd=titleHadFocus?editorTitle.selectionEnd:-1;
+
       editorTitle.value=note.title||"";
       editorBody.innerHTML=sanitizeHTML(note.body||"");
       attachPwdMaskHandlers(editorBody);
@@ -1766,14 +1885,43 @@
       applyEditorFont();
       activeNote={...note};
       pendingRemoteNote=null;
-      if(hadFocus)editorBody.focus();
+
+      if(bodyHadFocus){
+        try{editorBody.focus();}catch(e){}
+        if(caretOffset>=0)setCaretCharOffset(editorBody,caretOffset);
+      }else if(titleHadFocus){
+        try{editorTitle.focus();}catch(e){}
+        if(titleSelStart>=0){
+          try{
+            const maxLen=editorTitle.value.length;
+            editorTitle.setSelectionRange(Math.min(titleSelStart,maxLen),Math.min(titleSelEnd,maxLen));
+          }catch(e){}
+        }
+      }
     }
     function noteMatchesEditor(note){
       const nt=(note.title||"").trim();const et=editorTitle.value.trim();
-      const nb=stripHTML(note.body||"").replace(/\s+/g," ").trim();
-      const eb=(editorBody.textContent||"").replace(/\s+/g," ").trim();
+      const nb=sanitizeHTML(note.body||"");
+      const eb=sanitizeHTML(editorBody.innerHTML);
       return nt===et&&nb===eb&&normalizeColor(note.color)===currentEditorColor&&Boolean(note.pinned)===editorPinBtn.classList.contains("active");
     }
+
+    function scheduleRemoteApply(){
+      clearTimeout(pendingRemoteApplyTimer);
+      const elapsed=Date.now()-lastLocalEditAt;
+      const delay=Math.max(0,800-elapsed)+150;
+      pendingRemoteApplyTimer=setTimeout(()=>{
+        pendingRemoteApplyTimer=null;
+        if(!pendingRemoteNote||!activeNoteId)return;
+        // If user is still typing, wait a bit more
+        if(Date.now()-lastLocalEditAt<700){
+          scheduleRemoteApply();
+          return;
+        }
+        applyNoteToEditor(pendingRemoteNote);
+      },delay);
+    }
+
     function handleActiveNoteRemoteUpdate(){
       if(!activeNoteId)return;
       const note=notes.find(n=>n.id===activeNoteId);
@@ -1791,15 +1939,34 @@
       }
       activeNoteMissingAt=null;
       activeNote={...note};
-      const focused=document.activeElement===editorTitle||editorBody.contains(document.activeElement);
-      if(noteMatchesEditor(note)){pendingRemoteNote=null;return;}
-      if(focused||editorDirty){pendingRemoteNote=note;}else{applyNoteToEditor(note);}
+
+      if(noteMatchesEditor(note)){
+        pendingRemoteNote=null;
+        clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
+        return;
+      }
+
+      const sinceEdit=Date.now()-lastLocalEditAt;
+      const saveInProgress=isSavingActiveNote||saveTimer!==null;
+
+      // If no local edits pending OR user has been idle → apply instantly
+      if(!saveInProgress&&sinceEdit>800){
+        pendingRemoteNote=null;
+        clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
+        applyNoteToEditor(note);
+        return;
+      }
+
+      // User is typing or has pending save → queue and apply when they pause
+      pendingRemoteNote=note;
+      scheduleRemoteApply();
     }
+
     function maybeApplyPendingOnBlur(){
       if(!pendingRemoteNote||!activeNoteId)return;
       if(!editorModal.classList.contains("open"))return;
-      if(Date.now()-lastLocalEditAt<1500)return;
       if(editorDirty)return;
+      if(Date.now()-lastLocalEditAt<800)return;
       setTimeout(()=>{
         if(!editorModal.classList.contains("open"))return;
         if(document.activeElement===editorTitle)return;
@@ -1816,7 +1983,7 @@
       if(isSavingActiveNote){saveQueued=true;return;}
       clearTimeout(saveTimer);
       setSaveStatus("Unsaved changes");
-      saveTimer=setTimeout(async()=>{saveTimer=null;await saveActiveNote();},650);
+      saveTimer=setTimeout(async()=>{saveTimer=null;await saveActiveNote();},400);
     }
     async function saveActiveNote(force=false){
       if(!activeNoteId||!currentUser||isSavingActiveNote)return;
@@ -2526,8 +2693,7 @@
           return;
         }
       }
-      // Ctrl+Shift+Q → restore hidden text at cursor to plain text
-      if((e.ctrlKey||e.metaKey)&&e.shiftKey&&!e.altKey&&(e.key==="q"||e.key==="Q"||e.key==="Q")){
+      if((e.ctrlKey||e.metaKey)&&e.shiftKey&&!e.altKey&&(e.key==="q"||e.key==="Q")){
         if(lastFocusedEditable&&lastFocusedEditable.contains(document.activeElement)){
           e.preventDefault();
           unwrapMaskAtCursor();
