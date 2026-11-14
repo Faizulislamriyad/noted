@@ -145,9 +145,9 @@
     .composer-placeholder{color:var(--text-muted);font-size:15px;font-weight:600}
     .composer-expanded{border:1px solid var(--border);border-radius:16px;background:var(--note-bg,var(--surface));box-shadow:var(--shadow-md);overflow:hidden;animation:composerIn .16s ease both}
     @keyframes composerIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-    .composer-title{width:100%;padding:16px 18px 4px;border:0;outline:0;background:transparent;color:var(--text);font-size:18px;font-weight:800;letter-spacing:-.02em}
-    .composer-title::placeholder{color:var(--text-muted);font-weight:700}
-    .composer-body{min-height:52px;max-height:40vh;overflow-y:auto;padding:4px 18px 12px;outline:0;color:var(--text);font-size:16px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;unicode-bidi:plaintext}
+    .composer-title{width:100%;padding:16px 18px 4px;border:0;outline:0;background:transparent;color:var(--text);font-size:18px;font-weight:400;letter-spacing:0}
+    .composer-title::placeholder{color:var(--text-muted);font-weight:400}
+    .composer-body{min-height:52px;max-height:40vh;overflow-y:auto;padding:4px 18px 12px;outline:0;color:var(--text);font-size:16px;line-height:1.65;white-space:pre-wrap;overflow-wrap:break-word;word-spacing:normal;letter-spacing:normal;unicode-bidi:plaintext}
     [contenteditable][data-placeholder]:empty::before{content:attr(data-placeholder);color:var(--text-muted);pointer-events:none}
     .composer-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:6px 10px;border-top:1px solid var(--sep);background:var(--note-bg,var(--surface))}
     .format-group{display:flex;align-items:center;gap:2px}
@@ -210,16 +210,16 @@
     .note-card:hover{box-shadow:var(--shadow-md)}
     .note-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     .note-card-top{display:flex;align-items:flex-start;gap:8px}
-    .note-title{min-width:0;flex:1;margin:0;color:var(--text);font-size:15.5px;font-weight:800;line-height:1.45;letter-spacing:-.015em;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;unicode-bidi:plaintext}
+    .note-title{min-width:0;flex:1;margin:0;color:var(--text);font-size:15.5px;font-weight:400;line-height:1.5;letter-spacing:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;word-spacing:normal;unicode-bidi:plaintext}
     .note-pin{margin-top:2px;color:#b08d00;font-size:12px;transform:rotate(35deg)}
     .note-lock-icon{color:var(--accent);font-size:13px;margin-top:3px;flex-shrink:0}
-    .note-preview{margin:9px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;white-space:normal;overflow-wrap:anywhere;unicode-bidi:plaintext;display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden}
+    .note-preview{margin:9px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;white-space:normal;overflow-wrap:break-word;word-spacing:normal;letter-spacing:normal;unicode-bidi:plaintext;display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden}
     .note-preview-blur{filter:blur(5px);user-select:none;pointer-events:none;opacity:.85}
     .note-labels{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
     .label-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;background:rgba(26,115,232,.1);color:var(--accent);font-size:10.5px;font-weight:700;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .note-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
     .note-byline{display:flex;align-items:center;gap:7px;min-width:0}
-    .note-time{color:var(--text-muted);font-size:10.5px;font-weight:700;white-space:nowrap}
+    .note-time{color:var(--text-muted);font-size:10.5px;font-weight:400;white-space:nowrap}
     .note-collab-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;background:rgba(26,115,232,.12);color:var(--accent);font-size:10px;font-weight:800}
     .card-menu-btn{width:30px;height:30px;opacity:0;font-size:13px;transition:.15s}
     .note-card:hover .card-menu-btn,.note-card:focus-within .card-menu-btn{opacity:1}
@@ -246,21 +246,21 @@
     .editor-toolbar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--sep)}
     .editor-toolbar-right{display:flex;align-items:center;gap:4px}
     .editor-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 0 16px;background:var(--note-bg,var(--surface))}
-    .editor-title{width:100%;padding:12px 24px 4px;border:0;outline:0;background:transparent;color:var(--text);font-size:24px;font-weight:800;line-height:1.35;letter-spacing:-.03em;unicode-bidi:plaintext}
+    .editor-title{width:100%;padding:12px 24px 4px;border:0;outline:0;background:transparent;color:var(--text);font-size:24px;font-weight:400;line-height:1.4;letter-spacing:0;word-spacing:normal;unicode-bidi:plaintext}
     .editor-title::placeholder{color:var(--text-muted)}
-    .editor-body{min-height:200px;padding:4px 24px 20px;outline:0;color:var(--text);font-size:16px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;unicode-bidi:plaintext}
+    .editor-body{min-height:200px;padding:4px 24px 20px;outline:0;color:var(--text);font-size:16px;line-height:1.7;white-space:pre-wrap;overflow-wrap:break-word;word-spacing:normal;letter-spacing:normal;unicode-bidi:plaintext}
     .editor-color-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 24px 16px}
     .editor-color-row .label{color:var(--text-muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
     .editor-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;padding:12px 20px;background:var(--note-bg,var(--surface));position:relative}
     .editor-footer::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--sep)}
-    .editor-meta{display:flex;align-items:center;gap:8px;min-width:0;color:var(--text-muted);font-size:11px;line-height:1.4}
+    .editor-meta{display:flex;align-items:center;gap:8px;min-width:0;color:var(--text-muted);font-size:11px;line-height:1.4;font-weight:400}
     .meta-avatars{display:flex;align-items:center;flex-shrink:0}
     .meta-avatars .avatar + .avatar{margin-left:-7px;border:2px solid var(--note-bg,var(--surface))}
-    .meta-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .meta-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:400}
     .meta-online{display:flex;align-items:center;gap:4px;color:var(--success);font-weight:700;flex-shrink:0}
     .meta-online-dot{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 0 2px rgba(24,128,56,.18)}
     .editor-footer-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
-    .save-status{min-width:74px;color:var(--text-muted);font-size:11px;font-weight:700;text-align:right}
+    .save-status{min-width:74px;color:var(--text-muted);font-size:11px;font-weight:400;text-align:right}
     .save-status.error{color:var(--danger)}
 
     .editor-body mark,
@@ -268,14 +268,12 @@
     .editor-body span[style*="background-color"],
     .composer-body span[style*="background-color"]{color:#1f2328!important;padding:0 2px;border-radius:3px}
 
-    .pwd-mask{display:inline-flex;align-items:center;gap:4px;padding:1px 6px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;vertical-align:baseline;line-height:1.5;transition:background-color .15s;user-select:none}
-    .pwd-mask:hover{background:rgba(26,115,232,.22)}
+    /* Password mask — clean, no icons */
+    .pwd-mask{display:inline-block;padding:1px 7px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;vertical-align:baseline;line-height:1.5;transition:background-color .15s;user-select:none;white-space:nowrap}
+    .pwd-mask:hover{background:rgba(26,115,232,.24)}
     .pwd-mask .pwd-display{white-space:nowrap;cursor:pointer;user-select:none}
-    .pwd-mask .pwd-toggle{font-size:10px;padding:2px;pointer-events:none;user-select:none}
-    .pwd-mask .pwd-copy{font-size:9px;padding:2px;cursor:pointer;user-select:none;opacity:.6;margin-left:1px;transition:opacity .15s}
-    .pwd-mask .pwd-copy:hover{opacity:1}
     .pwd-mask[data-visible="true"]{background:rgba(24,128,56,.13);color:var(--success)}
-    .pwd-mask[data-visible="true"]:hover{background:rgba(24,128,56,.22)}
+    .pwd-mask[data-visible="true"]:hover{background:rgba(24,128,56,.24)}
     .pwd-mask[data-visible="true"] .pwd-display{user-select:text;cursor:text}
 
     .context-menu{position:fixed;z-index:210;width:230px;padding:6px;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-lg);animation:menuIn .12s ease both}
@@ -827,6 +825,7 @@
     let allUsers=[];
     let hasLoadedNotes=false;
     let activeNoteId=null, activeNote=null;
+    let editorDirty=false;
     let pendingRemoteNote=null, activeNoteMissingAt=null;
     let currentEditorColor="default", currentComposerColor="default";
     let lastFocusedEditable=null;
@@ -878,6 +877,7 @@
       {label:"Italic",keys:["Ctrl","I"]},
       {label:"Underline",keys:["Ctrl","U"]},
       {label:"Hide selected as password",keys:["Ctrl","Q"]},
+      {label:"Unhide / restore hidden text",keys:["Ctrl","Shift","Q"]},
       {label:"Save note",keys:["Ctrl","Enter"]},
       {label:"Focus search",keys:["Ctrl","K"]},
       {label:"Close editor / dismiss",keys:["Esc"]},
@@ -901,24 +901,18 @@
     function encodePwd(str){try{return btoa(unescape(encodeURIComponent(str)));}catch(e){try{return btoa(str);}catch(e2){return "";}}}
     function decodePwd(b64){try{return decodeURIComponent(escape(atob(b64)));}catch(e){try{return atob(b64);}catch(e2){return "";}}}
 
-    /* ===== PWD MASK ===== */
+    /* ===== PASSWORD MASK — clean, no icons ===== */
     function buildPwdMaskElement(doc,pwd){
       const mask=doc.createElement("span");
       mask.className="pwd-mask";
       mask.setAttribute("contenteditable","false");
       mask.setAttribute("data-visible","false");
       mask.setAttribute("data-pwd",encodePwd(pwd));
+      mask.title="Click to reveal/hide. Ctrl+Shift+Q to restore as plain text.";
       const display=doc.createElement("span");
       display.className="pwd-display";
       display.textContent="•".repeat(Math.min(pwd.length||6,16));
-      const eye=doc.createElement("i");
-      eye.className="fa-solid fa-eye pwd-toggle";
-      eye.setAttribute("contenteditable","false");
-      const copy=doc.createElement("i");
-      copy.className="fa-solid fa-copy pwd-copy";
-      copy.setAttribute("contenteditable","false");
-      copy.title="Copy password";
-      mask.appendChild(display);mask.appendChild(eye);mask.appendChild(copy);
+      mask.appendChild(display);
       return mask;
     }
 
@@ -926,41 +920,18 @@
       const visible=mask.dataset.visible==="true";
       const pwd=decodePwd(mask.dataset.pwd||"");
       const display=mask.querySelector(".pwd-display");
-      const eye=mask.querySelector(".pwd-toggle");
       if(!display)return;
       if(visible){
         display.textContent="•".repeat(Math.min(pwd.length||6,16));
         mask.dataset.visible="false";
-        if(eye)eye.className="fa-solid fa-eye pwd-toggle";
       }else{
         display.textContent=pwd;
         mask.dataset.visible="true";
-        if(eye)eye.className="fa-solid fa-eye-slash pwd-toggle";
       }
-    }
-
-    async function copyPwdFromMask(mask){
-      const pwd=decodePwd(mask.dataset.pwd||"");
-      if(!pwd)return;
-      try{
-        if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(pwd);}
-        else{
-          const ta=document.createElement("textarea");
-          ta.value=pwd;ta.style.position="fixed";ta.style.opacity="0";
-          document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();
-        }
-        toast("Password copied.","success");
-      }catch(e){toast("Could not copy.","error");}
     }
 
     function handlePwdMaskClick(e){
       const mask=e.currentTarget;
-      const copyEl=e.target.closest(".pwd-copy");
-      if(copyEl){
-        e.preventDefault();e.stopPropagation();
-        copyPwdFromMask(mask);
-        return;
-      }
       togglePwdMask(mask);
     }
 
@@ -969,16 +940,63 @@
       pwdMaskHandlersAttached.add(mask);
       const pwd=decodePwd(mask.dataset.pwd||"");
       const display=mask.querySelector(".pwd-display");
-      const eye=mask.querySelector(".pwd-toggle");
       if(display)display.textContent="•".repeat(Math.min(pwd.length||6,16));
-      if(eye)eye.className="fa-solid fa-eye pwd-toggle";
       mask.dataset.visible="false";
       mask.setAttribute("contenteditable","false");
+      if(!mask.title)mask.title="Click to reveal/hide. Ctrl+Shift+Q to restore as plain text.";
       mask.addEventListener("click",handlePwdMaskClick);
     }
     function attachPwdMaskHandlers(container){container.querySelectorAll(".pwd-mask").forEach(attachPwdMaskHandlersTo);}
 
-    /* ===== COPY INTERCEPTION — substitute password for mask dots ===== */
+    /* ===== UNWRAP (restore hidden text to plain) ===== */
+    function unwrapMask(mask){
+      const parent=mask.parentNode;
+      if(!parent)return false;
+      const pwd=decodePwd(mask.dataset.pwd||"");
+      if(!pwd)return false;
+      const textNode=document.createTextNode(pwd);
+      parent.replaceChild(textNode,mask);
+      return true;
+    }
+
+    function unwrapMaskAtCursor(){
+      if(!lastFocusedEditable){toast("Place cursor on hidden text first.","info");return;}
+      const sel=window.getSelection();
+      if(!sel||!sel.rangeCount){toast("Place cursor on hidden text first.","info");return;}
+      const range=sel.getRangeAt(0);
+      let node=range.startContainer;
+      if(node.nodeType===3)node=node.parentElement;
+      let mask=node&&node.closest?node.closest(".pwd-mask"):null;
+
+      // If selection spans multiple, find any mask that intersects
+      if(!mask&&!sel.isCollapsed){
+        const container=range.commonAncestorContainer;
+        const el=container.nodeType===1?container:container.parentElement;
+        if(el){
+          const masks=el.querySelectorAll?.(".pwd-mask")||[];
+          for(const m of masks){
+            if(range.intersectsNode(m)){mask=m;break;}
+          }
+        }
+      }
+      // Fallback: any mask inside editable
+      if(!mask){
+        const masks=lastFocusedEditable.querySelectorAll(".pwd-mask");
+        for(const m of masks){
+          if(range.intersectsNode(m)){mask=m;break;}
+        }
+      }
+      if(!mask){toast("No hidden text at cursor.","info");return;}
+      const ok=unwrapMask(mask);
+      if(ok){
+        if(activeNoteId)scheduleEditorSave();
+        toast("Hidden text restored to normal.","success");
+      }else{
+        toast("Could not restore.","error");
+      }
+    }
+
+    /* ===== COPY — substitute actual password for hidden dots ===== */
     document.addEventListener("copy",(e)=>{
       const sel=window.getSelection();
       if(!sel||sel.isCollapsed)return;
@@ -1007,7 +1025,7 @@
       }catch(err){console.warn("Copy handler error:",err);}
     });
 
-    /* ===== PASTE — plain text only, preserve line breaks ===== */
+    /* ===== PASTE — clean plain text, preserve newlines ===== */
     function handlePasteEvent(e){
       e.preventDefault();
       const clipboard=e.clipboardData||window.clipboardData;
@@ -1148,7 +1166,7 @@
         sel.addRange(newRange);
         lastNonCollapsedRange=null;
         if(activeNoteId)scheduleEditorSave();
-        toast("Password hidden. Click it to reveal — select the text to copy.","success");
+        toast("Hidden. Click to reveal. Ctrl+Shift+Q to restore.","success");
       }catch(e){
         console.error(e);
         toast("Could not hide selection.","error");
@@ -1297,6 +1315,7 @@
       activeNoteId=null;activeNote=null;pendingRemoteNote=null;activeNoteMissingAt=null;
       activeLabelFilter=null;specialFilter=null;unlockedNoteIds.clear();
       userPasswordHash=null;userSecurityAnswerHash=null;
+      editorDirty=false;
       if(editorModal.classList.contains("open"))closeEditor({save:false});
       appRoot.classList.add("hidden");
       authScreen.classList.remove("hidden");
@@ -1614,7 +1633,7 @@
       setComposerColor(currentComposerColor);
       if(currentUser)applyFont(composerExpanded,currentUser.uid);
       lastFocusedEditable=composerBody;
-      composerTitle.focus();
+      composerBody.focus();
     }
     function collapseComposer({reset=true}={}){
       if(reset){composerTitle.value="";composerBody.innerHTML="";setComposerColor("default");composerPasswordPrompted=false;}
@@ -1670,6 +1689,7 @@
       }
       activeNoteId=noteId;
       activeNote={...note};
+      editorDirty=false;
       pendingRemoteNote=null;activeNoteMissingAt=null;
       editorTitle.value=note.title||"";
       editorBody.innerHTML=sanitizeHTML(note.body||"");
@@ -1695,8 +1715,12 @@
       }
     }
     async function closeEditor({save=true}={}){
-      if(save&&activeNoteId){clearTimeout(saveTimer);saveTimer=null;await saveActiveNote();}
+      if(save&&activeNoteId&&editorDirty){
+        clearTimeout(saveTimer);saveTimer=null;
+        await saveActiveNote();
+      }
       activeNoteId=null;activeNote=null;pendingRemoteNote=null;activeNoteMissingAt=null;
+      editorDirty=false;
       editorModal.classList.remove("open");
       editorModal.setAttribute("aria-hidden","true");
       document.body.classList.remove("modal-open");
@@ -1769,30 +1793,34 @@
       activeNote={...note};
       const focused=document.activeElement===editorTitle||editorBody.contains(document.activeElement);
       if(noteMatchesEditor(note)){pendingRemoteNote=null;return;}
-      if(focused){pendingRemoteNote=note;}else{applyNoteToEditor(note);}
+      if(focused||editorDirty){pendingRemoteNote=note;}else{applyNoteToEditor(note);}
     }
     function maybeApplyPendingOnBlur(){
       if(!pendingRemoteNote||!activeNoteId)return;
       if(!editorModal.classList.contains("open"))return;
       if(Date.now()-lastLocalEditAt<1500)return;
+      if(editorDirty)return;
       setTimeout(()=>{
         if(!editorModal.classList.contains("open"))return;
         if(document.activeElement===editorTitle)return;
         if(editorBody.contains(document.activeElement))return;
+        if(editorDirty)return;
         if(pendingRemoteNote)applyNoteToEditor(pendingRemoteNote);
       },150);
     }
 
     function scheduleEditorSave(){
       if(!activeNoteId)return;
+      editorDirty=true;
       lastLocalEditAt=Date.now();
       if(isSavingActiveNote){saveQueued=true;return;}
       clearTimeout(saveTimer);
       setSaveStatus("Unsaved changes");
       saveTimer=setTimeout(async()=>{saveTimer=null;await saveActiveNote();},650);
     }
-    async function saveActiveNote(){
+    async function saveActiveNote(force=false){
       if(!activeNoteId||!currentUser||isSavingActiveNote)return;
+      if(!editorDirty&&!force)return;
       isSavingActiveNote=true;saveQueued=false;
       setSaveStatus("Saving…");
       try{
@@ -1807,6 +1835,7 @@
           updatedByPhoto:currentUser.photoURL||"",
           clientUpdatedAt:Date.now()
         });
+        editorDirty=false;
         setSaveStatus("Saved");
       }catch(e){
         setSaveStatus("Error saving",true);
@@ -1926,7 +1955,6 @@
     }
     function updatePaletteSelection(container,color){container.querySelectorAll(".color-dot").forEach(b=>b.classList.toggle("selected",b.dataset.color===color));}
 
-    /* ===== FORMATTING (with selection save/restore) ===== */
     function execFormat(cmd){
       if(!lastFocusedEditable)return;
       const editable=lastFocusedEditable;
@@ -2498,8 +2526,16 @@
           return;
         }
       }
+      // Ctrl+Shift+Q → restore hidden text at cursor to plain text
+      if((e.ctrlKey||e.metaKey)&&e.shiftKey&&!e.altKey&&(e.key==="q"||e.key==="Q"||e.key==="Q")){
+        if(lastFocusedEditable&&lastFocusedEditable.contains(document.activeElement)){
+          e.preventDefault();
+          unwrapMaskAtCursor();
+          return;
+        }
+      }
       if(mod&&key==="enter"){
-        if(editorModal.classList.contains("open")){e.preventDefault();saveActiveNote();return;}
+        if(editorModal.classList.contains("open")){e.preventDefault();saveActiveNote(true);return;}
         if(!composerExpanded.classList.contains("hidden")){e.preventDefault();saveComposer();return;}
       }
       if(mod&&key==="k"){e.preventDefault();searchInput.focus();return;}
@@ -2520,7 +2556,7 @@
     });
 
     document.addEventListener("visibilitychange",()=>{
-      if(document.hidden&&activeNoteId){clearTimeout(saveTimer);saveTimer=null;saveActiveNote();}
+      if(document.hidden&&activeNoteId&&editorDirty){clearTimeout(saveTimer);saveTimer=null;saveActiveNote();}
     });
 
     setInterval(()=>{
