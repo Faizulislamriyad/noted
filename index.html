@@ -356,18 +356,29 @@
     .toast.success{background:var(--success);color:#fff}
     @keyframes toastIn{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
 
+    /* ===== MOBILE ===== */
     @media(max-width:900px){
       .header-inner{flex-wrap:wrap;gap:8px;padding:10px 14px}
       .brand{font-size:16px}
       .brand-icon{width:32px;height:32px;border-radius:10px;font-size:14px}
       .search-box{order:5;flex-basis:100%;max-width:none;height:40px;margin:0}
       .header-left{flex-shrink:0}
-      .collab-status-text{display:none}
-      .collab-status-badge{padding:3px;gap:0;background:transparent}
-      .collab-status-badge.solo{display:none}
-      .collab-status-badge .live-dot{display:none}
-      .collab-status-avatars .avatar{border:none;width:28px;height:28px;font-size:11px}
-      .collab-status-avatars .avatar + .avatar{margin-left:0}
+
+      /* Hide keyboard shortcuts icon on mobile */
+      #shortcuts-btn{display:none!important}
+
+      /* Collab badge — take the freed space, show up to 3 avatars side by side */
+      .collab-status-badge{padding:4px 10px 4px 6px;gap:5px;background:rgba(24,128,56,.08)}
+      .collab-status-badge.solo{padding:6px 10px;background:var(--surface-2)}
+      .collab-status-badge:not(.solo) .collab-status-text{display:none}
+      .collab-status-badge.solo .collab-status-text{display:inline;font-size:11.5px;font-weight:700;color:var(--text-muted)}
+      .collab-status-badge.solo .live-dot{display:none}
+      .collab-status-badge:not(.solo) .live-dot{display:inline-block;animation:pulse 2s ease-in-out infinite}
+      .collab-status-avatars .avatar{width:24px;height:24px;font-size:9px;border:2px solid var(--surface)}
+      .collab-status-avatars .avatar + .avatar{margin-left:-8px}
+      /* Live pulse glow around badge when active */
+      .collab-status-badge:not(.solo){animation:collabLiveGlow 2.4s ease-in-out infinite}
+
       .main{padding:16px 14px 80px}
       .composer{margin-bottom:20px}
       .notes-grid{columns:1}
@@ -381,6 +392,12 @@
       .meta-text{max-width:130px}
       .empty-state{margin:36px auto}
     }
+
+    @keyframes collabLiveGlow{
+      0%,100%{box-shadow:0 0 0 0 rgba(24,128,56,0)}
+      50%{box-shadow:0 0 0 4px rgba(24,128,56,.18)}
+    }
+
     @media(max-width:420px){
       .auth-card{padding:30px 20px 24px;border-radius:22px}
       .auth-card h1{font-size:30px}
@@ -389,7 +406,10 @@
       .meta-text{max-width:100px}
       .header-actions{gap:4px}
       .icon-btn{width:36px;height:36px;font-size:14px}
+      .collab-status-avatars .avatar{width:22px;height:22px;font-size:8px}
+      .collab-status-avatars .avatar + .avatar{margin-left:-7px}
     }
+
     @media(max-width:900px){
       .search-box input,
       .label-input-row input,
@@ -851,8 +871,6 @@
     let composerPasswordPrompted=false;
     const pwdMaskHandlersAttached=new WeakSet();
     let lastNonCollapsedRange=null, lastRangeEditable=null;
-    let avatarRotationTimer=null;
-    let avatarRotationUids=[];
 
     document.addEventListener("selectionchange",()=>{
       const sel=window.getSelection();
@@ -908,7 +926,6 @@
     function encodePwd(str){try{return btoa(unescape(encodeURIComponent(str)));}catch(e){try{return btoa(str);}catch(e2){return "";}}}
     function decodePwd(b64){try{return decodeURIComponent(escape(atob(b64)));}catch(e){try{return atob(b64);}catch(e2){return "";}}}
 
-    /* ===== CARET PRESERVATION (for live remote sync) ===== */
     function getCaretCharOffset(container){
       const sel=window.getSelection();
       if(!sel||!sel.rangeCount)return -1;
@@ -929,15 +946,10 @@
       let node,found=false;
       while((node=walker.nextNode())){
         const len=node.textContent.length;
-        if(remaining<=len){
-          try{range.setStart(node,remaining);found=true;}catch(e){}
-          break;
-        }
+        if(remaining<=len){try{range.setStart(node,remaining);found=true;}catch(e){}break;}
         remaining-=len;
       }
-      if(!found){
-        range.selectNodeContents(container);
-      }
+      if(!found)range.selectNodeContents(container);
       range.collapse(true);
       try{sel.removeAllRanges();sel.addRange(range);}catch(e){}
     }
@@ -956,7 +968,6 @@
       mask.appendChild(display);
       return mask;
     }
-
     function togglePwdMask(mask){
       const visible=mask.dataset.visible==="true";
       const pwd=decodePwd(mask.dataset.pwd||"");
@@ -970,32 +981,23 @@
         mask.dataset.visible="true";
       }
     }
-
-    function handlePwdMaskClick(e){
-      const mask=e.currentTarget;
-      togglePwdMask(mask);
-    }
-
+    function handlePwdMaskClick(e){togglePwdMask(e.currentTarget);}
     function restoreMaskToPlain(mask){
       const pwd=decodePwd(mask.dataset.pwd||"");
       if(!pwd)return false;
       const parent=mask.parentNode;
       if(!parent)return false;
-      const textNode=document.createTextNode(pwd);
-      parent.replaceChild(textNode,mask);
+      parent.replaceChild(document.createTextNode(pwd),mask);
       return true;
     }
-
     function promptRestoreMask(mask){
-      const pwd=decodePwd(mask.dataset.pwd||"");
-      if(!pwd)return;
+      if(!decodePwd(mask.dataset.pwd||""))return;
       if(!confirm("Restore this hidden text to normal?"))return;
       if(restoreMaskToPlain(mask)){
         if(activeNoteId){editorDirty=true;scheduleEditorSave();}
         toast("Restored to plain text.","success");
       }
     }
-
     function attachPwdMaskHandlersTo(mask){
       if(pwdMaskHandlersAttached.has(mask))return;
       pwdMaskHandlersAttached.add(mask);
@@ -1005,30 +1007,15 @@
       mask.dataset.visible="false";
       mask.setAttribute("contenteditable","false");
       if(!mask.title)mask.title="Tap to reveal/hide. Long-press or right-click to restore as plain text.";
-
       mask.addEventListener("click",handlePwdMaskClick);
-
-      mask.addEventListener("contextmenu",(e)=>{
-        e.preventDefault();
-        e.stopPropagation();
-        promptRestoreMask(mask);
-      });
-
-      let longPressTimer=null;
-      let didLongPress=false;
+      mask.addEventListener("contextmenu",(e)=>{e.preventDefault();e.stopPropagation();promptRestoreMask(mask);});
+      let lpTimer=null,didLongPress=false;
       mask.addEventListener("touchstart",()=>{
         didLongPress=false;
-        longPressTimer=setTimeout(()=>{
-          longPressTimer=null;
-          didLongPress=true;
-          promptRestoreMask(mask);
-        },600);
+        lpTimer=setTimeout(()=>{lpTimer=null;didLongPress=true;promptRestoreMask(mask);},600);
       },{passive:true});
-      const cancelLp=()=>{if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}};
-      mask.addEventListener("touchend",(e)=>{
-        cancelLp();
-        if(didLongPress){e.preventDefault();e.stopPropagation();}
-      });
+      const cancelLp=()=>{if(lpTimer){clearTimeout(lpTimer);lpTimer=null;}};
+      mask.addEventListener("touchend",(e)=>{cancelLp();if(didLongPress){e.preventDefault();e.stopPropagation();}});
       mask.addEventListener("touchmove",cancelLp);
       mask.addEventListener("touchcancel",cancelLp);
     }
@@ -1042,10 +1029,6 @@
       let node=range.startContainer;
       if(node.nodeType===3)node=node.parentElement;
       let mask=node&&node.closest?node.closest(".pwd-mask"):null;
-      if(!mask&&!sel.isCollapsed){
-        const masks=lastFocusedEditable.querySelectorAll(".pwd-mask");
-        for(const m of masks){if(range.intersectsNode(m)){mask=m;break;}}
-      }
       if(!mask){
         const masks=lastFocusedEditable.querySelectorAll(".pwd-mask");
         for(const m of masks){if(range.intersectsNode(m)){mask=m;break;}}
@@ -1054,12 +1037,9 @@
       if(restoreMaskToPlain(mask)){
         if(activeNoteId){editorDirty=true;scheduleEditorSave();}
         toast("Hidden text restored to normal.","success");
-      }else{
-        toast("Could not restore.","error");
-      }
+      }else{toast("Could not restore.","error");}
     }
 
-    /* ===== COPY — substitute actual password ===== */
     document.addEventListener("copy",(e)=>{
       const sel=window.getSelection();
       if(!sel||sel.isCollapsed)return;
@@ -1076,19 +1056,13 @@
         const temp=document.createElement("div");
         temp.appendChild(frag);
         temp.querySelectorAll(".pwd-mask").forEach(m=>{
-          const pwd=decodePwd(m.dataset.pwd||"");
-          m.replaceWith(document.createTextNode(pwd));
+          m.replaceWith(document.createTextNode(decodePwd(m.dataset.pwd||"")));
         });
         const text=temp.textContent||"";
-        if(text){
-          e.clipboardData.setData("text/plain",text);
-          e.preventDefault();
-          toast("Copied.","success");
-        }
-      }catch(err){console.warn("Copy handler error:",err);}
+        if(text){e.clipboardData.setData("text/plain",text);e.preventDefault();toast("Copied.","success");}
+      }catch(err){console.warn(err);}
     });
 
-    /* ===== PASTE ===== */
     function handlePasteEvent(e){
       e.preventDefault();
       const clipboard=e.clipboardData||window.clipboardData;
@@ -1112,11 +1086,9 @@
       const lastChild=frag.lastChild;
       range.insertNode(frag);
       if(lastChild){
-        const newRange=document.createRange();
-        newRange.setStartAfter(lastChild);
-        newRange.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(newRange);
+        const nr=document.createRange();
+        nr.setStartAfter(lastChild);nr.collapse(true);
+        sel.removeAllRanges();sel.addRange(nr);
       }
       if(activeNoteId)scheduleEditorSave();
     }
@@ -1139,8 +1111,7 @@
         if(tag==="SPAN"&&child.classList&&child.classList.contains("pwd-mask")){
           const pwd=decodePwd(child.getAttribute("data-pwd")||"");
           if(!pwd){child.remove();continue;}
-          const fresh=buildPwdMaskElement(child.ownerDocument,pwd);
-          child.replaceWith(fresh);
+          child.replaceWith(buildPwdMaskElement(child.ownerDocument,pwd));
           continue;
         }
         if(DANGEROUS_TAGS.has(tag)){child.remove();continue;}
@@ -1222,18 +1193,13 @@
         const mask=buildPwdMaskElement(document,text);
         range.insertNode(mask);
         attachPwdMaskHandlersTo(mask);
-        const newRange=document.createRange();
-        newRange.setStartAfter(mask);
-        newRange.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(newRange);
+        const nr=document.createRange();
+        nr.setStartAfter(mask);nr.collapse(true);
+        sel.removeAllRanges();sel.addRange(nr);
         lastNonCollapsedRange=null;
         if(activeNoteId){editorDirty=true;scheduleEditorSave();}
         toast("Hidden. Tap to reveal. Long-press to restore.","success");
-      }catch(e){
-        console.error(e);
-        toast("Could not hide selection.","error");
-      }
+      }catch(e){console.error(e);toast("Could not hide selection.","error");}
     }
 
     function authErrorMessage(code){
@@ -1296,14 +1262,8 @@
           const data=snap.data();
           userPasswordHash=data.passwordHash||null;
           userSecurityAnswerHash=data.securityAnswerHash||null;
-        }else{
-          userPasswordHash=null;
-          userSecurityAnswerHash=null;
-        }
-      }catch(e){
-        userPasswordHash=null;
-        userSecurityAnswerHash=null;
-      }
+        }else{userPasswordHash=null;userSecurityAnswerHash=null;}
+      }catch(e){userPasswordHash=null;userSecurityAnswerHash=null;}
       updatePasswordUI();
     }
 
@@ -1337,56 +1297,35 @@
       return active;
     }
 
-    /* ===== AVATAR ROTATION FOR MOBILE ===== */
-    function stopAvatarRotation(){
-      if(avatarRotationTimer){clearInterval(avatarRotationTimer);avatarRotationTimer=null;}
-      avatarRotationUids=[];
-    }
-    function startAvatarRotation(uids){
-      const sameSet=uids.length===avatarRotationUids.length
-        &&uids.every((uid,i)=>uid===avatarRotationUids[i]);
-      if(sameSet&&avatarRotationTimer)return;
-      stopAvatarRotation();
-      avatarRotationUids=uids.slice();
-      let index=0;
-      const renderCurrent=()=>{
-        if(!currentUser||avatarRotationUids.length===0)return;
-        const uid=avatarRotationUids[index%avatarRotationUids.length];
-        const u=allUsers.find(x=>x.uid===uid);
-        if(u)collabStatusAvatars.innerHTML=avatarHTML(u.photoURL,u.displayName,"sm");
-        index++;
-      };
-      renderCurrent();
-      if(avatarRotationUids.length>1){
-        avatarRotationTimer=setInterval(renderCurrent,2000);
-      }
-    }
-
     function updateCollabStatusBadge(){
       if(!currentUser)return;
       const active=getActiveCollaborators();
       const isMobile=window.innerWidth<=900;
+
       if(active.size===0){
         collabStatusBadge.classList.add("solo");
         collabStatusText.textContent="Solo";
         collabStatusAvatars.innerHTML="";
-        stopAvatarRotation();
+        collabStatusBadge.title="No collaborators active";
         return;
       }
+
       collabStatusBadge.classList.remove("solo");
+
+      // Show up to 3 avatars side by side (both mobile and desktop)
+      const uids=Array.from(active.keys()).slice(0,3);
+      collabStatusAvatars.innerHTML=uids.map(uid=>{
+        const u=allUsers.find(x=>x.uid===uid);
+        return u?avatarHTML(u.photoURL,u.displayName,"xs"):"";
+      }).join("");
+
+      const label=active.size===1?"1 collaborator active":`${active.size} collaborators active`;
+      collabStatusBadge.title=label;
+
       if(isMobile){
-        // Mobile: rotate through one avatar at a time
         collabStatusText.textContent="";
-        collabStatusBadge.title=active.size===1?"1 collaborator active":`${active.size} collaborators active`;
-        startAvatarRotation(Array.from(active.keys()));
       }else{
         collabStatusText.textContent=active.size===1?"1 online":`${active.size} online`;
-        collabStatusBadge.title="Collaborator activity";
-        collabStatusAvatars.innerHTML=Array.from(active.keys()).slice(0,3).map(uid=>{
-          const u=allUsers.find(x=>x.uid===uid);
-          return u?avatarHTML(u.photoURL,u.displayName,"xs"):"";
-        }).join("");
-        stopAvatarRotation();
       }
     }
 
@@ -1414,7 +1353,6 @@
       currentUser=null;
       if(unsubscribeNotes){unsubscribeNotes();unsubscribeNotes=null;}
       if(unsubscribeUsers){unsubscribeUsers();unsubscribeUsers=null;}
-      stopAvatarRotation();
       notes=[];allUsers=[];hasLoadedNotes=false;
       activeNoteId=null;activeNote=null;pendingRemoteNote=null;activeNoteMissingAt=null;
       clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
@@ -1449,11 +1387,7 @@
         notes=snap.docs.map(d=>({id:d.id,...d.data()}));
         hasLoadedNotes=true;
         notesLoading.classList.add("hidden");
-
-        // Apply to open editor IMMEDIATELY for low-latency live sync
         handleActiveNoteRemoteUpdate();
-
-        // Font-dependent renders
         ensureFontsLoaded(notes).then(()=>{
           renderNotes();
           renderDrawerLabels();
@@ -1533,19 +1467,13 @@
     function updatePasswordUI(){
       if(!currentUser)return;
       const isSet=!!userPasswordHash;
-      if(isSet){
-        passwordSetupForm.classList.add("hidden");
-        passwordSetInfo.classList.remove("hidden");
-      }else{
-        passwordSetupForm.classList.remove("hidden");
-        passwordSetInfo.classList.add("hidden");
-      }
+      if(isSet){passwordSetupForm.classList.add("hidden");passwordSetInfo.classList.remove("hidden");}
+      else{passwordSetupForm.classList.remove("hidden");passwordSetInfo.classList.add("hidden");}
       if(passwordError)passwordError.textContent="";
       if(settingsPasswordInput)settingsPasswordInput.value="";
       if(settingsPasswordConfirm)settingsPasswordConfirm.value="";
       if(settingsPasswordAnswer)settingsPasswordAnswer.value="";
     }
-
     async function handleSetPassword(){
       if(!currentUser)return;
       passwordError.textContent="";
@@ -1565,7 +1493,6 @@
         toast("Password saved.","success");
       }catch(e){passwordError.textContent="Could not save password.";}
     }
-
     async function handleRemovePassword(){
       if(!currentUser||!userPasswordHash)return;
       const ok=await promptForPassword("Remove Password","Enter your current password to remove it.");
@@ -1581,7 +1508,6 @@
         toast("Password removed. Set a new one if you like.","success");
       }catch(e){toast("Could not remove password.","error");}
     }
-
     async function handleForgotPassword(){
       if(!currentUser||!userSecurityAnswerHash){toast("No recovery answer set.","info");return;}
       const answer=prompt("What is your favorite thing?");
@@ -1596,7 +1522,6 @@
         toast("Please set a new password.","info");
       }catch(e){toast("Could not reset password.","error");}
     }
-
     async function verifyPassword(password){
       if(!currentUser||!userPasswordHash)return false;
       return (await hashPassword(password))===userPasswordHash;
@@ -1620,7 +1545,7 @@
     }
     async function submitPasswordPrompt(){
       if(!passwordResolve)return;
-      if(!userPasswordHash){await loadUserPasswordHash();}
+      if(!userPasswordHash)await loadUserPasswordHash();
       const pw=passwordInput.value;
       if(!pw){passwordModalError.textContent="Enter your password.";return;}
       const ok=await verifyPassword(pw);
@@ -1693,8 +1618,7 @@
         if(timeEl){const t=timeAgo(note.updatedAt||note.clientUpdatedAt);if(timeEl.textContent!==t)timeEl.textContent=t;}
         return;
       }
-      const newCard=createNoteCard(note);
-      card.replaceWith(newCard);
+      card.replaceWith(createNoteCard(note));
     }
     function createNoteCard(note){
       const card=document.createElement("article");
@@ -1827,10 +1751,7 @@
     }
     async function closeEditor({save=true}={}){
       clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
-      if(save&&activeNoteId&&editorDirty){
-        clearTimeout(saveTimer);saveTimer=null;
-        await saveActiveNote();
-      }
+      if(save&&activeNoteId&&editorDirty){clearTimeout(saveTimer);saveTimer=null;await saveActiveNote();}
       activeNoteId=null;activeNote=null;pendingRemoteNote=null;activeNoteMissingAt=null;
       editorDirty=false;
       editorModal.classList.remove("open");
@@ -1868,14 +1789,12 @@
       `;
     }
 
-    /* ===== LIVE SYNC WITH CARET PRESERVATION ===== */
     function applyNoteToEditor(note){
       const titleHadFocus=document.activeElement===editorTitle;
       const bodyHadFocus=editorBody.contains(document.activeElement);
       const caretOffset=bodyHadFocus?getCaretCharOffset(editorBody):-1;
       const titleSelStart=titleHadFocus?editorTitle.selectionStart:-1;
       const titleSelEnd=titleHadFocus?editorTitle.selectionEnd:-1;
-
       editorTitle.value=note.title||"";
       editorBody.innerHTML=sanitizeHTML(note.body||"");
       attachPwdMaskHandlers(editorBody);
@@ -1885,7 +1804,6 @@
       applyEditorFont();
       activeNote={...note};
       pendingRemoteNote=null;
-
       if(bodyHadFocus){
         try{editorBody.focus();}catch(e){}
         if(caretOffset>=0)setCaretCharOffset(editorBody,caretOffset);
@@ -1905,7 +1823,6 @@
       const eb=sanitizeHTML(editorBody.innerHTML);
       return nt===et&&nb===eb&&normalizeColor(note.color)===currentEditorColor&&Boolean(note.pinned)===editorPinBtn.classList.contains("active");
     }
-
     function scheduleRemoteApply(){
       clearTimeout(pendingRemoteApplyTimer);
       const elapsed=Date.now()-lastLocalEditAt;
@@ -1913,15 +1830,10 @@
       pendingRemoteApplyTimer=setTimeout(()=>{
         pendingRemoteApplyTimer=null;
         if(!pendingRemoteNote||!activeNoteId)return;
-        // If user is still typing, wait a bit more
-        if(Date.now()-lastLocalEditAt<700){
-          scheduleRemoteApply();
-          return;
-        }
+        if(Date.now()-lastLocalEditAt<700){scheduleRemoteApply();return;}
         applyNoteToEditor(pendingRemoteNote);
       },delay);
     }
-
     function handleActiveNoteRemoteUpdate(){
       if(!activeNoteId)return;
       const note=notes.find(n=>n.id===activeNoteId);
@@ -1939,29 +1851,22 @@
       }
       activeNoteMissingAt=null;
       activeNote={...note};
-
       if(noteMatchesEditor(note)){
         pendingRemoteNote=null;
         clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
         return;
       }
-
       const sinceEdit=Date.now()-lastLocalEditAt;
       const saveInProgress=isSavingActiveNote||saveTimer!==null;
-
-      // If no local edits pending OR user has been idle → apply instantly
       if(!saveInProgress&&sinceEdit>800){
         pendingRemoteNote=null;
         clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
         applyNoteToEditor(note);
         return;
       }
-
-      // User is typing or has pending save → queue and apply when they pause
       pendingRemoteNote=note;
       scheduleRemoteApply();
     }
-
     function maybeApplyPendingOnBlur(){
       if(!pendingRemoteNote||!activeNoteId)return;
       if(!editorModal.classList.contains("open"))return;
@@ -2029,11 +1934,7 @@
       if(!note)return;
       if(note.owner!==currentUser?.uid){toast("Only the creator can delete this note.","error");return;}
       try{
-        await updateDoc(doc(db,"notes",noteId),{
-          deleted:true,deletedAt:serverTimestamp(),updatedAt:serverTimestamp(),
-          updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",
-          updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()
-        });
+        await updateDoc(doc(db,"notes",noteId),{deleted:true,deletedAt:serverTimestamp(),updatedAt:serverTimestamp(),updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()});
         if(activeNoteId===noteId)closeEditor({save:false});
         showUndoToast(noteId);
       }catch(e){toast("Could not delete note.","error");}
@@ -2092,13 +1993,8 @@
         if(!ok)return;
       }
       try{
-        await updateDoc(doc(db,"notes",noteId),{
-          locked:next,updatedAt:serverTimestamp(),
-          updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",
-          updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()
-        });
-        if(next){unlockedNoteIds.delete(noteId);}
-        else{unlockedNoteIds.add(noteId);}
+        await updateDoc(doc(db,"notes",noteId),{locked:next,updatedAt:serverTimestamp(),updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()});
+        if(next)unlockedNoteIds.delete(noteId);else unlockedNoteIds.add(noteId);
         toast(next?"Note locked.":"Note unlocked.","success");
       }catch(e){toast("Could not update lock.","error");}
     }
@@ -2134,14 +2030,9 @@
         }
       }
       editable.focus();
-      if(savedRange&&sel){
-        sel.removeAllRanges();
-        sel.addRange(savedRange);
-      }
-      try{
-        document.execCommand("styleWithCSS",false,false);
-        document.execCommand(cmd,false,null);
-      }catch(e){console.warn("Format failed:",e);}
+      if(savedRange&&sel){sel.removeAllRanges();sel.addRange(savedRange);}
+      try{document.execCommand("styleWithCSS",false,false);document.execCommand(cmd,false,null);}
+      catch(e){console.warn(e);}
       updateToolbarStates();
       setTimeout(updateToolbarStates,20);
       if(activeNoteId)scheduleEditorSave();
@@ -2179,10 +2070,9 @@
         mark.setAttribute("style",`background-color:${hex}`);
         mark.appendChild(fragment);
         range.insertNode(mark);
-        const newRange=document.createRange();
-        newRange.selectNodeContents(mark);
-        sel.removeAllRanges();
-        sel.addRange(newRange);
+        const nr=document.createRange();
+        nr.selectNodeContents(mark);
+        sel.removeAllRanges();sel.addRange(nr);
         lastHighlightColor=hex;
       }catch(e){
         try{
@@ -2382,7 +2272,6 @@
         renderLabelList();renderLabelSuggestions();renderDrawerLabels();
       }catch(e){toast("Could not remove label.","error");}
     }
-
     function renderDrawerLabels(){
       const map=collectAllLabels();
       if(!map.size){drawerLabels.innerHTML='<div class="drawer-empty">No labels yet.</div>';return;}
@@ -2576,7 +2465,7 @@
         if(PASSWORD_PATTERN.test(text)){
           composerPasswordPrompted=true;
           if(confirm("We noticed a password in your note. Hide it from random viewers?\n\nTip: you can also select text and press Ctrl+Q to hide anything.")){
-            if(wrapPasswordInEditable(composerBody)) toast("Password hidden. Click the eye to reveal.","success");
+            if(wrapPasswordInEditable(composerBody)) toast("Password hidden. Tap to reveal.","success");
           }
         }
       },1500);
@@ -2586,18 +2475,14 @@
       const sel=window.getSelection();
       if(sel&&sel.rangeCount&&!sel.isCollapsed){
         const range=sel.getRangeAt(0);
-        if(composerBody.contains(range.commonAncestorContainer)){
-          lastNonCollapsedRange=range.cloneRange();
-          lastRangeEditable=composerBody;
-        }
+        if(composerBody.contains(range.commonAncestorContainer)){lastNonCollapsedRange=range.cloneRange();lastRangeEditable=composerBody;}
       }
     });
     composerHideBtn.addEventListener("click",()=>{
       if(!lastNonCollapsedRange||!lastRangeEditable){toast("Select text first.","info");return;}
       lastFocusedEditable=lastRangeEditable;
       const sel=window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(lastNonCollapsedRange);
+      sel.removeAllRanges();sel.addRange(lastNonCollapsedRange);
       wrapSelectionAsPassword();
     });
 
@@ -2615,7 +2500,7 @@
         if(PASSWORD_PATTERN.test(text)){
           passwordPromptShownFor.add(activeNoteId);
           if(confirm("We noticed a password in your note. Hide it from random viewers?\n\nTip: you can also select text and press Ctrl+Q to hide anything.")){
-            if(wrapPasswordInEditable(editorBody)){scheduleEditorSave();toast("Password hidden. Click the eye to reveal.","success");}
+            if(wrapPasswordInEditable(editorBody)){scheduleEditorSave();toast("Password hidden. Tap to reveal.","success");}
           }
         }
       },1500);
@@ -2632,18 +2517,14 @@
       const sel=window.getSelection();
       if(sel&&sel.rangeCount&&!sel.isCollapsed){
         const range=sel.getRangeAt(0);
-        if(editorBody.contains(range.commonAncestorContainer)){
-          lastNonCollapsedRange=range.cloneRange();
-          lastRangeEditable=editorBody;
-        }
+        if(editorBody.contains(range.commonAncestorContainer)){lastNonCollapsedRange=range.cloneRange();lastRangeEditable=editorBody;}
       }
     });
     editorHideBtn.addEventListener("click",()=>{
       if(!lastNonCollapsedRange||!lastRangeEditable){toast("Select text first.","info");return;}
       lastFocusedEditable=lastRangeEditable;
       const sel=window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(lastNonCollapsedRange);
+      sel.removeAllRanges();sel.addRange(lastNonCollapsedRange);
       wrapSelectionAsPassword();
     });
 
