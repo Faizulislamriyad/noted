@@ -268,14 +268,15 @@
     .editor-body span[style*="background-color"],
     .composer-body span[style*="background-color"]{color:#1f2328!important;padding:0 2px;border-radius:3px}
 
-    .pwd-mask{display:inline-flex;align-items:center;gap:5px;padding:1px 7px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;vertical-align:baseline;line-height:1.5;transition:.15s}
-    .pwd-mask:hover{background:rgba(26,115,232,.2)}
-    .pwd-mask .pwd-display{white-space:nowrap;user-select:text;cursor:text}
-    .pwd-mask .pwd-toggle{font-size:10px;padding:2px;cursor:pointer;user-select:none;pointer-events:none}
-    .pwd-mask .pwd-copy{font-size:10px;display:none;padding:2px;cursor:pointer;user-select:none}
+    .pwd-mask{display:inline-flex;align-items:center;gap:4px;padding:1px 6px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;vertical-align:baseline;line-height:1.5;transition:background-color .15s;user-select:none}
+    .pwd-mask:hover{background:rgba(26,115,232,.22)}
+    .pwd-mask .pwd-display{white-space:nowrap;cursor:pointer;user-select:none}
+    .pwd-mask .pwd-toggle{font-size:10px;padding:2px;pointer-events:none;user-select:none}
+    .pwd-mask .pwd-copy{font-size:9px;padding:2px;cursor:pointer;user-select:none;opacity:.6;margin-left:1px;transition:opacity .15s}
+    .pwd-mask .pwd-copy:hover{opacity:1}
     .pwd-mask[data-visible="true"]{background:rgba(24,128,56,.13);color:var(--success)}
-    .pwd-mask[data-visible="true"]:hover{background:rgba(24,128,56,.2)}
-    .pwd-mask[data-visible="true"] .pwd-copy{display:inline-block}
+    .pwd-mask[data-visible="true"]:hover{background:rgba(24,128,56,.22)}
+    .pwd-mask[data-visible="true"] .pwd-display{user-select:text;cursor:text}
 
     .context-menu{position:fixed;z-index:210;width:230px;padding:6px;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-lg);animation:menuIn .12s ease both}
     .context-colors{display:flex;flex-wrap:wrap;gap:6px;padding:6px 4px 10px;border-bottom:1px solid var(--sep);margin-bottom:4px}
@@ -804,7 +805,6 @@
     const settingsPasswordConfirm=$("settings-password-confirm");
     const settingsPasswordAnswer=$("settings-password-answer");
     const setPasswordBtn=$("set-password-btn");
-    const setPasswordText=$("set-password-text");
     const removePasswordBtn=$("remove-password-btn");
     const forgotPasswordBtn=$("forgot-password-btn");
     const passwordError=$("password-error");
@@ -901,6 +901,7 @@
     function encodePwd(str){try{return btoa(unescape(encodeURIComponent(str)));}catch(e){try{return btoa(str);}catch(e2){return "";}}}
     function decodePwd(b64){try{return decodeURIComponent(escape(atob(b64)));}catch(e){try{return atob(b64);}catch(e2){return "";}}}
 
+    /* ===== PWD MASK ===== */
     function buildPwdMaskElement(doc,pwd){
       const mask=doc.createElement("span");
       mask.className="pwd-mask";
@@ -960,8 +961,6 @@
         copyPwdFromMask(mask);
         return;
       }
-      const sel=window.getSelection();
-      if(sel&&!sel.isCollapsed)return;
       togglePwdMask(mask);
     }
 
@@ -978,6 +977,68 @@
       mask.addEventListener("click",handlePwdMaskClick);
     }
     function attachPwdMaskHandlers(container){container.querySelectorAll(".pwd-mask").forEach(attachPwdMaskHandlersTo);}
+
+    /* ===== COPY INTERCEPTION — substitute password for mask dots ===== */
+    document.addEventListener("copy",(e)=>{
+      const sel=window.getSelection();
+      if(!sel||sel.isCollapsed)return;
+      const range=sel.getRangeAt(0);
+      let root=range.commonAncestorContainer;
+      if(root.nodeType===3)root=root.parentElement;
+      if(!root||!root.querySelectorAll)return;
+      const masks=root.querySelectorAll(".pwd-mask");
+      let hasMask=false;
+      for(const m of masks){if(range.intersectsNode(m)){hasMask=true;break;}}
+      if(!hasMask)return;
+      try{
+        const frag=range.cloneContents();
+        const temp=document.createElement("div");
+        temp.appendChild(frag);
+        temp.querySelectorAll(".pwd-mask").forEach(m=>{
+          const pwd=decodePwd(m.dataset.pwd||"");
+          m.replaceWith(document.createTextNode(pwd));
+        });
+        const text=temp.textContent||"";
+        if(text){
+          e.clipboardData.setData("text/plain",text);
+          e.preventDefault();
+          toast("Copied.","success");
+        }
+      }catch(err){console.warn("Copy handler error:",err);}
+    });
+
+    /* ===== PASTE — plain text only, preserve line breaks ===== */
+    function handlePasteEvent(e){
+      e.preventDefault();
+      const clipboard=e.clipboardData||window.clipboardData;
+      if(!clipboard)return;
+      const text=clipboard.getData("text/plain");
+      if(!text)return;
+      const sel=window.getSelection();
+      if(!sel||!sel.rangeCount)return;
+      const range=sel.getRangeAt(0);
+      const container=range.commonAncestorContainer;
+      const isInEditor=editorBody.contains(container)||container===editorBody;
+      const isInComposer=composerBody.contains(container)||container===composerBody;
+      if(!isInEditor&&!isInComposer)return;
+      range.deleteContents();
+      const lines=text.split(/\r?\n/);
+      const frag=document.createDocumentFragment();
+      lines.forEach((line,i)=>{
+        if(i>0)frag.appendChild(document.createElement("br"));
+        if(line)frag.appendChild(document.createTextNode(line));
+      });
+      const lastChild=frag.lastChild;
+      range.insertNode(frag);
+      if(lastChild){
+        const newRange=document.createRange();
+        newRange.setStartAfter(lastChild);
+        newRange.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+      }
+      if(activeNoteId)scheduleEditorSave();
+    }
 
     function sanitizeHTML(html){
       if(!html)return"";
@@ -1865,13 +1926,32 @@
     }
     function updatePaletteSelection(container,color){container.querySelectorAll(".color-dot").forEach(b=>b.classList.toggle("selected",b.dataset.color===color));}
 
+    /* ===== FORMATTING (with selection save/restore) ===== */
     function execFormat(cmd){
       if(!lastFocusedEditable)return;
-      lastFocusedEditable.focus();
-      try{document.execCommand("styleWithCSS",false,false);document.execCommand(cmd,false,null);}catch(e){}
+      const editable=lastFocusedEditable;
+      const sel=window.getSelection();
+      let savedRange=null;
+      if(sel&&sel.rangeCount>0){
+        const r=sel.getRangeAt(0);
+        if(editable.contains(r.commonAncestorContainer)||editable===r.commonAncestorContainer){
+          savedRange=r.cloneRange();
+        }
+      }
+      editable.focus();
+      if(savedRange&&sel){
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+      }
+      try{
+        document.execCommand("styleWithCSS",false,false);
+        document.execCommand(cmd,false,null);
+      }catch(e){console.warn("Format failed:",e);}
       updateToolbarStates();
+      setTimeout(updateToolbarStates,20);
       if(activeNoteId)scheduleEditorSave();
     }
+
     function getSelectionBgColor(){
       const sel=window.getSelection();
       if(!sel||!sel.rangeCount)return null;
@@ -1918,16 +1998,6 @@
       }
       updateToolbarStates();
       if(activeNoteId)scheduleEditorSave();
-    }
-    function hasHighlightInRange(range){
-      const editable=lastFocusedEditable;
-      if(!editable)return false;
-      const all=editable.querySelectorAll("mark, span[style*='background-color']");
-      for(const el of all){
-        const hex=rgbToHex(getComputedStyle(el).backgroundColor);
-        if(hex&&ALLOWED_HIGHLIGHT_HEX.has(hex)&&range.intersectsNode(el))return true;
-      }
-      return false;
     }
     function removeHighlightInSelection(){
       if(!lastFocusedEditable)return;
@@ -2300,6 +2370,7 @@
     composerColorBtn.addEventListener("click",e=>{e.stopPropagation();composerPalette.classList.toggle("hidden");});
     composerCloseBtn.addEventListener("click",()=>collapseComposer({reset:true}));
     composerSaveBtn.addEventListener("click",saveComposer);
+    composerBody.addEventListener("paste",handlePasteEvent);
     composerBody.addEventListener("focusin",()=>{lastFocusedEditable=composerBody;updateToolbarStates();});
     composerBody.addEventListener("input",()=>{
       clearTimeout(composerPasswordTimer);
@@ -2335,6 +2406,7 @@
       wrapSelectionAsPassword();
     });
 
+    editorBody.addEventListener("paste",handlePasteEvent);
     editorBody.addEventListener("focusin",()=>{lastFocusedEditable=editorBody;updateToolbarStates();});
     editorTitle.addEventListener("input",scheduleEditorSave);
     editorBody.addEventListener("input",()=>{
@@ -2348,7 +2420,7 @@
         if(PASSWORD_PATTERN.test(text)){
           passwordPromptShownFor.add(activeNoteId);
           if(confirm("We noticed a password in your note. Hide it from random viewers?\n\nTip: you can also select text and press Ctrl+Q to hide anything.")){
-            if(wrapPasswordInEditor()){scheduleEditorSave();toast("Password hidden. Click the eye to reveal.","success");}
+            if(wrapPasswordInEditable(editorBody)){scheduleEditorSave();toast("Password hidden. Click the eye to reveal.","success");}
           }
         }
       },1500);
