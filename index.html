@@ -93,6 +93,8 @@
     .icon-btn.active{background:rgba(26,115,232,.12);color:var(--accent)}
     .icon-btn.danger:hover{background:rgba(217,48,37,.1);color:var(--danger)}
     .icon-btn.mobile-only{display:none}
+    .icon-btn:disabled{opacity:.35;cursor:not-allowed}
+    .icon-btn:disabled:hover{background:transparent;color:var(--text-muted)}
 
     .user-menu-wrap{position:relative}
     .user-btn{display:flex;align-items:center;gap:6px;padding:3px 6px 3px 3px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);cursor:pointer;transition:.15s}
@@ -133,6 +135,7 @@
     .drawer-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border:0;background:transparent;color:var(--text);font-size:13.5px;font-weight:700;text-align:left;cursor:pointer;transition:.12s;width:100%}
     .drawer-item:hover{background:var(--surface-2)}
     .drawer-item i{color:var(--text-muted);font-size:14px;width:18px;text-align:center}
+    .drawer-item-badge{margin-left:auto;font-size:10px;font-weight:800;background:var(--surface-2);color:var(--text-muted);padding:1px 7px;border-radius:999px}
 
     .active-filter{display:inline-flex;align-items:center;gap:8px;max-width:100%;margin:0 auto 16px;padding:7px 8px 7px 14px;border-radius:999px;background:rgba(26,115,232,.1);color:var(--accent);font-size:13px;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.04)}
     .active-filter span{display:inline-flex;align-items:center;gap:6px;max-width:calc(100vw - 120px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -212,11 +215,13 @@
     .note-card{position:relative;display:inline-block;width:100%;margin:0 0 16px;padding:16px;break-inside:avoid;vertical-align:top;border:1px solid var(--border);border-radius:16px;background:var(--note-bg,var(--surface));color:var(--text);cursor:pointer;box-shadow:var(--shadow-sm);transition:box-shadow .18s,transform .18s}
     .note-card:hover{box-shadow:var(--shadow-md)}
     .note-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-    .note-card-top{display:flex;align-items:flex-start;gap:8px}
+    .note-card-top{display:flex;align-items:flex-start;gap:6px}
     .note-title{min-width:0;flex:1;margin:0;color:var(--text);font-size:15.5px;font-weight:400;line-height:1.5;letter-spacing:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;word-spacing:normal;unicode-bidi:plaintext}
-    .note-pin{margin-top:2px;color:#b08d00;font-size:12px;transform:rotate(35deg)}
+    .note-pin{margin-top:3px;color:#b08d00;font-size:12px;transform:rotate(35deg)}
     .note-lock-icon{color:var(--accent);font-size:13px;margin-top:3px;flex-shrink:0}
-    .note-public-icon{color:var(--success);font-size:12px;margin-top:3px;flex-shrink:0}
+    .note-share-btn{background:transparent;border:0;color:var(--success);font-size:12px;cursor:pointer;padding:3px 5px;border-radius:5px;flex-shrink:0;margin-top:1px;transition:.15s;display:grid;place-items:center}
+    .note-share-btn:hover{background:rgba(24,128,56,.14)}
+    .note-share-btn:active{transform:scale(.92)}
     .note-preview{margin:9px 0 0;color:var(--text-muted);font-size:13px;line-height:1.6;white-space:normal;overflow-wrap:break-word;word-spacing:normal;letter-spacing:normal;unicode-bidi:plaintext;display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden}
     .note-preview-blur{filter:blur(5px);user-select:none;pointer-events:none;opacity:.85}
     .note-labels{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
@@ -249,6 +254,7 @@
     .editor-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;padding:10px 14px;background:var(--note-bg,var(--surface));position:relative}
     .editor-toolbar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--sep)}
     .editor-toolbar-right{display:flex;align-items:center;gap:4px}
+    .editor-history-group{display:flex;align-items:center;gap:2px;margin-left:4px;padding-left:6px;border-left:1px solid var(--sep)}
     .editor-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 0 16px;background:var(--note-bg,var(--surface))}
     .editor-title{width:100%;padding:12px 24px 4px;border:0;outline:0;background:transparent;color:var(--text);font-size:24px;font-weight:400;line-height:1.4;letter-spacing:0;word-spacing:normal;unicode-bidi:plaintext}
     .editor-title::placeholder{color:var(--text-muted)}
@@ -271,6 +277,18 @@
     .composer-body mark,
     .editor-body span[style*="background-color"],
     .composer-body span[style*="background-color"]{color:#1f2328!important;padding:0 2px;border-radius:3px}
+
+    /* Auto-links inside notes */
+    .auto-link{color:var(--accent);text-decoration:underline;text-underline-offset:2px;cursor:pointer;word-break:break-all;pointer-events:auto}
+    .auto-link:hover{color:var(--accent-hover)}
+    [data-theme="dark"] .auto-link{color:#aecbfa}
+    [data-theme="dark"] .auto-link:hover{color:#c8dbfc}
+
+    /* Hex code token with color swatch */
+    .hex-code{display:inline;white-space:nowrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.95em;padding:0 1px;border-radius:3px}
+    .hex-code::after{content:'';display:inline-block;width:12px;height:12px;margin-left:5px;border-radius:3px;background:var(--hex-color,#ccc);border:1px solid rgba(0,0,0,.18);vertical-align:-1px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+    [data-theme="dark"] .hex-code::after{border-color:rgba(255,255,255,.25)}
+    .note-preview .hex-code::after{width:10px;height:10px;margin-left:4px}
 
     .pwd-mask{display:inline-block;padding:1px 7px;border-radius:5px;background:rgba(26,115,232,.13);color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;cursor:pointer;vertical-align:baseline;line-height:1.5;transition:background-color .15s;user-select:none;white-space:nowrap}
     .pwd-mask:hover{background:rgba(26,115,232,.24)}
@@ -295,7 +313,7 @@
     .highlight-picker button:hover{transform:scale(1.15);border-color:var(--text-muted)}
     .highlight-picker button.active{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent)}
 
-    .settings-panel,.collab-panel,.label-panel,.recycle-panel,.password-panel,.shortcuts-panel,.share-panel{max-width:520px}
+    .settings-panel,.collab-panel,.label-panel,.recycle-panel,.removed-panel,.password-panel,.shortcuts-panel,.share-panel{max-width:520px}
     .settings-section{padding:14px 0;border-bottom:1px solid var(--sep)}
     .settings-section:last-child{border-bottom:0;padding-bottom:0}
     .settings-section h3{margin:0 0 6px;font-size:14px;font-weight:800}
@@ -317,6 +335,8 @@
     .collab-list{display:flex;flex-direction:column;gap:4px;margin-top:8px}
     .collab-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:.15s}
     .collab-row:hover{background:var(--surface-2)}
+    .collab-row.readonly{cursor:default}
+    .collab-row.readonly:hover{background:transparent}
     .collab-info{flex:1;min-width:0}
     .collab-info strong{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .collab-info small{display:block;color:var(--text-muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -324,6 +344,7 @@
     .collab-row.checked .collab-check{background:var(--accent);border-color:var(--accent);color:#fff}
     [data-theme="dark"] .collab-row.checked .collab-check{color:#0b1220}
     .collab-online-dot{width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0}
+    .collab-leave-row{display:flex;justify-content:flex-end;padding-top:12px;margin-top:8px;border-top:1px solid var(--sep)}
 
     .label-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;min-height:30px}
     .label-editable{display:inline-flex;align-items:center;gap:6px;padding:5px 8px 5px 12px;border-radius:999px;background:rgba(26,115,232,.12);color:var(--accent);font-size:12px;font-weight:700}
@@ -525,8 +546,13 @@
         <div class="drawer-labels" id="drawer-labels"></div>
       </div>
       <div class="drawer-divider"></div>
+      <button class="drawer-item" id="drawer-removed-btn" type="button">
+        <i class="fa-solid fa-box-archive"></i> Removed Notes
+        <span class="drawer-item-badge hidden" id="drawer-removed-badge">0</span>
+      </button>
       <button class="drawer-item" id="drawer-recycle-btn" type="button">
         <i class="fa-solid fa-trash-can"></i> Recycle bin
+        <span class="drawer-item-badge hidden" id="drawer-recycle-badge">0</span>
       </button>
       <button class="drawer-item" id="drawer-protected-btn" type="button">
         <i class="fa-solid fa-lock"></i> Protected notes
@@ -609,6 +635,14 @@
           <button class="icon-btn format-btn mobile-only" type="button" id="editor-copy-all-btn" title="Copy all text" aria-label="Copy all text">
             <i class="fa-solid fa-clipboard"></i>
           </button>
+          <div class="editor-history-group">
+            <button class="icon-btn format-btn" id="editor-undo-btn" type="button" title="Undo" aria-label="Undo" disabled>
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button class="icon-btn format-btn" id="editor-redo-btn" type="button" title="Redo" aria-label="Redo" disabled>
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+          </div>
         </div>
         <div class="editor-toolbar-right">
           <button class="icon-btn" id="editor-pin-btn" type="button" title="Pin note" aria-label="Pin note"><i class="fa-solid fa-thumbtack"></i></button>
@@ -637,7 +671,7 @@
   <div class="modal-overlay" id="share-modal" aria-hidden="true">
     <div class="modal-panel share-panel" role="dialog" aria-modal="true">
       <div class="modal-header">
-        <h2><i class="fa-solid fa-globe"></i> Public Share</h2>
+        <h2><i class="fa-solid fa-share-nodes"></i> Public Share</h2>
         <button class="icon-btn" id="share-close-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
@@ -722,8 +756,13 @@
         <button class="icon-btn" id="collab-close-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
-        <p class="modal-sub">Only people listed here can see and edit this note. You (the owner) always have access.</p>
+        <p class="modal-sub" id="collab-sub">Only people listed here can see and edit this note. You (the owner) always have access.</p>
         <div class="collab-list" id="collab-list"></div>
+        <div class="collab-leave-row hidden" id="collab-leave-row">
+          <button class="secondary-btn" id="collab-leave-btn" type="button" style="color:var(--danger);border-color:rgba(217,48,37,.3)">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Leave note
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -761,6 +800,19 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="removed-modal" aria-hidden="true">
+    <div class="modal-panel removed-panel" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-box-archive"></i> Removed Notes</h2>
+        <button class="icon-btn" id="removed-close-btn" type="button"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-sub">Removed notes are hidden from your notes list. Restore them or delete permanently.</p>
+        <div class="recycle-list" id="removed-list"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="password-modal" aria-hidden="true">
     <div class="modal-panel password-panel" role="dialog" aria-modal="true">
       <div class="modal-header">
@@ -783,7 +835,7 @@
   <div class="highlight-picker hidden" id="highlight-picker"></div>
 
   <div class="undo-toast hidden" id="undo-toast">
-    <span>Note deleted</span>
+    <span id="undo-toast-text">Note deleted</span>
     <button id="undo-btn" type="button">Undo</button>
     <div class="undo-progress" id="undo-progress"></div>
   </div>
@@ -801,6 +853,73 @@
       getFirestore, collection, query, where, limit, onSnapshot,
       addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, getDocs, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+    /*
+      ============================================================
+      FIRESTORE RULES (paste in Firebase Console → Firestore → Rules)
+      ============================================================
+      rules_version = '2';
+      service cloud.firestore {
+        match /databases/{database}/documents {
+          match /users/{uid} {
+            allow read: if request.auth != null;
+            allow write: if request.auth != null && request.auth.uid == uid;
+          }
+          match /fonts/{uid} {
+            allow read: if request.auth != null;
+            allow write: if request.auth != null && request.auth.uid == uid;
+          }
+          match /publicShares/{shareId} {
+            allow read: if request.auth != null;
+            allow create: if request.auth != null
+              && request.resource.data.owner == request.auth.uid;
+            allow delete: if request.auth != null
+              && resource.data.owner == request.auth.uid;
+          }
+          match /notes/{noteId} {
+            allow read: if request.auth != null && (
+              request.auth.uid in resource.data.visibleTo ||
+              resource.data.publicShare == true
+            );
+
+            allow create: if request.auth != null
+              && request.resource.data.owner == request.auth.uid
+              && request.auth.uid in request.resource.data.visibleTo;
+
+            allow update: if request.auth != null && (
+              // Owner full control
+              (resource.data.owner == request.auth.uid
+               && request.resource.data.owner == resource.data.owner)
+              ||
+              // Collaborator: content edit (no visibleTo/collaborators change)
+              (request.auth.uid in resource.data.visibleTo
+               && request.resource.data.owner == resource.data.owner
+               && request.resource.data.visibleTo == resource.data.visibleTo
+               && request.resource.data.collaborators == resource.data.collaborators)
+              ||
+              // Collaborator: leave (removes only self from visibleTo + collaborators)
+              (request.auth.uid in resource.data.visibleTo
+               && request.resource.data.owner == resource.data.owner
+               && !(request.auth.uid in request.resource.data.visibleTo)
+               && resource.data.visibleTo.removeAll(request.resource.data.visibleTo) == [request.auth.uid]
+               && resource.data.collaborators.removeAll(request.resource.data.collaborators) == [request.auth.uid])
+              ||
+              // Public join: adds only self
+              (resource.data.publicShare == true
+               && !(request.auth.uid in resource.data.visibleTo)
+               && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['collaborators','visibleTo'])
+               && resource.data.visibleTo.removeAll(request.resource.data.visibleTo) == []
+               && request.resource.data.visibleTo.removeAll(resource.data.visibleTo) == [request.auth.uid]
+               && resource.data.collaborators.removeAll(request.resource.data.collaborators) == []
+               && request.resource.data.collaborators.removeAll(resource.data.collaborators) == [request.auth.uid])
+            );
+
+            allow delete: if request.auth != null && resource.data.owner == request.auth.uid;
+          }
+        }
+      }
+      ============================================================
+    */
 
     const firebaseConfig = {
       apiKey: "AIzaSyA60BF2yh_VsyXVtliHpFbyIbE7ayq47vE",
@@ -832,7 +951,8 @@
     const googleSigninBtn=$("google-signin-btn"), authError=$("auth-error");
     const themeToggle=$("theme-toggle"), settingsBtn=$("settings-btn"), shortcutsBtn=$("shortcuts-btn");
     const drawerBtn=$("drawer-btn"), drawer=$("drawer"), drawerOverlay=$("drawer-overlay"), drawerCloseBtn=$("drawer-close-btn");
-    const drawerLabels=$("drawer-labels"), drawerRecycleBtn=$("drawer-recycle-btn"), drawerProtectedBtn=$("drawer-protected-btn");
+    const drawerLabels=$("drawer-labels"), drawerRecycleBtn=$("drawer-recycle-btn"), drawerRemovedBtn=$("drawer-removed-btn"), drawerProtectedBtn=$("drawer-protected-btn");
+    const drawerRemovedBadge=$("drawer-removed-badge"), drawerRecycleBadge=$("drawer-recycle-badge");
     const userAvatar=$("user-avatar"), userMenuBtn=$("user-menu-btn"), userMenu=$("user-menu");
     const userMenuAvatar=$("user-menu-avatar"), userName=$("user-name"), userEmail=$("user-email");
     const signoutBtn=$("signout-btn");
@@ -850,6 +970,7 @@
     const editorPinBtn=$("editor-pin-btn"), editorCloseBtn=$("editor-close-btn");
     const editorDeleteBtn=$("editor-delete-btn"), editorDoneBtn=$("editor-done-btn");
     const editorHideBtn=$("editor-hide-btn"), editorCopyAllBtn=$("editor-copy-all-btn");
+    const editorUndoBtn=$("editor-undo-btn"), editorRedoBtn=$("editor-redo-btn");
     const editorMeta=$("editor-meta"), saveStatus=$("save-status");
     const toastContainer=$("toast-container");
     const settingsModal=$("settings-modal"), settingsCloseBtn=$("settings-close-btn");
@@ -866,10 +987,12 @@
     const passwordError=$("password-error");
     const shortcutsModal=$("shortcuts-modal"), shortcutsCloseBtn=$("shortcuts-close-btn"), shortcutsList=$("shortcuts-list");
     const collabModal=$("collab-modal"), collabCloseBtn=$("collab-close-btn"), collabList=$("collab-list");
+    const collabSub=$("collab-sub"), collabLeaveRow=$("collab-leave-row"), collabLeaveBtn=$("collab-leave-btn");
     const labelModal=$("label-modal"), labelCloseBtn=$("label-close-btn"), labelList=$("label-list");
     const labelInput=$("label-input"), labelAddBtn=$("label-add-btn");
     const labelSuggestionsWrap=$("label-suggestions-wrap"), labelSuggestions=$("label-suggestions");
     const recycleModal=$("recycle-modal"), recycleCloseBtn=$("recycle-close-btn"), recycleList=$("recycle-list");
+    const removedModal=$("removed-modal"), removedCloseBtn=$("removed-close-btn"), removedList=$("removed-list");
     const passwordModal=$("password-modal"), passwordCloseBtn=$("password-close-btn");
     const passwordModalTitle=$("password-modal-title"), passwordModalSub=$("password-modal-sub");
     const passwordInput=$("password-input"), passwordModalError=$("password-modal-error");
@@ -877,7 +1000,7 @@
     const shareModal=$("share-modal"), shareCloseBtn=$("share-close-btn");
     const shareLinkInput=$("share-link-input"), shareCopyBtn=$("share-copy-btn");
     const noteContextMenu=$("note-context-menu"), highlightPicker=$("highlight-picker");
-    const undoToast=$("undo-toast"), undoBtn=$("undo-btn"), undoProgress=$("undo-progress");
+    const undoToast=$("undo-toast"), undoBtn=$("undo-btn"), undoProgress=$("undo-progress"), undoToastText=$("undo-toast-text");
 
     let currentUser=null;
     let notes=[];
@@ -887,7 +1010,7 @@
     let activeNoteId=null, activeNote=null;
     let editorDirty=false;
     let pendingRemoteNote=null, activeNoteMissingAt=null;
-    let pendingRemoteApplyTimer=null;
+    let pendingRemoteApplyTimer=null, decoratorTimer=null;
     let currentEditorColor="default", currentComposerColor="default";
     let lastFocusedEditable=null;
     let saveTimer=null, isSavingActiveNote=false, saveQueued=false, saveStatusTimer=null;
@@ -902,12 +1025,17 @@
     let userPasswordHash=null;
     let userSecurityAnswerHash=null;
     let passwordResolve=null;
-    let undoTimeout=null, pendingDeleteNoteId=null;
+    let undoTimeout=null, pendingUndoAction=null;
     let passwordCheckTimer=null, composerPasswordTimer=null;
     let passwordPromptShownFor=new Set();
     let composerPasswordPrompted=false;
     const pwdMaskHandlersAttached=new WeakSet();
     let lastNonCollapsedRange=null, lastRangeEditable=null;
+
+    // Undo/Redo history
+    let editorUndoStack = [];
+    let editorRedoStack = [];
+    let historyTimer = null;
 
     document.addEventListener("selectionchange",()=>{
       const sel=window.getSelection();
@@ -928,23 +1056,23 @@
     const COLOR_NAMES=new Set(COLORS.map(c=>c.name));
     const HIGHLIGHT_COLORS=["#ffe066","#a7ffeb","#cbf0f8","#d7aefb","#fdcfe8","#b7e1cd"];
     const ALLOWED_HIGHLIGHT_HEX=new Set(HIGHLIGHT_COLORS);
-    const ALLOWED_TAGS=new Set(["B","STRONG","I","EM","U","MARK","BR","DIV","P","SPAN"]);
+    const ALLOWED_TAGS=new Set(["B","STRONG","I","EM","U","MARK","BR","DIV","P","SPAN","A"]);
     const DANGEROUS_TAGS=new Set(["SCRIPT","STYLE","IFRAME","OBJECT","EMBED","LINK","META","FORM","INPUT","TEXTAREA","SELECT","BUTTON","SVG","MATH"]);
     const ONLINE_WINDOW_MS=2*60*1000;
     const RECYCLE_DAYS=30;
     const PASSWORD_PATTERN=/(?:password|passwd|pwd|pass|পাসওয়ার্ড|পাসওয়ার্ড|गुप्त\s*शब्द|密码|パスワード|пароль|contraseña)\s*[:：=\-–—]\s*([^\s<\n]{3,})/i;
+    const HEX_PATTERN=/^#[0-9a-fA-F]{3,8}$/;
     const SHORTCUTS=[
       {label:"Bold",keys:["Ctrl","B"]},
       {label:"Italic",keys:["Ctrl","I"]},
       {label:"Underline",keys:["Ctrl","U"]},
       {label:"Hide selected as password",keys:["Ctrl","Q"]},
       {label:"Unhide / restore hidden text",keys:["Ctrl","Shift","Q"]},
+      {label:"Undo (in editor)",keys:["Ctrl","Z"]},
+      {label:"Redo (in editor)",keys:["Ctrl","Shift","Z"]},
       {label:"Save note",keys:["Ctrl","Enter"]},
       {label:"Focus search",keys:["Ctrl","K"]},
-      {label:"Close editor / dismiss",keys:["Esc"]},
-      {label:"Highlight (click icon)",keys:["Click"]},
-      {label:"Choose highlight color",keys:["Right-click"]},
-      {label:"Restore hidden text (mobile)",keys:["Long-press"]}
+      {label:"Close editor / dismiss",keys:["Esc"]}
     ];
 
     function escapeHTML(v=""){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -962,15 +1090,7 @@
     async function hashPassword(password){const buf=new TextEncoder().encode(password);const hash=await crypto.subtle.digest("SHA-256",buf);return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");}
     function encodePwd(str){try{return btoa(unescape(encodeURIComponent(str)));}catch(e){try{return btoa(str);}catch(e2){return "";}}}
     function decodePwd(b64){try{return decodeURIComponent(escape(atob(b64)));}catch(e){try{return atob(b64);}catch(e2){return "";}}}
-
-    function generateShareId(){
-      const chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
-      const bytes=new Uint8Array(20);
-      crypto.getRandomValues(bytes);
-      let id="";
-      for(let i=0;i<20;i++) id+=chars[bytes[i]%chars.length];
-      return id;
-    }
+    function generateShareId(){const chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";const bytes=new Uint8Array(20);crypto.getRandomValues(bytes);let id="";for(let i=0;i<20;i++)id+=chars[bytes[i]%chars.length];return id;}
 
     function showShareLinkModal(link){
       shareLinkInput.value=link;
@@ -1010,6 +1130,115 @@
       try{sel.removeAllRanges();sel.addRange(range);}catch(e){}
     }
 
+    /* ===== HEX / URL DECORATION ===== */
+    function refreshHexCodeStyles(root){
+      if(!root)return;
+      root.querySelectorAll('.hex-code').forEach(span=>{
+        const text=(span.textContent||'').trim();
+        if(HEX_PATTERN.test(text)){
+          span.style.setProperty('--hex-color',text);
+          span.setAttribute('data-hex',text);
+        }
+      });
+    }
+
+    function wrapHexCodesAndLinks(root){
+      if(!root)return;
+
+      // 1. Update or unwrap existing hex-code spans
+      root.querySelectorAll('.hex-code').forEach(span=>{
+        const text=(span.textContent||'').trim();
+        if(!HEX_PATTERN.test(text)){
+          const p=span.parentNode;
+          if(!p)return;
+          while(span.firstChild)p.insertBefore(span.firstChild,span);
+          p.removeChild(span);
+        }else{
+          span.style.setProperty('--hex-color',text);
+          span.setAttribute('data-hex',text);
+        }
+      });
+
+      // 2. Walk text nodes, wrap hex codes and URLs
+      const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+      const nodes=[];
+      let node;
+      while((node=walker.nextNode())){
+        if(node.parentElement?.closest('.hex-code, .auto-link, .pwd-mask'))continue;
+        const text=node.textContent;
+        if(/#[0-9a-fA-F]{3,8}\b/.test(text)||/https?:\/\/[^\s<>"']+/.test(text))nodes.push(node);
+      }
+
+      for(const n of nodes){
+        const parent=n.parentNode;
+        if(!parent)continue;
+        const text=n.textContent;
+        const frag=document.createDocumentFragment();
+        const regex=/(https?:\/\/[^\s<>"']+)|(#[0-9a-fA-F]{3,8}\b)/g;
+        let lastIdx=0,match;
+        while((match=regex.exec(text))){
+          if(match.index>lastIdx)frag.appendChild(document.createTextNode(text.slice(lastIdx,match.index)));
+          if(match[1]){
+            const a=document.createElement("a");
+            a.className="auto-link";
+            a.setAttribute("href",match[1]);
+            a.setAttribute("target","_blank");
+            a.setAttribute("rel","noopener noreferrer");
+            a.setAttribute("contenteditable","false");
+            a.textContent=match[1];
+            frag.appendChild(a);
+          }else if(match[2]){
+            const span=document.createElement("span");
+            span.className="hex-code";
+            span.setAttribute("data-hex",match[2]);
+            span.style.setProperty("--hex-color",match[2]);
+            span.textContent=match[2];
+            frag.appendChild(span);
+          }
+          lastIdx=match.index+match[0].length;
+        }
+        if(lastIdx<text.length)frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+        parent.replaceChild(frag,n);
+      }
+    }
+
+    function decorateEditable(el){
+      if(!el)return;
+      const hadFocus=el.contains(document.activeElement);
+      let caret=-1;
+      if(hadFocus)caret=getCaretCharOffset(el);
+      wrapHexCodesAndLinks(el);
+      if(hadFocus&&caret>=0)setCaretCharOffset(el,caret);
+    }
+
+    function scheduleDecoration(){
+      clearTimeout(decoratorTimer);
+      decoratorTimer=setTimeout(()=>{
+        decoratorTimer=null;
+        if(!activeNoteId)return;
+        decorateEditable(editorBody);
+        // Update preview card
+        if(activeNote){
+          activeNote.body=sanitizeHTML(editorBody.innerHTML);
+        }
+        refreshHexCodeStyles(editorBody);
+      },900);
+    }
+
+    /* ===== OPEN LINKS IN NEW TAB ===== */
+    document.addEventListener('click',(e)=>{
+      const link=e.target.closest('.auto-link');
+      if(!link)return;
+      if(!link.closest('.editor-body, .composer-body, .note-preview'))return;
+      e.preventDefault();
+      e.stopPropagation();
+      const href=link.getAttribute('href');
+      if(href&&/^https?:\/\//i.test(href)){
+        window.open(href,'_blank','noopener,noreferrer');
+      }
+    },true);
+
+    /* ===== PWD MASK ===== */
     function buildPwdMaskElement(doc,pwd){
       const mask=doc.createElement("span");
       mask.className="pwd-mask";
@@ -1076,25 +1305,6 @@
     }
     function attachPwdMaskHandlers(container){container.querySelectorAll(".pwd-mask").forEach(attachPwdMaskHandlersTo);}
 
-    function unwrapMaskAtCursor(){
-      if(!lastFocusedEditable){toast("Place cursor on hidden text first.","info");return;}
-      const sel=window.getSelection();
-      if(!sel||!sel.rangeCount){toast("Place cursor on hidden text first.","info");return;}
-      const range=sel.getRangeAt(0);
-      let node=range.startContainer;
-      if(node.nodeType===3)node=node.parentElement;
-      let mask=node&&node.closest?node.closest(".pwd-mask"):null;
-      if(!mask){
-        const masks=lastFocusedEditable.querySelectorAll(".pwd-mask");
-        for(const m of masks){if(range.intersectsNode(m)){mask=m;break;}}
-      }
-      if(!mask){toast("No hidden text at cursor.","info");return;}
-      if(restoreMaskToPlain(mask)){
-        if(activeNoteId){editorDirty=true;scheduleEditorSave();}
-        toast("Hidden text restored to normal.","success");
-      }else{toast("Could not restore.","error");}
-    }
-
     document.addEventListener("copy",(e)=>{
       const sel=window.getSelection();
       if(!sel||sel.isCollapsed)return;
@@ -1145,7 +1355,7 @@
         nr.setStartAfter(lastChild);nr.collapse(true);
         sel.removeAllRanges();sel.addRange(nr);
       }
-      if(activeNoteId)scheduleEditorSave();
+      if(activeNoteId){scheduleEditorSave();scheduleDecoration();}
     }
 
     function sanitizeHTML(html){
@@ -1163,10 +1373,45 @@
         if(child.nodeType===Node.COMMENT_NODE){child.remove();continue;}
         if(child.nodeType!==Node.ELEMENT_NODE){child.remove();continue;}
         const tag=child.tagName;
+
         if(tag==="SPAN"&&child.classList&&child.classList.contains("pwd-mask")){
           const pwd=decodePwd(child.getAttribute("data-pwd")||"");
           if(!pwd){child.remove();continue;}
           child.replaceWith(buildPwdMaskElement(child.ownerDocument,pwd));
+          continue;
+        }
+        if(tag==="SPAN"&&child.classList&&child.classList.contains("hex-code")){
+          const text=(child.textContent||'').trim();
+          if(!HEX_PATTERN.test(text)){
+            const parent=child.parentNode;
+            while(child.firstChild)parent.insertBefore(child.firstChild,child);
+            parent.removeChild(child);
+            continue;
+          }
+          const fresh=child.ownerDocument.createElement("span");
+          fresh.className="hex-code";
+          fresh.setAttribute("data-hex",text);
+          fresh.style.setProperty("--hex-color",text);
+          fresh.textContent=text;
+          child.replaceWith(fresh);
+          continue;
+        }
+        if(tag==="A"){
+          const href=(child.getAttribute("href")||"").trim();
+          if(!/^https?:\/\//i.test(href)){
+            const parent=child.parentNode;
+            while(child.firstChild)parent.insertBefore(child.firstChild,child);
+            parent.removeChild(child);
+            continue;
+          }
+          const fresh=child.ownerDocument.createElement("a");
+          fresh.className="auto-link";
+          fresh.setAttribute("href",href);
+          fresh.setAttribute("target","_blank");
+          fresh.setAttribute("rel","noopener noreferrer");
+          fresh.setAttribute("contenteditable","false");
+          fresh.textContent=child.textContent||href;
+          child.replaceWith(fresh);
           continue;
         }
         if(DANGEROUS_TAGS.has(tag)){child.remove();continue;}
@@ -1257,6 +1502,25 @@
       }catch(e){console.error(e);toast("Could not hide selection.","error");}
     }
 
+    function unwrapMaskAtCursor(){
+      if(!lastFocusedEditable){toast("Place cursor on hidden text first.","info");return;}
+      const sel=window.getSelection();
+      if(!sel||!sel.rangeCount){toast("Place cursor on hidden text first.","info");return;}
+      const range=sel.getRangeAt(0);
+      let node=range.startContainer;
+      if(node.nodeType===3)node=node.parentElement;
+      let mask=node&&node.closest?node.closest(".pwd-mask"):null;
+      if(!mask){
+        const masks=lastFocusedEditable.querySelectorAll(".pwd-mask");
+        for(const m of masks){if(range.intersectsNode(m)){mask=m;break;}}
+      }
+      if(!mask){toast("No hidden text at cursor.","info");return;}
+      if(restoreMaskToPlain(mask)){
+        if(activeNoteId){editorDirty=true;scheduleEditorSave();}
+        toast("Hidden text restored to normal.","success");
+      }else{toast("Could not restore.","error");}
+    }
+
     function authErrorMessage(code){
       switch(code){
         case"auth/popup-closed-by-user":return"Sign-in cancelled.";
@@ -1337,7 +1601,7 @@
       if(!currentUser)return active;
       const cutoff=Date.now()-ONLINE_WINDOW_MS;
       notes.forEach(note=>{
-        if(note.deleted)return;
+        if(note.deleted||note.removed)return;
         const updatedBy=note.updatedBy;
         if(!updatedBy||updatedBy===currentUser.uid)return;
         const lastTime=Number(note.clientUpdatedAt)||timeMs(note.updatedAt);
@@ -1412,9 +1676,11 @@
       notes=[];allUsers=[];hasLoadedNotes=false;
       activeNoteId=null;activeNote=null;pendingRemoteNote=null;activeNoteMissingAt=null;
       clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
+      clearTimeout(decoratorTimer);decoratorTimer=null;
       activeLabelFilter=null;specialFilter=null;unlockedNoteIds.clear();
       userPasswordHash=null;userSecurityAnswerHash=null;
       editorDirty=false;
+      editorUndoStack=[];editorRedoStack=[];
       if(editorModal.classList.contains("open"))closeEditor({save:false});
       appRoot.classList.add("hidden");
       authScreen.classList.remove("hidden");
@@ -1447,6 +1713,7 @@
         ensureFontsLoaded(notes).then(()=>{
           renderNotes();
           renderDrawerLabels();
+          updateDrawerCounts();
           updateCollabStatusBadge();
           if(activeNoteId)applyEditorFont();
         });
@@ -1458,7 +1725,6 @@
       });
     }
 
-    /* ===== PUBLIC SHARE JOIN — uses getDoc only (no query) ===== */
     async function waitForNoteInList(noteId,timeout=5000){
       const start=Date.now();
       while(Date.now()-start<timeout){
@@ -1473,8 +1739,6 @@
       toast("Joining shared note…","info");
       try{
         let noteDoc=null;
-
-        // Primary: publicShares/{shareId} → noteId → getDoc(notes/{noteId})
         try{
           const shareSnap=await getDoc(doc(db,"publicShares",shareId));
           if(shareSnap.exists()){
@@ -1484,38 +1748,21 @@
               if(snap.exists())noteDoc=snap;
             }
           }
-        }catch(err){
-          console.warn("publicShares lookup failed:",err);
-        }
+        }catch(err){console.warn("publicShares lookup failed:",err);}
 
-        // Fallback: query (for notes shared before the publicShares collection existed)
         if(!noteDoc){
           try{
-            const q=query(
-              collection(db,"notes"),
-              where("shareId","==",shareId),
-              where("publicShare","==",true),
-              limit(1)
-            );
+            const q=query(collection(db,"notes"),where("shareId","==",shareId),where("publicShare","==",true),limit(1));
             const snap=await getDocs(q);
             if(!snap.empty)noteDoc=snap.docs[0];
-          }catch(err){
-            console.warn("Fallback query failed:",err);
-          }
+          }catch(err){console.warn("Fallback query failed:",err);}
         }
 
-        if(!noteDoc){
-          toast("Invalid or expired link.","error");
-          return;
-        }
+        if(!noteDoc){toast("Invalid or expired link.","error");return;}
 
         const noteData=noteDoc.data();
         const noteId=noteDoc.id;
-
-        if(!noteData.publicShare){
-          toast("This note is no longer public.","info");
-          return;
-        }
+        if(!noteData.publicShare){toast("This note is no longer public.","info");return;}
 
         if(noteData.visibleTo&&noteData.visibleTo.includes(currentUser.uid)){
           const ok=await waitForNoteInList(noteId,3000);
@@ -1530,17 +1777,12 @@
         const newCollabs=Array.from(new Set([...(noteData.collaborators||[]),currentUser.uid]));
         const newVisible=Array.from(new Set([...(noteData.visibleTo||[]),currentUser.uid]));
 
-        await updateDoc(doc(db,"notes",noteId),{
-          collaborators:newCollabs,
-          visibleTo:newVisible
-        });
-
+        await updateDoc(doc(db,"notes",noteId),{collaborators:newCollabs,visibleTo:newVisible});
         toast("Joined note!","success");
 
         const ok=await waitForNoteInList(noteId,5000);
-        if(ok){
-          openEditor(noteId);
-        }else{
+        if(ok)openEditor(noteId);
+        else{
           const updated={...noteData,collaborators:newCollabs,visibleTo:newVisible};
           if(!notes.find(n=>n.id===noteId))notes.push({id:noteId,...updated});
           openEditor(noteId);
@@ -1704,7 +1946,15 @@
     }
 
     function noteFingerprint(n){
-      return [n.title||"",stripHTML(n.body||"").slice(0,400),n.color||"default",n.pinned?"1":"0",(n.labels||[]).join(","),(n.collaborators||[]).length,n.locked?"1":"0",n.publicShare?"1":"0",n.deleted?"1":"0"].join("|");
+      return [n.title||"",stripHTML(n.body||"").slice(0,400),n.color||"default",n.pinned?"1":"0",(n.labels||[]).join(","),(n.collaborators||[]).length,n.locked?"1":"0",n.publicShare?"1":"0",n.removed?"1":"0",n.deleted?"1":"0"].join("|");
+    }
+    function updateDrawerCounts(){
+      const removedCount=notes.filter(n=>n.removed&&!n.deleted).length;
+      const recycleCount=notes.filter(n=>n.deleted).length;
+      if(removedCount>0){drawerRemovedBadge.textContent=removedCount;drawerRemovedBadge.classList.remove("hidden");}
+      else{drawerRemovedBadge.classList.add("hidden");}
+      if(recycleCount>0){drawerRecycleBadge.textContent=recycleCount;drawerRecycleBadge.classList.remove("hidden");}
+      else{drawerRecycleBadge.classList.add("hidden");}
     }
     function renderNotes(){
       if(!hasLoadedNotes)return;
@@ -1716,7 +1966,7 @@
         else if(activeLabelFilter){activeFilterLabel.textContent=activeLabelFilter;}
       }
       let filtered=notes.filter(n=>{
-        if(n.deleted)return false;
+        if(n.deleted||n.removed)return false;
         if(specialFilter==="protected"&&!n.locked)return false;
         if(activeLabelFilter&&!(n.labels||[]).includes(activeLabelFilter))return false;
         if(!term)return true;
@@ -1729,7 +1979,7 @@
         if(Boolean(a.pinned)!==Boolean(b.pinned))return a.pinned?-1:1;
         return createdTime(b)-createdTime(a);
       });
-      if(!notes.filter(n=>!n.deleted).length){
+      if(!notes.filter(n=>!n.deleted&&!n.removed).length){
         notesGrid.classList.add("hidden");notesGrid.innerHTML="";
         emptyState.classList.remove("hidden");searchEmpty.classList.add("hidden");
         return;
@@ -1770,6 +2020,21 @@
       }
       card.replaceWith(createNoteCard(note));
     }
+    function renderPreviewHTML(note){
+      const preview=stripHTML(note.body||"").replace(/\s+/g," ").trim();
+      if(!preview)return "";
+      const isLocked=Boolean(note.locked);
+      // Wrap URLs and hex codes in sanitized preview
+      const safe=sanitizeHTML(note.body||"");
+      const temp=document.createElement("div");
+      temp.innerHTML=safe;
+      wrapHexCodesAndLinks(temp);
+      const text=temp.textContent||"";
+      if(!text.trim()&&!isLocked)return "";
+      let html=temp.innerHTML;
+      if(html.length>400)html=html.slice(0,400)+"…";
+      return `<p class="note-preview ${isLocked?"note-preview-blur":""}" dir="auto">${html}</p>`;
+    }
     function createNoteCard(note){
       const card=document.createElement("article");
       card.className="note-card";
@@ -1780,20 +2045,18 @@
       card.setAttribute("role","button");
       card.setAttribute("aria-label",note.title||"Untitled note");
       applyFont(card,note.owner);
-      const preview=stripHTML(note.body||"").replace(/\s+/g," ").trim();
       const bylineName=note.updatedByName||note.ownerName||"Someone";
       const bylinePhoto=note.updatedByPhoto||note.ownerPhoto;
       const labels=(note.labels||[]).map(l=>`<span class="label-chip"><i class="fa-solid fa-tag" style="font-size:9px"></i>${escapeHTML(l)}</span>`).join("");
       const collabCount=(note.collaborators||[]).length;
       const isLocked=Boolean(note.locked);
       const isPublic=Boolean(note.publicShare);
-      const bodyHTML=preview
-        ? `<p class="note-preview ${isLocked?"note-preview-blur":""}" dir="auto">${escapeHTML(preview.slice(0,300))}${preview.length>300?"…":""}</p>`
-        : (isLocked?`<p class="note-preview note-preview-blur">•••••••</p>`:"");
+      let bodyHTML=renderPreviewHTML(note);
+      if(!bodyHTML&&isLocked)bodyHTML=`<p class="note-preview note-preview-blur">•••••••</p>`;
       card.innerHTML=`
         <div class="note-card-top">
           ${isLocked?'<i class="fa-solid fa-lock note-lock-icon" title="Locked — click to unlock"></i>':""}
-          ${isPublic?'<i class="fa-solid fa-globe note-public-icon" title="Public link active"></i>':""}
+          ${isPublic?'<button class="note-share-btn" type="button" data-share-btn title="Copy share link"><i class="fa-solid fa-share-nodes"></i></button>':""}
           <h3 class="note-title" dir="auto">${escapeHTML(note.title||"Untitled note")}</h3>
           ${note.pinned?'<i class="fa-solid fa-thumbtack note-pin" title="Pinned"></i>':""}
         </div>
@@ -1842,7 +2105,7 @@
           title,body,color:currentComposerColor,pinned:false,labels:[],
           owner:currentUser.uid,ownerName:currentUser.displayName||"User",ownerPhoto:currentUser.photoURL||"",
           collaborators:[],visibleTo:[currentUser.uid],fontOwner:currentUser.uid,
-          locked:false,deleted:false,publicShare:false,shareId:null,
+          locked:false,deleted:false,removed:false,publicShare:false,shareId:null,
           updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",
           createdAt:serverTimestamp(),updatedAt:serverTimestamp(),
           clientCreatedAt:Date.now(),clientUpdatedAt:Date.now()
@@ -1860,6 +2123,57 @@
       editorTitle.style.fontFamily=fam;
       editorBody.style.fontFamily=fam;
     }
+
+    /* ===== UNDO / REDO HISTORY ===== */
+    function getEditorSnapshot(){
+      return { title: editorTitle.value, body: editorBody.innerHTML };
+    }
+    function pushHistory(){
+      const snap=getEditorSnapshot();
+      const last=editorUndoStack[editorUndoStack.length-1];
+      if(last&&last.title===snap.title&&last.body===snap.body)return;
+      editorUndoStack.push(snap);
+      if(editorUndoStack.length>100)editorUndoStack.shift();
+      editorRedoStack=[];
+      updateUndoRedoButtons();
+    }
+    function scheduleHistory(){
+      clearTimeout(historyTimer);
+      historyTimer=setTimeout(()=>{historyTimer=null;pushHistory();},500);
+    }
+    function applyHistorySnapshot(snap){
+      const hadFocus=editorBody.contains(document.activeElement);
+      editorTitle.value=snap.title;
+      editorBody.innerHTML=snap.body;
+      attachPwdMaskHandlers(editorBody);
+      refreshHexCodeStyles(editorBody);
+      if(hadFocus){
+        editorBody.focus();
+        const range=document.createRange();
+        range.selectNodeContents(editorBody);range.collapse(false);
+        const sel=window.getSelection();
+        sel.removeAllRanges();sel.addRange(range);
+      }
+      scheduleEditorSave();
+    }
+    function undoEdit(){
+      if(editorUndoStack.length<=1)return;
+      editorRedoStack.push(editorUndoStack.pop());
+      applyHistorySnapshot(editorUndoStack[editorUndoStack.length-1]);
+      updateUndoRedoButtons();
+    }
+    function redoEdit(){
+      if(editorRedoStack.length===0)return;
+      const snap=editorRedoStack.pop();
+      editorUndoStack.push(snap);
+      applyHistorySnapshot(snap);
+      updateUndoRedoButtons();
+    }
+    function updateUndoRedoButtons(){
+      if(editorUndoBtn)editorUndoBtn.disabled=editorUndoStack.length<=1;
+      if(editorRedoBtn)editorRedoBtn.disabled=editorRedoStack.length===0;
+    }
+
     async function openEditor(noteId){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
@@ -1878,15 +2192,21 @@
       editorDirty=false;
       pendingRemoteNote=null;activeNoteMissingAt=null;
       clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
+      clearTimeout(decoratorTimer);decoratorTimer=null;
       editorTitle.value=note.title||"";
       editorBody.innerHTML=sanitizeHTML(note.body||"");
       attachPwdMaskHandlers(editorBody);
+      wrapHexCodesAndLinks(editorBody);
+      refreshHexCodeStyles(editorBody);
       setEditorColor(note.color);
       editorPinBtn.classList.toggle("active",Boolean(note.pinned));
       editorDeleteBtn.classList.toggle("hidden",note.owner!==currentUser?.uid);
       updateEditorMeta(note);
       setSaveStatus("");
       applyEditorFont();
+      editorUndoStack=[getEditorSnapshot()];
+      editorRedoStack=[];
+      updateUndoRedoButtons();
       editorModal.classList.add("open");
       editorModal.setAttribute("aria-hidden","false");
       document.body.classList.add("modal-open");
@@ -1903,9 +2223,13 @@
     }
     async function closeEditor({save=true}={}){
       clearTimeout(pendingRemoteApplyTimer);pendingRemoteApplyTimer=null;
+      clearTimeout(decoratorTimer);decoratorTimer=null;
+      clearTimeout(historyTimer);historyTimer=null;
       if(save&&activeNoteId&&editorDirty){clearTimeout(saveTimer);saveTimer=null;await saveActiveNote();}
       activeNoteId=null;activeNote=null;pendingRemoteNote=null;activeNoteMissingAt=null;
       editorDirty=false;
+      editorUndoStack=[];editorRedoStack=[];
+      updateUndoRedoButtons();
       editorModal.classList.remove("open");
       editorModal.setAttribute("aria-hidden","true");
       document.body.classList.remove("modal-open");
@@ -1949,6 +2273,8 @@
       editorTitle.value=note.title||"";
       editorBody.innerHTML=sanitizeHTML(note.body||"");
       attachPwdMaskHandlers(editorBody);
+      wrapHexCodesAndLinks(editorBody);
+      refreshHexCodeStyles(editorBody);
       setEditorColor(note.color);
       editorPinBtn.classList.toggle("active",Boolean(note.pinned));
       updateEditorMeta(note);
@@ -1988,13 +2314,13 @@
     function handleActiveNoteRemoteUpdate(){
       if(!activeNoteId)return;
       const note=notes.find(n=>n.id===activeNoteId);
-      if(!note||note.deleted){
+      if(!note||note.deleted||note.removed){
         if(!activeNoteMissingAt){
           activeNoteMissingAt=Date.now();
           setTimeout(()=>{
             if(!activeNoteId)return;
             const still=notes.find(n=>n.id===activeNoteId);
-            if(!still||still.deleted){toast("This note was deleted.","info");closeEditor({save:false});}
+            if(!still||still.deleted||still.removed){toast("This note was deleted.","info");closeEditor({save:false});}
             activeNoteMissingAt=null;
           },3000);
         }
@@ -2087,11 +2413,22 @@
       try{
         await updateDoc(doc(db,"notes",noteId),{deleted:true,deletedAt:serverTimestamp(),updatedAt:serverTimestamp(),updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()});
         if(activeNoteId===noteId)closeEditor({save:false});
-        showUndoToast(noteId);
+        showUndoToast(noteId,"Note deleted");
       }catch(e){toast("Could not delete note.","error");}
     }
-    function showUndoToast(noteId){
-      pendingDeleteNoteId=noteId;
+    async function removeNoteById(noteId){
+      const note=notes.find(n=>n.id===noteId);
+      if(!note)return;
+      if(note.owner!==currentUser?.uid){toast("Only the creator can remove this note.","error");return;}
+      try{
+        await updateDoc(doc(db,"notes",noteId),{removed:true,removedAt:serverTimestamp(),updatedAt:serverTimestamp(),updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()});
+        if(activeNoteId===noteId)closeEditor({save:false});
+        showUndoToast(noteId,"Note removed");
+      }catch(e){toast("Could not remove note.","error");}
+    }
+    function showUndoToast(noteId,label){
+      pendingUndoAction={noteId,label};
+      undoToastText.textContent=label||"Note deleted";
       undoToast.classList.remove("hidden");
       undoProgress.style.transition="none";
       undoProgress.style.width="100%";
@@ -2100,28 +2437,32 @@
         undoProgress.style.width="0%";
       });
       clearTimeout(undoTimeout);
-      undoTimeout=setTimeout(()=>{hideUndoToast();pendingDeleteNoteId=null;},10000);
+      undoTimeout=setTimeout(()=>{hideUndoToast();pendingUndoAction=null;},10000);
     }
     function hideUndoToast(){undoToast.classList.add("hidden");}
-    async function undoDelete(){
-      if(!pendingDeleteNoteId)return;
+    async function undoLastAction(){
+      if(!pendingUndoAction)return;
       clearTimeout(undoTimeout);
-      const id=pendingDeleteNoteId;
-      pendingDeleteNoteId=null;
+      const action=pendingUndoAction;
+      pendingUndoAction=null;
       hideUndoToast();
       try{
-        await updateDoc(doc(db,"notes",id),{deleted:false,deletedAt:null,updatedAt:serverTimestamp(),clientUpdatedAt:Date.now()});
-        toast("Note restored.","success");
-      }catch(e){toast("Could not restore note.","error");}
+        await updateDoc(doc(db,"notes",action.noteId),{deleted:false,removed:false,deletedAt:null,removedAt:null,updatedAt:serverTimestamp(),clientUpdatedAt:Date.now()});
+        toast("Restored.","success");
+      }catch(e){toast("Could not restore.","error");}
     }
-    async function restoreNote(noteId){
+    async function restoreNote(noteId,mode){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
       if(note.owner!==currentUser?.uid){toast("Only creator can restore.","error");return;}
       try{
-        await updateDoc(doc(db,"notes",noteId),{deleted:false,deletedAt:null,updatedAt:serverTimestamp(),clientUpdatedAt:Date.now()});
+        const update=mode==="removed"?{removed:false,removedAt:null}:{deleted:false,deletedAt:null};
+        update.updatedAt=serverTimestamp();
+        update.clientUpdatedAt=Date.now();
+        await updateDoc(doc(db,"notes",noteId),update);
         toast("Note restored.","success");
-        renderRecycleList();
+        if(mode==="removed")renderRemovedList();else renderRecycleList();
+        updateDrawerCounts();
       }catch(e){toast("Could not restore note.","error");}
     }
     async function permanentDelete(noteId){
@@ -2130,12 +2471,12 @@
       if(note.owner!==currentUser?.uid){toast("Only creator can delete.","error");return;}
       if(!confirm("Delete permanently? This cannot be undone."))return;
       try{
-        if(note.shareId){
-          try{await deleteDoc(doc(db,"publicShares",note.shareId));}catch(e){}
-        }
+        if(note.shareId){try{await deleteDoc(doc(db,"publicShares",note.shareId));}catch(e){}}
         await deleteDoc(doc(db,"notes",noteId));
         toast("Note permanently deleted.","success");
         renderRecycleList();
+        renderRemovedList();
+        updateDrawerCounts();
       }catch(e){toast("Could not delete note.","error");}
     }
     async function toggleLockNote(noteId){
@@ -2156,7 +2497,6 @@
       }catch(e){toast("Could not update lock.","error");}
     }
 
-    /* ===== PUBLIC SHARE TOGGLE — creates/deletes publicShares/{shareId} ===== */
     async function togglePublicShare(noteId){
       const note=notes.find(n=>n.id===noteId);
       if(!note||!currentUser)return;
@@ -2166,52 +2506,31 @@
       if(isPublic){
         if(!confirm("Disable public sharing? The link will stop working."))return;
         try{
-          if(note.shareId){
-            try{await deleteDoc(doc(db,"publicShares",note.shareId));}catch(err){console.warn("delete share pointer:",err);}
-          }
-          await updateDoc(doc(db,"notes",noteId),{
-            publicShare:false,
-            shareId:null,
-            updatedAt:serverTimestamp(),
-            updatedBy:currentUser.uid,
-            updatedByName:currentUser.displayName||"User",
-            updatedByPhoto:currentUser.photoURL||"",
-            clientUpdatedAt:Date.now()
-          });
+          if(note.shareId){try{await deleteDoc(doc(db,"publicShares",note.shareId));}catch(err){}}
+          await updateDoc(doc(db,"notes",noteId),{publicShare:false,shareId:null,updatedAt:serverTimestamp(),updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()});
           toast("Public sharing disabled.","success");
-        }catch(e){
-          console.error(e);
-          toast("Could not disable sharing.","error");
-        }
+        }catch(e){console.error(e);toast("Could not disable sharing.","error");}
         return;
       }
 
       const shareId=generateShareId();
       try{
-        // Write pointer doc first (so joining users can find the note)
-        await setDoc(doc(db,"publicShares",shareId),{
-          noteId:noteId,
-          owner:currentUser.uid,
-          createdAt:serverTimestamp()
-        });
-        // Then mark the note itself public
-        await updateDoc(doc(db,"notes",noteId),{
-          publicShare:true,
-          shareId,
-          updatedAt:serverTimestamp(),
-          updatedBy:currentUser.uid,
-          updatedByName:currentUser.displayName||"User",
-          updatedByPhoto:currentUser.photoURL||"",
-          clientUpdatedAt:Date.now()
-        });
+        await setDoc(doc(db,"publicShares",shareId),{noteId,owner:currentUser.uid,createdAt:serverTimestamp()});
+        await updateDoc(doc(db,"notes",noteId),{publicShare:true,shareId,updatedAt:serverTimestamp(),updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",clientUpdatedAt:Date.now()});
         const link=`${window.location.origin}${window.location.pathname}?join=${shareId}`;
         showShareLinkModal(link);
       }catch(e){
         console.error(e);
-        // Rollback pointer if we created it
         try{await deleteDoc(doc(db,"publicShares",shareId));}catch(err){}
         toast("Could not enable sharing.","error");
       }
+    }
+
+    function openShareModalForNote(noteId){
+      const note=notes.find(n=>n.id===noteId);
+      if(!note||!note.shareId)return;
+      const link=`${window.location.origin}${window.location.pathname}?join=${note.shareId}`;
+      showShareLinkModal(link);
     }
 
     function setEditorColor(color){currentEditorColor=normalizeColor(color);editorPanel.dataset.color=currentEditorColor;updatePaletteSelection(editorPalette,currentEditorColor);}
@@ -2240,9 +2559,7 @@
       let savedRange=null;
       if(sel&&sel.rangeCount>0){
         const r=sel.getRangeAt(0);
-        if(editable.contains(r.commonAncestorContainer)||editable===r.commonAncestorContainer){
-          savedRange=r.cloneRange();
-        }
+        if(editable.contains(r.commonAncestorContainer)||editable===r.commonAncestorContainer){savedRange=r.cloneRange();}
       }
       editable.focus();
       if(savedRange&&sel){sel.removeAllRanges();sel.addRange(savedRange);}
@@ -2336,7 +2653,7 @@
     function updateToolbarStates(){
       if(!lastFocusedEditable)return;
       const scope=lastFocusedEditable===composerBody?composerExpanded:editorPanel;
-      scope.querySelectorAll(".format-btn").forEach(btn=>{
+      scope.querySelectorAll(".format-btn[data-format]").forEach(btn=>{
         const f=btn.dataset.format;
         if(!f)return;
         let active=false;
@@ -2384,10 +2701,11 @@
       noteContextMenu.innerHTML=`
         <div class="context-colors"></div>
         <button class="context-item" data-action="label"><i class="fa-solid fa-tag"></i> Add label</button>
-        <button class="context-item" data-action="collab"><i class="fa-solid fa-user-plus"></i> Collaborators</button>
+        <button class="context-item" data-action="collab"><i class="fa-solid fa-users"></i> Collaborators</button>
         <button class="context-item" data-action="copy"><i class="fa-regular fa-copy"></i> Make a copy</button>
-        ${isOwner?`<button class="context-item ${isPublic?"active":""}" data-action="public"><i class="fa-solid fa-globe"></i> ${isPublic?"Public share (on)":"Public share"}</button>`:""}
+        ${isOwner?`<button class="context-item ${isPublic?"active":""}" data-action="public"><i class="fa-solid fa-share-nodes"></i> ${isPublic?"Public share (on)":"Public share"}</button>`:""}
         ${isOwner?`<button class="context-item ${isLocked?"active":""}" data-action="lock"><i class="fa-solid ${isLocked?"fa-lock":"fa-unlock"}"></i> ${isLocked?"Unlock note":"Lock as private"}</button>`:""}
+        ${isOwner?`<button class="context-item" data-action="remove"><i class="fa-solid fa-box-archive"></i> Remove Note</button>`:""}
         ${isOwner?`<button class="context-item danger" data-action="delete"><i class="fa-solid fa-trash"></i> Delete</button>`:""}
       `;
       buildPalette(noteContextMenu.querySelector(".context-colors"));
@@ -2395,7 +2713,7 @@
       noteContextMenu.classList.remove("hidden");
       const r=anchorEl.getBoundingClientRect();
       const mw=noteContextMenu.offsetWidth||230;
-      const mh=noteContextMenu.offsetHeight||260;
+      const mh=noteContextMenu.offsetHeight||280;
       let left=r.right-mw;let top=r.bottom+6;
       if(left<8)left=8;
       if(top+mh>window.innerHeight-8)top=r.top-mh-6;
@@ -2410,6 +2728,7 @@
           else if(action==="copy")makeCopyOfNote(noteId);
           else if(action==="public")togglePublicShare(noteId);
           else if(action==="lock")toggleLockNote(noteId);
+          else if(action==="remove")removeNoteById(noteId);
           else if(action==="delete")deleteNoteById(noteId);
         });
       });
@@ -2431,7 +2750,7 @@
           body:sanitizeHTML(note.body||""),color:note.color||"default",pinned:false,
           labels:note.labels||[],owner:currentUser.uid,ownerName:currentUser.displayName||"User",
           ownerPhoto:currentUser.photoURL||"",collaborators:[],visibleTo:[currentUser.uid],
-          fontOwner:currentUser.uid,locked:false,deleted:false,publicShare:false,shareId:null,
+          fontOwner:currentUser.uid,locked:false,deleted:false,removed:false,publicShare:false,shareId:null,
           updatedBy:currentUser.uid,updatedByName:currentUser.displayName||"User",updatedByPhoto:currentUser.photoURL||"",
           createdAt:serverTimestamp(),updatedAt:serverTimestamp(),clientCreatedAt:Date.now(),clientUpdatedAt:Date.now()
         });
@@ -2441,7 +2760,7 @@
 
     function collectAllLabels(){
       const map=new Map();
-      notes.forEach(n=>{if(n.deleted)return;(n.labels||[]).forEach(l=>{map.set(l,(map.get(l)||0)+1);});});
+      notes.forEach(n=>{if(n.deleted||n.removed)return;(n.labels||[]).forEach(l=>{map.set(l,(map.get(l)||0)+1);});});
       return map;
     }
     function openLabelModal(noteId){labelNoteId=noteId;labelModal.classList.add("open");labelModal.setAttribute("aria-hidden","false");renderLabelList();renderLabelSuggestions();labelInput.value="";setTimeout(()=>labelInput.focus(),50);}
@@ -2500,7 +2819,7 @@
         btn.addEventListener("click",()=>{setLabelFilter(btn.dataset.label);closeDrawer();});
       });
     }
-    function openDrawer(){drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");drawerOverlay.classList.add("open");}
+    function openDrawer(){drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");drawerOverlay.classList.add("open");updateDrawerCounts();}
     function closeDrawer(){drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true");drawerOverlay.classList.remove("open");}
     function setLabelFilter(label){activeLabelFilter=label||null;specialFilter=null;renderNotes();window.scrollTo({top:0,behavior:"smooth"});}
     function clearAllFilters(){activeLabelFilter=null;specialFilter=null;renderNotes();}
@@ -2525,14 +2844,36 @@
           </div>
         </div>`;
       }).join("");
-      recycleList.querySelectorAll("[data-restore]").forEach(btn=>btn.addEventListener("click",()=>restoreNote(btn.dataset.restore)));
+      recycleList.querySelectorAll("[data-restore]").forEach(btn=>btn.addEventListener("click",()=>restoreNote(btn.dataset.restore,"deleted")));
       recycleList.querySelectorAll("[data-permanent]").forEach(btn=>btn.addEventListener("click",()=>permanentDelete(btn.dataset.permanent)));
+    }
+
+    function openRemovedModal(){removedModal.classList.add("open");removedModal.setAttribute("aria-hidden","false");renderRemovedList();}
+    function closeRemovedModal(){removedModal.classList.remove("open");removedModal.setAttribute("aria-hidden","true");}
+    function renderRemovedList(){
+      const removed=notes.filter(n=>n.removed&&!n.deleted).sort((a,b)=>timeMs(b.removedAt)-timeMs(a.removedAt));
+      if(!removed.length){removedList.innerHTML='<div class="recycle-empty"><i class="fa-solid fa-box-archive" style="font-size:28px;opacity:.4;display:block;margin-bottom:10px"></i>No removed notes.</div>';return;}
+      removedList.innerHTML=removed.map(n=>{
+        const age=daysAgo(n.removedAt);
+        const isOwner=n.owner===currentUser?.uid;
+        return `<div class="recycle-item">
+          <div class="recycle-item-info">
+            <strong>${escapeHTML(n.title||"Untitled note")}</strong>
+            <small>Removed ${age===0?"today":`${age} day${age>1?"s":""} ago`}</small>
+          </div>
+          <div class="recycle-item-actions">
+            ${isOwner?`<button class="icon-btn" data-restore="${escapeHTML(n.id)}" title="Restore"><i class="fa-solid fa-rotate-left"></i></button>`:""}
+            ${isOwner?`<button class="icon-btn danger" data-permanent="${escapeHTML(n.id)}" title="Delete permanently"><i class="fa-solid fa-trash-can"></i></button>`:""}
+          </div>
+        </div>`;
+      }).join("");
+      removedList.querySelectorAll("[data-restore]").forEach(btn=>btn.addEventListener("click",()=>restoreNote(btn.dataset.restore,"removed")));
+      removedList.querySelectorAll("[data-permanent]").forEach(btn=>btn.addEventListener("click",()=>permanentDelete(btn.dataset.permanent)));
     }
 
     function openCollabModal(noteId){
       const note=notes.find(n=>n.id===noteId);
       if(!note)return;
-      if(note.owner!==currentUser?.uid){toast("Only the owner can manage collaborators.","error");return;}
       collabNoteId=noteId;
       collabModal.classList.add("open");
       collabModal.setAttribute("aria-hidden","false");
@@ -2541,15 +2882,28 @@
     function closeCollabModal(){collabModal.classList.remove("open");collabModal.setAttribute("aria-hidden","true");collabNoteId=null;}
     function renderCollabList(){
       const note=notes.find(n=>n.id===collabNoteId);
-      if(!note){collabList.innerHTML="";return;}
+      if(!note){collabList.innerHTML="";collabLeaveRow.classList.add("hidden");return;}
+      const isOwner=note.owner===currentUser?.uid;
       const collabs=new Set(note.collaborators||[]);
       const active=getActiveCollaborators();
       const users=allUsers.filter(u=>u.uid!==note.owner);
-      if(!users.length){collabList.innerHTML='<p style="color:var(--text-muted);font-size:12.5px;padding:12px 4px">No other users have signed in yet.</p>';return;}
+
+      if(isOwner){
+        collabSub.textContent="Only people listed here can see and edit this note. You (the owner) always have access.";
+        collabLeaveRow.classList.add("hidden");
+      }else{
+        collabSub.textContent="You're a collaborator on this note. You can leave it any time.";
+        collabLeaveRow.classList.remove("hidden");
+      }
+
+      if(!users.length){
+        collabList.innerHTML='<p style="color:var(--text-muted);font-size:12.5px;padding:12px 4px">No other users have signed in yet.</p>';
+        return;
+      }
       collabList.innerHTML=users.map(u=>{
         const checked=collabs.has(u.uid);
         const isOnline=active.has(u.uid);
-        return`<div class="collab-row ${checked?"checked":""}" data-uid="${escapeHTML(u.uid)}">
+        return`<div class="collab-row ${checked?"checked":""} ${!isOwner?"readonly":""}" data-uid="${escapeHTML(u.uid)}">
           ${avatarHTML(u.photoURL,u.displayName,"sm")}
           <div class="collab-info">
             <strong>${escapeHTML(u.displayName||"User")}</strong>
@@ -2559,9 +2913,11 @@
           <div class="collab-check"><i class="fa-solid fa-check"></i></div>
         </div>`;
       }).join("");
-      collabList.querySelectorAll(".collab-row").forEach(row=>{
-        row.addEventListener("click",()=>toggleCollaborator(collabNoteId,row.dataset.uid));
-      });
+      if(isOwner){
+        collabList.querySelectorAll(".collab-row").forEach(row=>{
+          row.addEventListener("click",()=>toggleCollaborator(collabNoteId,row.dataset.uid));
+        });
+      }
     }
     async function toggleCollaborator(noteId,uid){
       const note=notes.find(n=>n.id===noteId);
@@ -2575,6 +2931,24 @@
         renderCollabList();
         toast(collabs.has(uid)?"Collaborator added.":"Collaborator removed.","success");
       }catch(e){toast("Could not update collaborators.","error");}
+    }
+    async function leaveNote(){
+      const note=notes.find(n=>n.id===collabNoteId);
+      if(!note||!currentUser)return;
+      if(note.owner===currentUser.uid){toast("You're the owner — you can't leave. Delete the note instead.","error");return;}
+      if(!confirm("Leave this note? You'll lose access until the owner re-adds you."))return;
+      try{
+        const newCollabs=(note.collaborators||[]).filter(uid=>uid!==currentUser.uid);
+        const newVisible=(note.visibleTo||[]).filter(uid=>uid!==currentUser.uid);
+        const noteId=note.id;
+        await updateDoc(doc(db,"notes",noteId),{collaborators:newCollabs,visibleTo:newVisible});
+        toast("Left note.","success");
+        closeCollabModal();
+        if(activeNoteId===noteId)closeEditor({save:false});
+      }catch(e){
+        console.error(e);
+        toast("Could not leave note.","error");
+      }
     }
 
     function openSettingsModal(){settingsModal.classList.add("open");settingsModal.setAttribute("aria-hidden","false");updateCurrentFontUI();updatePasswordUI();}
@@ -2627,6 +3001,7 @@
     drawerBtn.addEventListener("click",openDrawer);
     drawerCloseBtn.addEventListener("click",closeDrawer);
     drawerOverlay.addEventListener("click",closeDrawer);
+    drawerRemovedBtn.addEventListener("click",()=>{closeDrawer();openRemovedModal();});
     drawerRecycleBtn.addEventListener("click",()=>{closeDrawer();openRecycleModal();});
     drawerProtectedBtn.addEventListener("click",()=>{closeDrawer();specialFilter="protected";activeLabelFilter=null;renderNotes();window.scrollTo({top:0,behavior:"smooth"});});
 
@@ -2660,6 +3035,8 @@
     emptyCreateBtn.addEventListener("click",()=>{expandComposer();window.scrollTo({top:0,behavior:"smooth"});});
 
     notesGrid.addEventListener("click",e=>{
+      const shareBtn=e.target.closest("[data-share-btn]");
+      if(shareBtn){e.stopPropagation();const card=shareBtn.closest(".note-card");openShareModalForNote(card.dataset.id);return;}
       const menuBtn=e.target.closest("[data-menu-btn]");
       if(menuBtn){e.stopPropagation();const card=menuBtn.closest(".note-card");openNoteMenu(card.dataset.id,menuBtn);return;}
       const card=e.target.closest(".note-card");
@@ -2669,7 +3046,7 @@
     notesGrid.addEventListener("keydown",e=>{
       if(e.key!=="Enter"&&e.key!==" ")return;
       const card=e.target.closest(".note-card");
-      if(!card||e.target.closest("[data-menu-btn]"))return;
+      if(!card||e.target.closest("[data-menu-btn]")||e.target.closest("[data-share-btn]"))return;
       e.preventDefault();openEditor(card.dataset.id);
     });
 
@@ -2694,6 +3071,8 @@
           }
         }
       },1500);
+      clearTimeout(decoratorTimer);
+      decoratorTimer=setTimeout(()=>{decoratorTimer=null;decorateEditable(composerBody);},900);
     });
     composerHideBtn.addEventListener("mousedown",e=>{
       e.preventDefault();
@@ -2713,9 +3092,11 @@
 
     editorBody.addEventListener("paste",handlePasteEvent);
     editorBody.addEventListener("focusin",()=>{lastFocusedEditable=editorBody;updateToolbarStates();});
-    editorTitle.addEventListener("input",scheduleEditorSave);
+    editorTitle.addEventListener("input",()=>{scheduleEditorSave();scheduleHistory();});
     editorBody.addEventListener("input",()=>{
       scheduleEditorSave();
+      scheduleHistory();
+      scheduleDecoration();
       clearTimeout(passwordCheckTimer);
       passwordCheckTimer=setTimeout(()=>{
         if(!activeNoteId)return;
@@ -2762,9 +3143,8 @@
       const cleanText=temp.textContent||"";
       if(!cleanText.trim()){toast("Nothing to copy.","info");return;}
       try{
-        if(navigator.clipboard&&navigator.clipboard.writeText){
-          await navigator.clipboard.writeText(cleanText);
-        }else{
+        if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(cleanText);}
+        else{
           const ta=document.createElement("textarea");
           ta.value=cleanText;ta.style.position="fixed";ta.style.opacity="0";
           document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();
@@ -2773,17 +3153,36 @@
       }catch(e){toast("Could not copy.","error");}
     });
 
+    // Undo / Redo buttons
+    editorUndoBtn.addEventListener("mousedown",e=>e.preventDefault());
+    editorUndoBtn.addEventListener("click",()=>{
+      if(!editorBody.contains(document.activeElement)&&document.activeElement!==editorTitle){
+        editorBody.focus();
+      }
+      undoEdit();
+    });
+    editorRedoBtn.addEventListener("mousedown",e=>e.preventDefault());
+    editorRedoBtn.addEventListener("click",()=>{
+      if(!editorBody.contains(document.activeElement)&&document.activeElement!==editorTitle){
+        editorBody.focus();
+      }
+      redoEdit();
+    });
+
     collabCloseBtn.addEventListener("click",closeCollabModal);
     collabModal.addEventListener("click",e=>{if(e.target===collabModal)closeCollabModal();});
+    collabLeaveBtn.addEventListener("click",leaveNote);
     labelCloseBtn.addEventListener("click",closeLabelModal);
     labelModal.addEventListener("click",e=>{if(e.target===labelModal)closeLabelModal();});
     labelAddBtn.addEventListener("click",()=>{if(!labelNoteId)return;addLabelToNote(labelNoteId,labelInput.value).then(()=>{labelInput.value="";labelInput.focus();});});
     labelInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();if(labelNoteId)addLabelToNote(labelNoteId,labelInput.value).then(()=>{labelInput.value="";labelInput.focus();});}});
     recycleCloseBtn.addEventListener("click",closeRecycleModal);
     recycleModal.addEventListener("click",e=>{if(e.target===recycleModal)closeRecycleModal();});
-    undoBtn.addEventListener("click",undoDelete);
+    removedCloseBtn.addEventListener("click",closeRemovedModal);
+    removedModal.addEventListener("click",e=>{if(e.target===removedModal)closeRemovedModal();});
+    undoBtn.addEventListener("click",undoLastAction);
 
-    document.querySelectorAll(".format-btn").forEach(btn=>{
+    document.querySelectorAll(".format-btn[data-format]").forEach(btn=>{
       btn.addEventListener("mousedown",e=>e.preventDefault());
       const isHighlight=btn.dataset.format==="highlight";
       if(isHighlight){
@@ -2793,7 +3192,7 @@
         btn.addEventListener("touchstart",()=>{lpTimer=setTimeout(()=>{lpTimer=null;openHighlightPicker(btn);},550);},{passive:true});
         btn.addEventListener("touchend",()=>{if(lpTimer){clearTimeout(lpTimer);lpTimer=null;}});
         btn.addEventListener("touchmove",()=>{if(lpTimer){clearTimeout(lpTimer);lpTimer=null;}});
-      }else if(btn.dataset.format){
+      }else{
         btn.addEventListener("click",()=>{execFormat(btn.dataset.format);});
       }
     });
@@ -2805,6 +3204,23 @@
     document.addEventListener("keydown",e=>{
       const mod=e.ctrlKey||e.metaKey;
       const key=e.key.toLowerCase();
+
+      // Undo / Redo in editor
+      if(mod&&key==="z"&&!e.shiftKey){
+        if(editorModal.classList.contains("open")&&(editorBody.contains(document.activeElement)||document.activeElement===editorTitle)){
+          e.preventDefault();
+          undoEdit();
+          return;
+        }
+      }
+      if((mod&&e.shiftKey&&key==="z")||(mod&&key==="y")){
+        if(editorModal.classList.contains("open")&&(editorBody.contains(document.activeElement)||document.activeElement===editorTitle)){
+          e.preventDefault();
+          redoEdit();
+          return;
+        }
+      }
+
       if(mod&&!e.shiftKey&&!e.altKey&&["b","i","u"].includes(key)){
         if(lastFocusedEditable&&lastFocusedEditable.contains(document.activeElement)){
           e.preventDefault();
@@ -2845,6 +3261,7 @@
         if(collabModal.classList.contains("open"))closeCollabModal();
         if(labelModal.classList.contains("open"))closeLabelModal();
         if(recycleModal.classList.contains("open"))closeRecycleModal();
+        if(removedModal.classList.contains("open"))closeRemovedModal();
       }
     });
 
@@ -2863,6 +3280,7 @@
         if(timeEl.textContent!==t)timeEl.textContent=t;
       });
       updateCollabStatusBadge();
+      updateDrawerCounts();
       if(activeNoteId&&activeNote)updateEditorMeta(activeNote);
     },5000);
   </script>
